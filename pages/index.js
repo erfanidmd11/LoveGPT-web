@@ -1,3 +1,4 @@
+import Head from 'next/head';
 
 echo "// Small change to trigger deployment" >> pages/index.js
 import Head 
