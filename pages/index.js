@@ -1,4 +1,7 @@
-import Head from 'next/head';
+
+echo "// Small change to trigger deployment" >> pages/index.js
+import Head 
+from 'next/head';
 
 export default function Home() {
   return (
@@ -21,3 +24,4 @@ font-semibold shadow-md hover:shadow-xl transition">
   );
 }
 
+// Trigger deployment on Vercel
