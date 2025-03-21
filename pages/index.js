@@ -1,11 +1,6 @@
 import Head from 'next/head';
 
 export default function Home() {
-echo "// Small change to trigger deployment" >> pages/index.js
-import Head 
-from 'next/head';
-
-export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen 
 bg-gradient-to-r from-red-500 to-purple-600 text-white">
@@ -26,4 +21,3 @@ font-semibold shadow-md hover:shadow-xl transition">
   );
 }
 
-// Trigger deployment on Vercel
