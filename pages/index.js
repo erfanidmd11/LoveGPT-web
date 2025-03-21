@@ -1,5 +1,6 @@
 import Head from 'next/head';
 
+export default function Home() {
 echo "// Small change to trigger deployment" >> pages/index.js
 import Head 
 from 'next/head';
