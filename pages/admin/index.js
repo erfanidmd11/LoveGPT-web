@@ -1,9 +1,12 @@
-// pages/index.js
+// pages/admin/index.js
 import Head from 'next/head';
-import MainLayout from '@/layouts/MainLayout';
-import ARIAChat from '@/components/ARIAChat';
+import dynamic from 'next/dynamic';
 
-export default function Home() {
+// 🧠 Dynamically import to avoid SSR issues if ARIAChat or MainLayout use `window`
+const MainLayout = dynamic(() => import('@/layouts/MainLayout'), { ssr: false });
+const ARIAChat = dynamic(() => import('@/components/ARIAChat'), { ssr: false });
+
+export default function AdminHome() {
   return (
     <MainLayout>
       <Head>

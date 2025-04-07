@@ -16,14 +16,14 @@ import Step9RelationshipStatus from '@/components/onboarding/Relationship/Step9R
 import Step10AIConsent from '@/components/onboarding/Lifestyle/Step10AIConsent';
 import Step11Parenthood from '@/components/onboarding/Lifestyle/Step11Parenthood';
 import Step12LoveLanguages from '@/components/onboarding/Personality/Step12LoveLanguages';
-import Step13InnerConflictStyle from '@/components/onboarding/Personality/Step13InnerConflictStyle';
+import Step13innerConflictStyle from '@/components/onboarding/Personality/Step13innerConflictStyle';
 import Step14CommunicationStyle from '@/components/onboarding/Lifestyle/Step14CommunicationStyle';
 import Step15Lifestyle from '@/components/onboarding/Lifestyle/Step15Lifestyle';
 import Step16DealBreakers from '@/components/onboarding/compatibility/Step16DealBreakers';
-import Step17ConflictStyle from '@/components/onboarding/compatibility/Step17ConflictStyle';
+import Step17conflictStyle from '@/components/onboarding/compatibility/Step17conflictStyle';
 import Step18AttachmentStyle from '@/components/onboarding/compatibility/Step18AttachmentStyle';
 import Step19FinancialPhilosophy from '@/components/onboarding/compatibility/Step19FinancialPhilosophy';
-import Step20ConflictResolution from '@/components/onboarding/Lifestyle/Step20ConflictResolution';
+import Step20conflictResolution from '@/components/onboarding/Lifestyle/Step20conflictResolution';
 import Step21PartnershipDynamics from '@/components/onboarding/Relationship/Step21PartnershipDynamics';
 import Step22EmotionalTriggers from '@/components/onboarding/emotional/Step22EmotionalTriggers';
 import Step23ConditioningBeliefs from '@/components/onboarding/connection/Step23ConditioningBeliefs';
@@ -50,14 +50,14 @@ const steps = [
   Step10AIConsent,
   Step11Parenthood,
   Step12LoveLanguages,
-  Step13InnerConflictStyle,
+  Step13innerConflictStyle,
   Step14CommunicationStyle,
   Step15Lifestyle,
   Step16DealBreakers,
-  Step17ConflictStyle,
+  Step17conflictStyle,
   Step18AttachmentStyle,
   Step19FinancialPhilosophy,
-  Step20ConflictResolution,
+  Step20conflictResolution,
   Step21PartnershipDynamics,
   Step22EmotionalTriggers,
   Step23ConditioningBeliefs,
