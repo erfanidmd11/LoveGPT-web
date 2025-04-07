@@ -1,0 +1,69 @@
+# Query: from '@/lib/
+
+22 results - 22 files
+
+src-backup/components/onboarding/compatibility/Step19FinancialPhilosophy.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/connection/Step23ConditioningBeliefs.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/emotional/Step22EmotionalTriggers.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Identity/Step1BEmailOTP.js:
+  4: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Identity/Step1Name.js:
+  2: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Identity/Step2DOB.js:
+  7: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Identity/Step3Gender.js:
+  3: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Identity/Step6Location.js:
+  5: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Lifestyle/Step10AIConsent.js:
+  3: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Lifestyle/Step11Parenthood.js:
+  3: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Lifestyle/Step14CommunicationStyle.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Lifestyle/Step15Lifestyle.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Lifestyle/Step20conflictResolution.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Personality/Step7Values.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Personality/Step8Personality.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Personality/Step12LoveLanguages.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Personality/Step13innerConflictStyle.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Personality/Step24OpennessLevel.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Relationship/Step4Intention.js:
+  3: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Relationship/Step5Readiness.js:
+  4: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Relationship/Step9RelationshipStatus.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';
+
+src-backup/components/onboarding/Relationship/Step21PartnershipDynamics.js:
+  6: import { saveAnswer } from '@/lib/saveAnswer';

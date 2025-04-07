@@ -1,0 +1,58 @@
+// src/components/match/MatchPreviewCard.jsx
+import React, { useEffect, useState } from 'react';
+import MatchConflictWarningModal from './MatchConflictWarningModal.js';
+import { saveAnswer } from '@/lib/saveAnswer';
+
+export default function MatchPreviewCard({ userDealBreakers, candidate, onOpenProfile }) {
+  const [showWarning, setShowWarning] = useState(false);
+  const [violations, setViolations] = useState([]);
+
+  const matchTraits = candidate.traits || []; // you can call this 'habits' or 'flags'
+
+  useEffect(() => {
+    if (!userDealBreakers || !candidate) return;
+
+    const conflicts = userDealBreakers
+      .filter((db) => db.severity === 'hard')
+      .filter((db) =>
+        matchTraits.some((trait) => trait.toLowerCase().includes(db.value.split(' ')[0].toLowerCase()))
+      );
+
+    if (conflicts.length > 0) {
+      setViolations(conflicts);
+      setShowWarning(true);
+    }
+  }, [candidate, userDealBreakers]);
+
+  const handleAccept = () => {
+    setShowWarning(false);
+    onOpenProfile(candidate); // continue anyway
+  };
+
+  const handleReject = () => {
+    setShowWarning(false);
+    saveAnswer('skippedMatchDueToRedFlag', candidate.id);
+  };
+
+  return (
+    <div className="relative bg-white p-4 rounded-xl shadow-md border border-gray-100 space-y-2">
+      <h3 className="text-lg font-bold text-pink-600">{candidate.name}</h3>
+      <p className="text-sm text-gray-700">{candidate.bio || 'No bio provided.'}</p>
+
+      {showWarning && (
+        <MatchConflictWarningModal
+          violations={violations}
+          onAccept={handleAccept}
+          onReject={handleReject}
+        />
+      )}
+
+      <button
+        onClick={handleAccept}
+        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+      >
+        View Profile →
+      </button>
+    </div>
+  );
+}
