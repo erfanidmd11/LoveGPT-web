@@ -36,52 +36,55 @@ export default function MainLayout({ children }) {
         </div>
 
         <nav className="flex items-center space-x-5 text-sm font-medium">
-          <Link
-            href="/"
-            className={isActive('/') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}
-          >
+          <Link href="/" className={isActive('/') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}>
             Home
           </Link>
 
-          <Link
-            href="/resume"
-            className={isActive('/resume') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}
-          >
-            Resume
+          <Link href="/about" className={isActive('/about') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}>
+            About Us
           </Link>
 
-          <Link
-            href="/dashboard"
-            className={isActive('/dashboard') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}
-          >
-            Dashboard
+          <Link href="/aria" className={isActive('/aria') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}>
+            Meet ARIA
           </Link>
+
+          <Link href="/pricing" className={isActive('/pricing') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}>
+            Cost
+          </Link>
+
+          {user && (
+            <>
+              <Link href="/dashboard" className={isActive('/dashboard') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}>
+                Dashboard
+              </Link>
+              <Link href="/resume" className={isActive('/resume') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}>
+                Resume
+              </Link>
+            </>
+          )}
 
           {!user ? (
-            <Link
-              href="/login"
-              className="bg-pink-500 text-white px-4 py-1.5 rounded-md hover:bg-pink-600"
-            >
-              Login
-            </Link>
-          ) : (
             <>
+              <Link href="/signup" className="text-pink-600 hover:text-pink-700">
+                Sign Up
+              </Link>
               <button
-                onClick={handleLogout}
-                className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-md hover:bg-gray-300"
+                onClick={() => {
+                  const loginEvent = new CustomEvent('open-login-modal');
+                  window.dispatchEvent(loginEvent);
+                }}
+                className="bg-pink-500 text-white px-4 py-1.5 rounded-md hover:bg-pink-600 transition"
               >
-                Logout
+                Login
               </button>
-
-              {/* ARIA Avatar */}
-              <Image
-                src="/aria-avatar.png"
-                alt="ARIA"
-                width={40}
-                height={40}
-                className="rounded-full shadow-md ml-3 border border-pink-300 object-cover"
-              />
             </>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-md hover:bg-gray-300"
+            >
+              Logout
+            </button>
           )}
         </nav>
       </header>
@@ -106,6 +109,11 @@ export default function MainLayout({ children }) {
 
       {/* Footer */}
       <footer className="text-center text-sm text-gray-500 p-4 mt-10">
+        <div className="space-x-4 mb-2">
+          <Link href="/privacy-policy" className="hover:underline">Privacy Policy</Link>
+          <Link href="/terms" className="hover:underline">Terms of Use</Link>
+          <Link href="/investors" className="hover:underline">Investors</Link>
+        </div>
         © {new Date().getFullYear()} LoveGPT • Built with ❤️ by ARIA
       </footer>
     </div>
