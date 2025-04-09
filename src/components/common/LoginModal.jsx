@@ -7,6 +7,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 export default function LoginModal({ onClose, onSuccess }) {
   const router = useRouter();
@@ -16,6 +17,12 @@ export default function LoginModal({ onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      setPhone('+15555555555');
+    }
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -39,7 +46,7 @@ export default function LoginModal({ onClose, onSuccess }) {
     setLoading(true);
 
     if (!phone || !phone.startsWith('+') || phone.length < 10) {
-      setMessage('Please enter a valid phone number.');
+      toast.error('📵 Please enter a valid phone number.');
       setLoading(false);
       return;
     }
@@ -50,13 +57,7 @@ export default function LoginModal({ onClose, onSuccess }) {
         process.env.NODE_ENV === 'development' &&
         auth?.settings?.appVerificationDisabledForTesting !== undefined
       ) {
-        if (
-        typeof window !== 'undefined' &&
-        process.env.NODE_ENV === 'development' &&
-        auth?.settings?.appVerificationDisabledForTesting !== undefined
-      ) {
         auth.settings.appVerificationDisabledForTesting = true;
-      }
       }
 
       await initializeRecaptcha('recaptcha-container');
@@ -66,10 +67,10 @@ export default function LoginModal({ onClose, onSuccess }) {
       window.confirmationResult = confirmation;
       setStep('otp');
       setTimer(60);
-      setMessage('📲 OTP sent. Check your phone.');
+      toast.info('📲 OTP sent. Check your phone.');
     } catch (err) {
       console.error('OTP send error:', err);
-      setMessage('Failed to send OTP. Check the number and try again.');
+      toast.error('Failed to send OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -77,7 +78,7 @@ export default function LoginModal({ onClose, onSuccess }) {
 
   const verifyOtp = async () => {
     if (!otp) {
-      setMessage('Please enter the OTP.');
+      toast.error('Please enter the OTP.');
       return;
     }
 
@@ -92,7 +93,7 @@ export default function LoginModal({ onClose, onSuccess }) {
       router.push('/dashboard');
     } catch (err) {
       console.error('OTP verification error:', err);
-      setMessage('Invalid OTP. Please try again.');
+      toast.error('Invalid OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -100,6 +101,7 @@ export default function LoginModal({ onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <ToastContainer position="top-center" autoClose={4000} hideProgressBar={false} />
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm text-center relative">
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -117,6 +119,7 @@ export default function LoginModal({ onClose, onSuccess }) {
               value={phone}
               onChange={(value) => {
                 const formatted = value.startsWith('+') ? value : `+${value}`;
+                console.log('📞 Formatted input:', formatted);
                 setPhone(formatted);
               }}
               enableSearch
@@ -132,7 +135,7 @@ export default function LoginModal({ onClose, onSuccess }) {
               disabled={loading || timer > 0}
               className="w-full mt-4 bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-xl"
             >
-              {loading ? 'Sending...' : timer > 0 ? `Resend in ${timer}s` : 'Send OTP'}
+              {loading ? 'Sending...' : timer > 0 ? `Resend OTP in ${timer}s` : 'Send OTP'}
             </button>
           </>
         ) : (
