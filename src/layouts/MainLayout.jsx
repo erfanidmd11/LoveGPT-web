@@ -39,7 +39,8 @@ export default function MainLayout({ children }) {
             </h1>
           </div>
 
-          {/* Hamburger Button (mobile only) */}
+          {/* Hamburger Button (mobile only) - TEMPORARILY DISABLED */}
+          {/*
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden text-gray-700 focus:outline-none"
@@ -60,7 +61,8 @@ export default function MainLayout({ children }) {
               />
             </svg>
           </button>
-
+          */}
+          
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
             <Link href="/" className={isActive('/') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'}>
@@ -111,7 +113,8 @@ export default function MainLayout({ children }) {
           </nav>
         </div>
 
-        {/* Mobile Navigation Dropdown */}
+        {/* Mobile Navigation Dropdown - TEMPORARILY DISABLED */}
+        {/*
         {menuOpen && (
           <nav className="md:hidden mt-4 flex flex-col space-y-3 text-sm font-medium">
             <Link href="/" className={isActive('/') ? 'text-pink-600 font-semibold' : 'hover:text-pink-500'} onClick={() => setMenuOpen(false)}>
@@ -165,6 +168,7 @@ export default function MainLayout({ children }) {
             )}
           </nav>
         )}
+        */}
       </header>
 
       {/* Main Content */}
