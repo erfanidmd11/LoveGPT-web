@@ -7,6 +7,9 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
+  // ✅ Add this line right here
+  console.log("✅ ARIA API key loaded:", process.env.OPENAI_API_KEY ? "yes" : "no");
+
   if (req.method !== 'POST') {
     return res.status(405).end();
   }
@@ -15,11 +18,12 @@ export default async function handler(req, res) {
 
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo', // ✅ switched from gpt-4
+      model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
-          content: "You are ARIA, an emotionally intelligent AI guide who helps users grow in relationships and self-awareness. Speak with warmth, empathy, and deep clarity.",
+          content:
+            "You are ARIA, an emotionally intelligent AI guide who helps users grow in relationships and self-awareness. Speak with warmth, empathy, and deep clarity.",
         },
         {
           role: 'user',
