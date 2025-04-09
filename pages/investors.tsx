@@ -39,27 +39,6 @@ export default function Investors() {
   return (
     <MainLayout>
       <div className="flex flex-col md:flex-row bg-gradient-to-b from-white to-indigo-100 text-gray-800 font-sans">
-        {/* Sidebar (hidden on mobile) */}
-        <aside className="hidden md:block w-64 p-6 sticky top-0 h-screen overflow-y-auto bg-white border-r border-gray-200">
-          <h2 className="text-xl font-semibold mb-4">Executive Summary</h2>
-          <ul className="space-y-2 text-base">
-            {sections.map((section, idx) => (
-              <li key={idx}>
-                <a
-                  href={`#section-${idx}`}
-                  className="hover:text-indigo-600 transition-all duration-300"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const target = document.getElementById(`section-${idx}`);
-                    if (target) target.scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
-                  {section}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </aside>
 
         {/* Main Content */}
         <main className="flex-1 px-6 md:px-16 pt-0 space-y-20 max-w-4xl mx-auto">
