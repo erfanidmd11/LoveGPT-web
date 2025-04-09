@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Phone, FileText, BarChart } from "lucide-react";
 import ARIAChat from "@/components/ARIAChat";
