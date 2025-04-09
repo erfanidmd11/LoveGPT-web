@@ -11,18 +11,20 @@ export default function MainLayout({ children }) {
       <header className="px-4 py-3 shadow bg-white w-full">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Logo with homepage link + responsive scaling */}
-          <Link href="/" title="Home" className="flex items-center gap-2 md:gap-3">
-            <img
-              src="/lovegpt-logo.png"
-              alt="LoveGPT Logo"
-              width={32}
-              height={32}
-              className="object-contain w-8 md:w-10"
-            />
-            <h1 className="text-lg md:text-2xl font-bold">
-              <span className="text-pink-500">Love</span>
-              <span className="text-blue-500">GPT</span>
-            </h1>
+          <Link href="/" title="Home">
+            <a className="flex items-center gap-2 md:gap-3">
+              <img
+                src="/lovegpt-logo.png"
+                alt="LoveGPT Logo"
+                width={32}
+                height={32}
+                className="object-contain w-8 md:w-10"
+              />
+              <h1 className="text-lg md:text-2xl font-bold">
+                <span className="text-pink-500">Love</span>
+                <span className="text-blue-500">GPT</span>
+              </h1>
+            </a>
           </Link>
 
           {/* Hamburger Button (mobile only) */}
@@ -49,22 +51,22 @@ export default function MainLayout({ children }) {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-            <Link href="/" className="hover:text-pink-500">Home</Link>
-            <Link href="/about" className="hover:text-pink-500">About Us</Link>
-            <Link href="/aria" className="hover:text-pink-500">Meet ARIA</Link>
-            <Link href="/pricing" className="hover:text-pink-500">Cost</Link>
-            <Link href="/signup" className="text-pink-600 hover:text-pink-700">Sign Up</Link>
+            <Link href="/"><a className="hover:text-pink-500">Home</a></Link>
+            <Link href="/about"><a className="hover:text-pink-500">About Us</a></Link>
+            <Link href="/aria"><a className="hover:text-pink-500">Meet ARIA</a></Link>
+            <Link href="/pricing"><a className="hover:text-pink-500">Cost</a></Link>
+            <Link href="/signup"><a className="text-pink-600 hover:text-pink-700">Sign Up</a></Link>
           </nav>
         </div>
 
         {/* Mobile Menu */}
         {menuOpen && (
           <nav className="md:hidden mt-4 flex flex-col items-start space-y-3 px-4 text-sm font-medium">
-            <Link href="/" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Home</Link>
-            <Link href="/about" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">About Us</Link>
-            <Link href="/aria" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Meet ARIA</Link>
-            <Link href="/pricing" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Cost</Link>
-            <Link href="/signup" onClick={() => setMenuOpen(false)} className="text-pink-600 hover:text-pink-700">Sign Up</Link>
+            <Link href="/"><a onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Home</a></Link>
+            <Link href="/about"><a onClick={() => setMenuOpen(false)} className="hover:text-pink-500">About Us</a></Link>
+            <Link href="/aria"><a onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Meet ARIA</a></Link>
+            <Link href="/pricing"><a onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Cost</a></Link>
+            <Link href="/signup"><a onClick={() => setMenuOpen(false)} className="text-pink-600 hover:text-pink-700">Sign Up</a></Link>
           </nav>
         )}
       </header>
@@ -80,9 +82,9 @@ export default function MainLayout({ children }) {
       {/* Footer */}
       <footer className="text-center text-sm text-gray-500 p-4 mt-10">
         <div className="space-x-4 mb-2">
-          <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
-          <Link href="/terms" className="hover:underline">Terms of Use</Link>
-          <Link href="/investors" className="hover:underline">Investors</Link>
+          <Link href="/privacy"><a className="hover:underline">Privacy Policy</a></Link>
+          <Link href="/terms"><a className="hover:underline">Terms of Use</a></Link>
+          <Link href="/investors"><a className="hover:underline">Investors</a></Link>
         </div>
         © {new Date().getFullYear()} LoveGPT • Built with ❤️ by ARIA
       </footer>
