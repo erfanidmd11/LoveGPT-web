@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function MainLayout({ children }) {
   return (
@@ -8,9 +7,9 @@ export default function MainLayout({ children }) {
       {/* Header */}
       <header className="px-4 py-3 shadow bg-white w-full">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Logo */}
+          {/* Logo (plain img) */}
           <div className="flex items-center gap-3">
-            <Image
+            <img
               src="/lovegpt-logo.png"
               alt="LoveGPT Logo"
               width={40}
