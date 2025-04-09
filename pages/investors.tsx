@@ -38,10 +38,10 @@ const sectionContent: string[] = [
 export default function Investors() {
   return (
     <MainLayout>
-      <div className="flex flex-col md:flex-row bg-gradient-to-b from-white to-indigo-100 text-gray-800 font-sans">
+      <div className="bg-gradient-to-b from-white to-indigo-100 text-gray-800 font-sans">
 
         {/* Main Content */}
-        <main className="flex-1 px-6 md:px-16 pt-0 space-y-20 max-w-4xl mx-auto">
+        <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 pt-0 space-y-20">
           <section className="text-center pt-40 pb-20 bg-gradient-to-r from-indigo-100 to-rose-100 rounded-xl shadow-lg">
             <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-indigo-800">
               Revolutionizing Love
