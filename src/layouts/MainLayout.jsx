@@ -3,16 +3,17 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
+// import { useAuthState } from 'react-firebase-hooks/auth';
+// import { auth } from '@/lib/firebase';
 
 export default function MainLayout({ children }) {
   const router = useRouter();
-  const [user] = useAuthState(auth);
+  // const [user] = useAuthState(auth);
+  const user = null; // 🚧 Temporarily disable Firebase auth for crash isolation
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
-    await auth.signOut();
+    // await auth.signOut();
     router.push('/');
   };
 
@@ -165,23 +166,6 @@ export default function MainLayout({ children }) {
           </nav>
         )}
       </header>
-
-      {/* Floating ARIA Orb */}
-      {/*
-      {user && (
-        <div className="fixed bottom-6 right-6 z-40">
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 shadow-lg flex items-center justify-center animate-pulse ring-2 ring-white/80">
-            <Image
-              src="/aria-avatar.png"
-              alt="ARIA Orb"
-              width={32}
-              height={32}
-              className="rounded-full object-cover"
-            />
-          </div>
-        </div>
-      )}
-      */}
 
       {/* Main Content */}
       <main className="flex-1 p-6">{children}</main>
