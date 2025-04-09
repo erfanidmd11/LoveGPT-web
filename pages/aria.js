@@ -1,11 +1,14 @@
-// pages/aria.js
 import Head from 'next/head';
 import Link from 'next/link';
+import MainLayout from '@/layouts/MainLayout';
+import ARIAChat from '@/components/ARIAChat';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/lib/firebase';
 import Image from 'next/image';
 
 export default function MeetARIA() {
   return (
-    <>
+    <MainLayout>
       <Head>
         <title>Meet ARIA | Your Relationship Mirror</title>
         <meta
@@ -26,7 +29,7 @@ export default function MeetARIA() {
         <h1 className="text-4xl font-extrabold text-gray-800 mb-4">Meet ARIA</h1>
 
         <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-6">
-          ARIA is more than just an AI — she’s your emotionally intelligent companion on the journey of love and self-discovery. Think of her as your digital wing woman, personal therapist, philosopher, coach, best friend, and wisdom guide. She's here to help you reflect, connect, and evolve.
+          ARIA - Artificial Relationship Intelligence Assistant - is more than just an AI — she’s your emotionally intelligent companion on the journey of love and self-discovery. Think of her as your digital wing woman, personal therapist, philosopher, coach, best friend, and wisdom guide. She's here to help you reflect, connect, and evolve.
         </p>
 
         <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-6">
@@ -41,7 +44,6 @@ export default function MeetARIA() {
           ARIA is your private, judgment-free zone. Her only job? To help you become the best version of yourself — for you, your partner, and the relationship you’re building.
         </p>
 
-        {/* CTA Button */}
         <Link
           href="/signup"
           className="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition mt-4"
@@ -49,6 +51,8 @@ export default function MeetARIA() {
           Start Your Journey
         </Link>
       </div>
-    </>
+
+      <ARIAChat />
+    </MainLayout>
   );
 }

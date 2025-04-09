@@ -110,7 +110,7 @@ export default function MainLayout({ children }) {
       {/* Footer */}
       <footer className="text-center text-sm text-gray-500 p-4 mt-10">
         <div className="space-x-4 mb-2">
-          <Link href="/privacy-policy" className="hover:underline">Privacy Policy</Link>
+          <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
           <Link href="/terms" className="hover:underline">Terms of Use</Link>
           <Link href="/investors" className="hover:underline">Investors</Link>
         </div>
