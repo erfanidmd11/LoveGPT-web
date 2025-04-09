@@ -1,4 +1,3 @@
-// src/components/common/LoginModal.jsx
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { auth, initializeRecaptcha } from '@/lib/firebase';
@@ -52,25 +51,22 @@ export default function LoginModal({ onClose, onSuccess }) {
     }
 
     try {
-      if (
-        typeof window !== 'undefined' &&
-        process.env.NODE_ENV === 'development' &&
-        auth?.settings?.appVerificationDisabledForTesting !== undefined
-      ) {
-        auth.settings.appVerificationDisabledForTesting = true;
-      }
-
       await initializeRecaptcha('recaptcha-container');
       const appVerifier = window.recaptchaVerifier;
-      console.log('📞 Final phone:', phone);
-      const confirmation = await signInWithPhoneNumber(auth, phone, appVerifier);
+
+      console.log('📞 Raw phone:', phone);
+      const cleanedPhone = phone.replace(/[^+\d]/g, '');
+      console.log('📞 Cleaned phone:', cleanedPhone);
+      console.log('🧩 Recaptcha Verifier:', appVerifier);
+
+      const confirmation = await signInWithPhoneNumber(auth, cleanedPhone, appVerifier);
       window.confirmationResult = confirmation;
       setStep('otp');
       setTimer(60);
       toast.info('📲 OTP sent. Check your phone.');
     } catch (err) {
       console.error('OTP send error:', err);
-      toast.error('Failed to send OTP. Please try again.');
+      toast.error(`❌ OTP failed: ${err.message}`);
     } finally {
       setLoading(false);
     }

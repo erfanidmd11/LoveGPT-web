@@ -48,8 +48,8 @@ export default function Investors() {
 
         {/* Main Content */}
         <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 pt-0 space-y-20">
-          <section className="text-center pt-40 pb-20 bg-gradient-to-r from-indigo-100 to-rose-100 rounded-xl shadow-lg">
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-indigo-800">
+          <section className="text-center pt-40 pb-20 px-4 bg-gradient-to-r from-indigo-100 to-rose-100 rounded-xl shadow-lg">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 text-indigo-800 max-w-full mx-auto">
               Revolutionizing Love
             </h1>
             <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-10 text-gray-700">
