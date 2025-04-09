@@ -167,6 +167,7 @@ export default function MainLayout({ children }) {
       </header>
 
       {/* Floating ARIA Orb */}
+      {/*
       {user && (
         <div className="fixed bottom-6 right-6 z-40">
           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 shadow-lg flex items-center justify-center animate-pulse ring-2 ring-white/80">
@@ -180,6 +181,7 @@ export default function MainLayout({ children }) {
           </div>
         </div>
       )}
+      */}
 
       {/* Main Content */}
       <main className="flex-1 p-6">{children}</main>
