@@ -1,9 +1,13 @@
 import * as React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Phone, FileText, BarChart } from "lucide-react";
 import ARIAChat from "@/components/ARIAChat";
+import ContactModal from "@/components/ContactModal";
 import MainLayout from "@/layouts/MainLayout";
 import Link from "next/link";
+
+
 
 const sections: string[] = [
   "A Message from Our Founder",
@@ -36,7 +40,9 @@ const sectionContent: string[] = [
 ];
 
 export default function Investors() {
-  return (
+    const [showContactModal, setShowContactModal] = useState(false); // ✅ only here
+
+    return (
     <MainLayout>
       <div className="bg-gradient-to-b from-white to-indigo-100 text-gray-800 font-sans">
 
@@ -66,36 +72,46 @@ export default function Investors() {
           ))}
 
           {/* CTA Section */}
-          <section className="py-20 text-center border-t border-gray-300">
-            <h2 className="text-2xl font-semibold mb-6 text-indigo-800">Let’s Talk</h2>
-            <p className="text-md max-w-xl mx-auto mb-6 text-gray-600">
-              Interested in investing or becoming an advisor? ARIA is ready to answer your questions 24/7. Or reach out to our team directly.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[1.618rem] max-w-[1440px] mx-auto">
-              <Link href="/contact">
-                <Button className="w-full aspect-[1.618] bg-indigo-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md">
-                  💬 Connect With Us
-                </Button>
-              </Link>
-              <a href="tel:+17607078542">
-                <Button className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md">
-                  <Phone className="mr-2" /> Call Us
-                </Button>
-              </a>
-              <Button
-                className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md"
-                onClick={() => window.open('/financials', '_blank')}
-              >
-                <BarChart className="mr-2" /> Financials
-              </Button>
-              <Button
-                className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md"
-                onClick={() => window.open('/pitch-deck', '_blank')}
-              >
-                <FileText className="mr-2" /> Pitch Deck
-              </Button>
-            </div>
-          </section>
+<section className="py-20 text-center border-t border-gray-300">
+  <h2 className="text-2xl font-semibold mb-6 text-indigo-800">Let’s Talk</h2>
+  <p className="text-md max-w-xl mx-auto mb-6 text-gray-600">
+    Interested in investing or becoming an advisor? ARIA is ready to answer your questions 24/7. Or reach out to our team directly.
+  </p>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[1.618rem] max-w-[1440px] mx-auto">
+    {/* Connect With Us opens modal */}
+    <Button
+      onClick={() => setShowContactModal(true)}
+      className="w-full aspect-[1.618] bg-indigo-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md transition-transform duration-300 hover:scale-105"
+    >
+      💬 Connect With Us
+    </Button>
+
+    <a href="tel:+17607078542">
+      <Button className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md">
+        <Phone className="mr-2" /> Call Us
+      </Button>
+    </a>
+
+    <Button
+      className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md"
+      onClick={() => window.open('/financials', '_blank')}
+    >
+      <BarChart className="mr-2" /> Financials
+    </Button>
+
+    <Button
+      className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md"
+      onClick={() => window.open('/pitch-deck', '_blank')}
+    >
+      <FileText className="mr-2" /> Pitch Deck
+    </Button>
+  </div>
+
+  {/* Modal Render */}
+  {showContactModal && <ContactModal onClose={() => setShowContactModal(false)} />}
+</section>
+
 
           {/* ARIA Chat for Investor Questions */}
           <section className="py-20 bg-indigo-50">
