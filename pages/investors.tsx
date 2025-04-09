@@ -23,7 +23,7 @@ const sectionContent: string[] = [
   // (same HTML content blocks you already have, unchanged)
 ];
 
-export default function Investors(): JSX.Element {
+export default function Investors() {
   return (
     <MainLayout>
       <div className="flex bg-gradient-to-b from-white to-indigo-100 text-gray-800 font-sans">
