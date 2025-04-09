@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import ARIAChat from '@/components/ARIAChat';
 
 export default function MainLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,20 +10,20 @@ export default function MainLayout({ children }) {
       {/* Header */}
       <header className="px-4 py-3 shadow bg-white w-full">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
+          {/* Logo with homepage link + responsive scaling */}
+          <Link href="/" title="Home" className="flex items-center gap-2 md:gap-3">
             <img
               src="/lovegpt-logo.png"
               alt="LoveGPT Logo"
-              width={40}
-              height={40}
-              className="object-contain"
+              width={32}
+              height={32}
+              className="object-contain w-8 md:w-10"
             />
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-lg md:text-2xl font-bold">
               <span className="text-pink-500">Love</span>
               <span className="text-blue-500">GPT</span>
             </h1>
-          </div>
+          </Link>
 
           {/* Hamburger Button (mobile only) */}
           <button
@@ -68,10 +69,13 @@ export default function MainLayout({ children }) {
         )}
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 p-6 overflow-x-hidden">
+      {/* Main Content with padding to prevent footer overlap */}
+      <main className="flex-1 p-6 pb-28 overflow-x-hidden">
         {children}
       </main>
+
+      {/* ARIA Chat Component (safe position on mobile) */}
+      <ARIAChat />
 
       {/* Footer */}
       <footer className="text-center text-sm text-gray-500 p-4 mt-10">

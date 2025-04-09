@@ -1,6 +1,5 @@
 // src/components/ARIAChat.jsx
 import React, { useState } from 'react';
-import Image from 'next/image';
 
 export default function ARIAChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,11 +24,11 @@ export default function ARIAChat() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 sm:bottom-24 z-50 max-w-sm w-full">
       {isOpen ? (
-        <div className="bg-white border shadow-lg rounded-xl w-80 p-4">
+        <div className="bg-white border shadow-lg rounded-xl p-4 w-full">
           <div className="flex items-center gap-2 mb-2">
-            <Image
+            <img
               src="/aria-avatar.png"
               alt="ARIA"
               width={32}
@@ -39,9 +38,16 @@ export default function ARIAChat() {
             <h2 className="text-sm font-semibold text-pink-500">ARIA</h2>
           </div>
 
-          <div className="h-48 overflow-y-auto space-y-2 text-sm mb-2">
+          <div className="h-48 overflow-y-auto space-y-2 text-sm mb-2 pr-1">
             {chat.map((msg, i) => (
-              <div key={i} className={`p-2 rounded ${msg.role === 'user' ? 'bg-pink-100 text-right' : 'bg-blue-100 text-left'}`}>
+              <div
+                key={i}
+                className={`p-2 rounded whitespace-pre-wrap ${
+                  msg.role === 'user'
+                    ? 'bg-pink-100 text-right'
+                    : 'bg-blue-100 text-left'
+                }`}
+              >
                 {msg.content}
               </div>
             ))}
@@ -54,12 +60,18 @@ export default function ARIAChat() {
               placeholder="Ask ARIA anything..."
               className="flex-1 border rounded px-2 py-1 text-sm"
             />
-            <button onClick={handleSend} className="bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600">
+            <button
+              onClick={handleSend}
+              className="bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600"
+            >
               Send
             </button>
           </div>
 
-          <button onClick={toggleChat} className="text-xs text-gray-400 mt-2 hover:underline">
+          <button
+            onClick={toggleChat}
+            className="text-xs text-gray-400 mt-2 hover:underline"
+          >
             Close
           </button>
         </div>
