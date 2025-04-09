@@ -1,8 +1,8 @@
-// src/components/ARIAChat.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function ARIAChat() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
 
@@ -23,8 +23,37 @@ export default function ARIAChat() {
     setChat(prev => [...prev, { role: 'aria', content: data.reply }]);
   };
 
+  // 🔁 Hide ARIA orb when near bottom, show when scrolling up
+  useEffect(() => {
+    let lastScrollTop = 0;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const pageHeight = document.body.offsetHeight;
+
+      const nearBottom = scrollY + windowHeight >= pageHeight - 100;
+      const scrollingUp = scrollY < lastScrollTop;
+
+      if (nearBottom) {
+        setIsVisible(false);
+      } else if (scrollingUp) {
+        setIsVisible(true);
+      }
+
+      lastScrollTop = scrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="fixed bottom-6 right-6 sm:bottom-24 z-50 max-w-sm w-full">
+    <div
+      className={`fixed bottom-6 right-6 sm:bottom-28 z-50 max-w-sm w-full transition-opacity duration-300 ${
+        isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+      }`}
+    >
       {isOpen ? (
         <div className="bg-white border shadow-lg rounded-xl p-4 w-full">
           <div className="flex items-center gap-2 mb-2">
