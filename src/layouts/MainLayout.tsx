@@ -1,84 +1,128 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import ARIAChat from "@/components/ARIAChat";
+// src/layouts/MainLayout.tsx
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { signOut, auth } from '@/lib/firebase';
+import ARIAChat from '@/components/ARIAChat';
+
+import {
+  Box,
+  Flex,
+  Text,
+  Heading,
+  Image,
+  Button,
+  Link as ChakraLink,
+  IconButton,
+  VStack,
+  HStack,
+  Spacer,
+} from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
+
+const LoginModal = dynamic(() => import('@/components/common/LoginModal'), { ssr: false });
+
+const useAuthState = typeof window !== 'undefined'
+  ? require('react-firebase-hooks/auth').useAuthState
+  : () => [null, true];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const [user, loading] = useAuthState(auth);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handleLoginClick = () => setShowLoginModal(true);
+  const handleSignUpClick = () => router.push("/signup");
+  const handleLogoutClick = async () => {
+    await signOut(auth);
+    localStorage.removeItem("admin_logged_in");
+    router.push("/");
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 to-purple-100 text-gray-800 overflow-x-hidden">
+    <Box minH="100vh" bgGradient="linear(to-br, pink.50, purple.100)">
       {/* Header */}
-      <header className="px-4 py-3 shadow bg-white w-full">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Logo with homepage link + responsive scaling */}
-          <Link href="/" title="Home" className="flex items-center gap-2 md:gap-3">
-            <img
-              src="/lovegpt-logo.png"
-              alt="LoveGPT Logo"
-              width={32}
-              height={32}
-              className="object-contain w-8 md:w-10"
-            />
-            <h1 className="text-lg md:text-2xl font-bold">
-              <span className="text-pink-500">Love</span>
-              <span className="text-blue-500">GPT</span>
-            </h1>
-          </Link>
+      <Box bg="white" px={4} py={3} shadow="md">
+        <Flex maxW="7xl" mx="auto" align="center" justify="space-between">
+          <NextLink href="/" passHref>
+            <ChakraLink display="flex" alignItems="center">
+              <Image src="/lovegpt-logo.png" alt="Logo" w={8} h={8} />
+              <Heading size="md" ml={2}>
+                <Text as="span" color="pink.500">Love</Text>
+                <Text as="span" color="blue.500">GPT</Text>
+              </Heading>
+            </ChakraLink>
+          </NextLink>
 
-          {/* Hamburger Button (mobile only) */}
-          <button
+          <IconButton
+            aria-label="Menu"
+            icon={<HamburgerIcon />}
+            display={{ base: 'flex', md: 'none' }}
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-gray-700 focus:outline-none"
-            aria-label="Toggle Menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+          />
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-5 text-sm font-medium">
-            <Link href="/" className="hover:text-pink-500">Home</Link>
-            <Link href="/about" className="hover:text-pink-500">About Us</Link>
-            <Link href="/aria" className="hover:text-pink-500">Meet ARIA</Link>
-            <Link href="/pricing" className="hover:text-pink-500">Cost</Link>
-            <Link href="/signup" className="text-pink-600 hover:text-pink-700">Sign Up</Link>
-          </nav>
-        </div>
+          <HStack display={{ base: 'none', md: 'flex' }} spacing={5} fontWeight="medium">
+            <NextLink href="/" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Home</ChakraLink></NextLink>
+            <NextLink href="/about" passHref><ChakraLink _hover={{ color: 'pink.500' }}>About Us</ChakraLink></NextLink>
+            <NextLink href="/aria" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Meet ARIA</ChakraLink></NextLink>
+            <NextLink href="/pricing" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Cost</ChakraLink></NextLink>
+            {user ? (
+              <>
+                <NextLink href="/dashboard" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Dashboard</ChakraLink></NextLink>
+                <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" colorScheme="pink" onClick={handleLoginClick}>Login</Button>
+                <Button variant="outline" colorScheme="pink" onClick={handleSignUpClick}>Sign Up</Button>
+              </>
+            )}
+          </HStack>
+        </Flex>
 
-        {/* Mobile Menu */}
         {menuOpen && (
-          <nav className="md:hidden mt-4 flex flex-col items-start space-y-3 px-4 text-sm font-medium">
-            <Link href="/" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Home</Link>
-            <Link href="/about" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">About Us</Link>
-            <Link href="/aria" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Meet ARIA</Link>
-            <Link href="/pricing" onClick={() => setMenuOpen(false)} className="hover:text-pink-500">Cost</Link>
-            <Link href="/signup" onClick={() => setMenuOpen(false)} className="text-pink-600 hover:text-pink-700">Sign Up</Link>
-          </nav>
+          <VStack align="start" spacing={3} px={4} mt={4} display={{ md: 'none' }}>
+            <NextLink href="/" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Home</ChakraLink></NextLink>
+            <NextLink href="/about" passHref><ChakraLink onClick={() => setMenuOpen(false)}>About Us</ChakraLink></NextLink>
+            <NextLink href="/aria" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Meet ARIA</ChakraLink></NextLink>
+            <NextLink href="/pricing" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Cost</ChakraLink></NextLink>
+            {user ? (
+              <>
+                <NextLink href="/dashboard" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Dashboard</ChakraLink></NextLink>
+                <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" colorScheme="pink" onClick={handleLoginClick}>Login</Button>
+                <Button variant="outline" colorScheme="pink" onClick={handleSignUpClick}>Sign Up</Button>
+              </>
+            )}
+          </VStack>
         )}
-      </header>
+      </Box>
 
-      {/* Main Content */}
-      <main className="flex-1 p-6 pb-28 overflow-x-hidden">{children}</main>
-
-      {/* ARIA Chat Component */}
-      <ARIAChat />
+      {/* Main */}
+      <Box as="main" flex="1" px={6} py={10}>
+        {children}
+      </Box>
 
       {/* Footer */}
-      <footer className="text-center text-sm text-gray-500 p-4 mt-10">
-        <div className="space-x-4 mb-2">
-          <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
-          <Link href="/terms" className="hover:underline">Terms of Use</Link>
-          <Link href="/investors" className="hover:underline">Investors</Link>
-        </div>
+      <Box textAlign="center" fontSize="sm" color="gray.500" py={4} mt={10}>
+        <HStack justify="center" spacing={4} mb={2}>
+          <NextLink href="/privacy" passHref><ChakraLink>Privacy Policy</ChakraLink></NextLink>
+          <NextLink href="/terms" passHref><ChakraLink>Terms of Use</ChakraLink></NextLink>
+          <NextLink href="/investors" passHref><ChakraLink>Investors</ChakraLink></NextLink>
+        </HStack>
         © {new Date().getFullYear()} LoveGPT • Built with ❤️ by ARIA
-      </footer>
-    </div>
+      </Box>
+
+      <ARIAChat />
+
+      {showLoginModal && (
+        <LoginModal onClose={() => setShowLoginModal(false)} onSuccess={() => setShowLoginModal(false)} />
+      )}
+    </Box>
   );
 }
