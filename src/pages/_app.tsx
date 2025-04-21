@@ -1,5 +1,6 @@
+// src/pages/_app.tsx
 import { ChakraProvider } from '@chakra-ui/react';
-import theme from '@/theme'; // ✅
+import theme from '@/theme';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 
