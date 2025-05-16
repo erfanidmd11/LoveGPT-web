@@ -9,13 +9,22 @@ import {
   updateDoc,
   doc,
   Timestamp,
-  setDoc,
 } from 'firebase/firestore';
-import { generateCode } from '@/utils/invite/generateInviteCode';
 import { SUPER_ADMINS } from '@/config/admins';
 
+interface InviteApplication {
+  id: string;
+  status: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  handle: string;
+  [key: string]: any;
+}
+
 export default function AdminApplications() {
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setApplications] = useState<InviteApplication[]>([]);
   const [filter, setFilter] = useState('pending');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,28 +44,14 @@ export default function AdminApplications() {
 
   const fetchApplications = async () => {
     const snapshot = await getDocs(collection(db, 'inviteApplications'));
-    const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as InviteApplication[];
     const filtered = all.filter(app => app.status === filter);
     setApplications(filtered);
   };
 
-  const approveApplication = async (application: any) => {
+  const approveApplication = async (application: InviteApplication) => {
     setLoading(true);
     try {
-      const code = generateCode();
-      const oneWeekLater = new Date();
-      oneWeekLater.setDate(oneWeekLater.getDate() + 7);
-
-      await setDoc(doc(db, 'invitationCodes', code), {
-        code,
-        createdAt: Timestamp.now(),
-        createdBy: user?.email || 'admin',
-        maxUses: 1,
-        usedCount: 0,
-        status: 'active',
-        expiresAt: oneWeekLater,
-      });
-
       const currentUser = auth.currentUser;
       const token = await currentUser?.getIdToken();
 
@@ -69,7 +64,6 @@ export default function AdminApplications() {
         body: JSON.stringify({
           to: application.email,
           firstName: application.firstName,
-          inviteCode: code,
         }),
       });
 

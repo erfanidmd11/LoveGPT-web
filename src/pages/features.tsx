@@ -18,10 +18,9 @@ export default function Features() {
         <div className="max-w-5xl mx-auto text-lg space-y-12 grid grid-cols-1 sm:grid-cols-1 gap-12">
           <div>
             <h2 className="text-2xl font-semibold text-indigo-700 mb-2 flex items-center gap-3 animate-fade-in-up">
-  <span className="inline-flex items-center justify-center w-10 h-10 bg-pink-100 text-pink-600 font-bold rounded-full">$1</span>
-            <p>
+              <span className="inline-flex items-center justify-center w-10 h-10 bg-pink-100 text-pink-600 font-bold rounded-full">$1</span>
               ARIA adapts to your personality, values, and emotional patterns to give you real-time, deeply personalized reflections — like having a therapist, coach, best friend, and intuitive mirror all in one. She’s always there for you, learning more about you over time, and she never judges or forgets who you are.
-            </p>
+            </h2>
           </div>
 
           <div>

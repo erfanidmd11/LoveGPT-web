@@ -5,16 +5,6 @@ import { useRouter } from 'next/router';
 import { auth, db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import MainLayout from '@/layouts/MainLayout';
-import Head from 'next/head';
-import DashboardLayout from '@/layouts/DashboardLayout'; // ✅ Add this last
-
-export default function ResumePage() {
-  return (
-    <DashboardLayout>
-      {/* Your page JSX here */}
-    </DashboardLayout>
-  );
-}
 
 export default function DashboardFlags() {
   const [user, loading] = useAuthState(auth);
@@ -66,7 +56,9 @@ export default function DashboardFlags() {
                 <p className="text-sm text-gray-500">
                   <strong>Flagged Trait:</strong> {match.trait}
                 </p>
-                <p className="text-xs text-gray-400 mt-2">Flagged on: {new Date(match.timestamp?.toDate()).toLocaleDateString()}</p>
+                <p className="text-xs text-gray-400 mt-2">
+                  Flagged on: {new Date(match.timestamp?.toDate()).toLocaleDateString()}
+                </p>
               </div>
             ))}
           </div>

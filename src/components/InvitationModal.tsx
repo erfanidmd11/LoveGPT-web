@@ -7,11 +7,9 @@ import {
   Timestamp,
   getDoc,
   doc,
-  updateDoc,
-  setDoc
+  updateDoc
 } from 'firebase/firestore';
-import { generateCode } from '@/utils/invite/generateInviteCode';
-import { sendInviteEmail } from '@/lib/mailgun/sendInviteEmail';
+import { getAuth } from 'firebase/auth';
 
 export default function InvitationModal({ onClose }) {
   const [inviteCode, setInviteCode] = useState('');
@@ -73,27 +71,24 @@ export default function InvitationModal({ onClose }) {
         reviewedBy: 'system-auto',
       });
 
-      const newCode = generateCode();
-      const codeRef = doc(db, 'invitationCodes', newCode);
-      const oneWeekLater = new Date();
-      oneWeekLater.setDate(oneWeekLater.getDate() + 7);
+      const user = getAuth().currentUser;
+      const token = user ? await user.getIdToken() : null;
 
-      await setDoc(codeRef, {
-        code: newCode,
-        createdAt: Timestamp.now(),
-        createdBy: email,
-        maxUses: 1,
-        usedCount: 0,
-        status: 'active',
-        expiresAt: oneWeekLater,
-        lineage: [],
-        level: 0,
+      const res = await fetch('/api/sendInvite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ to: email, firstName }),
       });
 
-      await sendInviteEmail({ to: email, firstName, inviteCode: newCode });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Request failed');
 
       toast.success("🎉 Application approved! You've been invited.");
-      localStorage.setItem('inviteCode', newCode);
+      localStorage.setItem('inviteCode', data.code);
       onClose();
       window.location.href = '/onboarding/Step1APhoneOTP';
     } catch (err) {

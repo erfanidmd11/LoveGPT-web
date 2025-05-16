@@ -6,8 +6,8 @@ import DashboardLayout from '@/layouts/DashboardLayout'; // ✅ Add this last
 export default function ResumePage() {
   return (
     <DashboardLayout>
-      {/* Your page JSX here */}
-    </DashboardLayout>
+  <div className="p-6 text-center text-gray-500">Page Coming Soon</div>
+</DashboardLayout>
   );
 }
 
@@ -30,7 +30,7 @@ const questions = [
   },
 ];
 
-export default function DISCStep2() {
+export function DISCStep2() {
   const router = useRouter();
   const [answers, setAnswers] = useState<Record<string, string>>({});
 

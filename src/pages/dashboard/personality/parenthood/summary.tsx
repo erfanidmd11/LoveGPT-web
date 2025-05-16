@@ -1,37 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import DashboardLayout from '@/layouts/DashboardLayout';
 import Head from 'next/head';
+import DashboardLayout from '@/layouts/DashboardLayout';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+import { getParenthoodResultFromAnswers } from '@/utils/parenthood/aggregateParenthood'; // Import the function
 
 export default function ParenthoodSummary() {
   const [user] = useAuthState(auth);
   const [answers, setAnswers] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [parenthoodResult, setParenthoodResult] = useState('');
 
   useEffect(() => {
     const loadedAnswers: string[] = [];
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 10; i++) { // Assuming 10 steps, adjust if needed
       const answer = localStorage.getItem(`parenthood-step${i}`);
       if (answer) loadedAnswers.push(answer);
     }
     setAnswers(loadedAnswers);
 
-    // Firestore sync
-    const syncToFirestore = async () => {
-      if (user && loadedAnswers.length === 10) {
-        const ref = doc(db, 'userResumes', user.uid);
-        await setDoc(ref, {
-          parenthood: {
-            answers: loadedAnswers,
-            updatedAt: new Date(),
-          }
-        }, { merge: true });
-      }
-    };
+    // Get Parenthood result using the aggregate function
+    const result = getParenthoodResultFromAnswers(loadedAnswers);
+    setParenthoodResult(result);
 
-    syncToFirestore();
+    setLoading(false);
+
+    // Save Parenthood result to Firestore
+    if (user?.uid) {
+      const ref = doc(db, 'userResumes', user.uid);
+      setDoc(ref, {
+        parenthood: {
+          result: result,
+          answers: loadedAnswers,
+          updatedAt: new Date(),
+        },
+      }, { merge: true });
+    }
   }, [user]);
+
+  if (loading) return <div className="text-center p-20">Compiling your Parenthood summary...</div>;
+
+  const descriptions: Record<string, string> = {
+    'Emotional Readiness': 'You are emotionally prepared for a committed relationship, with the ability to empathize and understand the needs of your partner.',
+    'Commitment Readiness': 'You are ready to commit to a long-term relationship, with a focus on loyalty, responsibility, and shared goals.',
+    'Growth Readiness': 'You are open to growth and change, recognizing the need for personal and relational development as part of your relationship journey.',
+  };
 
   return (
     <DashboardLayout>
@@ -48,18 +62,21 @@ export default function ParenthoodSummary() {
         </p>
 
         {answers.length > 0 ? (
-          <ul className="list-disc pl-6 space-y-3 text-gray-800">
-            {answers.map((ans, i) => (
-              <li key={i} className="bg-white rounded-md shadow p-4 border border-pink-100">
-                <span className="font-semibold text-pink-600">Q{i + 1}:</span> {ans}
-              </li>
-            ))}
-          </ul>
+          <section className="bg-rose-50 border border-rose-300 rounded-xl p-4 mb-8">
+            <ul className="list-disc list-inside text-sm text-gray-800">
+              {answers.map((ans, i) => (
+                <li key={i} className="mb-2">{ans}</li>
+              ))}
+            </ul>
+          </section>
         ) : (
-          <div className="text-center text-gray-500">
-            <p>No answers found. Please complete the parenthood questionnaire to generate your summary.</p>
-          </div>
+          <p className="text-gray-500 italic">No readiness data found. Complete your relationship questions to generate insights.</p>
         )}
+
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold text-pink-600">Your Dominant Parenthood Trait:</h2>
+          <p className="text-lg text-gray-700">{parenthoodResult} - {descriptions[parenthoodResult]}</p>
+        </div>
 
         <div className="mt-10 text-center">
           <p className="text-sm text-gray-500">

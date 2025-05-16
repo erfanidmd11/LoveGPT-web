@@ -1,7 +1,7 @@
 // src/pages/onboarding/[step].tsx
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { onboardingSteps } from '@/config/onboardingSteps';
+import { onboardingSteps } from '@/utils/onboardingSteps';  // Updated path
 import NavigationButtons from '@/components/common/NavigationButtons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackOnboardingStep } from '@/lib/trackOnboardingStep';
@@ -14,11 +14,20 @@ import {
   Container,
 } from '@chakra-ui/react';
 
+// Define the OnboardingStep interface with correct typing for component
+interface OnboardingStep {
+  name: string;
+  component: React.FC<any>;  // Fix: Changed from ComponentType<any> to React.FC<any>
+  label: string;
+  cue: string;
+  selfManaged?: boolean;
+}
+
 export default function OnboardingStepPage() {
   const router = useRouter();
   const { step } = router.query;
 
-  const [currentStep, setCurrentStep] = useState<any | null>(null);
+  const [currentStep, setCurrentStep] = useState<OnboardingStep | null>(null);
   const [direction, setDirection] = useState(1);
 
   const phoneNumber =
@@ -26,6 +35,7 @@ export default function OnboardingStepPage() {
       ? sessionStorage.getItem('lovegpt_user') || ''
       : '';
 
+  // Fetch and set the current step based on the URL query param
   useEffect(() => {
     if (step && typeof step === 'string') {
       const stepObj = onboardingSteps.find((s) => s.name === step);
@@ -37,6 +47,7 @@ export default function OnboardingStepPage() {
     }
   }, [step, router]);
 
+  // Track the onboarding step
   useEffect(() => {
     if (step && phoneNumber) {
       trackOnboardingStep({
@@ -47,6 +58,7 @@ export default function OnboardingStepPage() {
     }
   }, [step, phoneNumber]);
 
+  // Return loading text if the currentStep hasn't been set yet
   if (!currentStep) return <Text>Loading...</Text>;
 
   const {
@@ -57,11 +69,13 @@ export default function OnboardingStepPage() {
     selfManaged = false,
   } = currentStep;
 
+  // Calculate whether we are at the last or first step
   const currentIndex = onboardingSteps.findIndex((s) => s.name === step);
   const isLastStep = currentIndex === onboardingSteps.length - 1;
   const isFirstStep = currentIndex === 0;
   const totalSteps = onboardingSteps.length;
 
+  // Functions to navigate between steps
   const goToNextStep = () => {
     setDirection(1);
     if (isLastStep) {

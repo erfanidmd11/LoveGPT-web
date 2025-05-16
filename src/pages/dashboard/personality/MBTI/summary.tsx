@@ -1,22 +1,22 @@
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
-import MainLayout from '@/layouts/MainLayout';
-import { useEffect, useState } from 'react';
-import { getMBTIResultFromAnswers } from '@/utils/mbti/aggregateMBTI';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import Head from 'next/head';
-import DashboardLayout from '@/layouts/DashboardLayout'; // ✅ Add this last
+import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
+import MainLayout from '@/layouts/MainLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
+import { getMBTIResultFromAnswers } from '@/utils/mbti/aggregateMBTI'; // Ensure this file exists
 
 export default function ResumePage() {
   return (
     <DashboardLayout>
-      {/* Your page JSX here */}
+      <div className="p-6 text-center text-gray-500">Page Coming Soon</div>
     </DashboardLayout>
   );
 }
 
-export default function MBTISummary() {
+export function MBTISummary() {
   const [user] = useAuthState(auth);
   const [loading, setLoading] = useState(true);
   const [mbti, setMBTI] = useState('');
@@ -26,21 +26,21 @@ export default function MBTISummary() {
 
   useEffect(() => {
     async function fetchData() {
-      let allAnswers = {};
+      let allAnswers: Record<string, string> = {};
       for (let i = 1; i <= 24; i++) {
         const step = localStorage.getItem(`mbti-step-${i}`);
         if (step) Object.assign(allAnswers, JSON.parse(step));
       }
       const result = getMBTIResultFromAnswers(allAnswers);
 
-        // Save MBTI result to Firestore resume
-        if (user?.uid) {
-          const resumeRef = doc(db, 'userResumes', user.uid);
-          await setDoc(resumeRef, {
-            mbti: result,
-            updatedAt: Timestamp.now(),
-          }, { merge: true });
-        }
+      // Save MBTI result to Firestore resume
+      if (user?.uid) {
+        const resumeRef = doc(db, 'userResumes', user.uid);
+        await setDoc(resumeRef, {
+          mbti: result,
+          updatedAt: Timestamp.now(),
+        }, { merge: true });
+      }
       setMBTI(result);
 
       const userRef = doc(db, 'users', user?.uid || '');

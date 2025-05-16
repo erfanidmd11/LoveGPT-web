@@ -1,0 +1,57 @@
+{
+  "documents": [
+    {
+      "name": "projects/lovegpt-82c4b/databases/(default)/documents/users/sampleUser123",
+      "fields": {
+        "firstName": { "stringValue": "Jane" },
+        "lastName": { "stringValue": "Doe" },
+        "dob": { "stringValue": "03/21/1995" },
+        "age": { "integerValue": "29" },
+        "phoneNumber": { "stringValue": "+15551234567" },
+        "email": { "stringValue": "jane@example.com" },
+        "gender": { "stringValue": "Female" },
+        "matchPreference": { "stringValue": "Male" },
+        "zodiac": {
+          "mapValue": {
+            "fields": {
+              "western": { "stringValue": "Aries" },
+              "chinese": { "stringValue": "Ox" }
+            }
+          }
+        },
+        "relationshipStatus": { "stringValue": "Single" },
+        "intentions": {
+          "arrayValue": {
+            "values": [
+              { "stringValue": "Self-discovery" },
+              { "stringValue": "Friendship" }
+            ]
+          }
+        },
+        "readinessProfile": {
+          "mapValue": {
+            "fields": {
+              "score": { "doubleValue": 72.3 },
+              "stage": { "stringValue": "Ready for Monogamous Relationship" },
+              "insightSummary": {
+                "stringValue": "You're grounded and capable of investing in a deep, meaningful bond."
+              },
+              "lastUpdated": { "timestampValue": "2025-05-14T16:00:00.000Z" },
+              "sourceContributions": {
+                "mapValue": {
+                  "fields": {
+                    "onboarding": { "integerValue": "30" },
+                    "psychometrics": { "integerValue": "20" },
+                    "ariaInsights": { "doubleValue": 12.3 },
+                    "engagement": { "integerValue": "10" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "createdAt": { "timestampValue": "2025-05-14T15:50:00.000Z" }
+      }
+    }
+  ]
+}

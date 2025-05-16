@@ -7,7 +7,6 @@ import {
   collection,
   getDocs,
   updateDoc,
-  deleteDoc,
   doc,
   Timestamp,
   setDoc,
@@ -16,13 +15,24 @@ import { db } from '@/lib/firebase';
 import { generateCode } from '@/utils/invite/generateInviteCode';
 import { sendInviteEmail } from '@/lib/mailgun/sendInviteEmail';
 
+interface InviteApplication {
+  id: string;
+  status: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  handle: string;
+  [key: string]: any;
+}
+
 export default function AdminApplications() {
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setApplications] = useState<InviteApplication[]>([]);
   const [filter, setFilter] = useState('pending');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [user, authLoading] = useAuthState(auth);
+  const [user, authLoading] = useAuthState(typeof window !== 'undefined' ? auth : null);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,12 +47,12 @@ export default function AdminApplications() {
 
   const fetchApplications = async () => {
     const snapshot = await getDocs(collection(db, 'inviteApplications'));
-    const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as InviteApplication[];
     const filtered = all.filter(app => app.status === filter);
     setApplications(filtered);
   };
 
-  const approveApplication = async (application: any) => {
+  const approveApplication = async (application: InviteApplication) => {
     setLoading(true);
     try {
       const code = generateCode();

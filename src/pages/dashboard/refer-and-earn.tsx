@@ -1,30 +1,26 @@
-import Head from 'next/head';
-import MainLayout from '@/layouts/MainLayout';
+import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
-import { useEffect, useState } from 'react';
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  DocumentData,
-} from 'firebase/firestore';
-import QRCode from 'react-qr-code';
+import { doc, setDoc, getDocs, collection, query, where } from 'firebase/firestore';
 import Head from 'next/head';
-import DashboardLayout from '@/layouts/DashboardLayout'; // ✅ Add this last
+import DashboardLayout from '@/layouts/DashboardLayout';  // Correct layout
+import Link from 'next/link';
+import QRCode from 'react-qr-code'; // Ensure this is installed: npm install react-qr-code
+
+// Import the correct type from Firebase
+import { DocumentData } from 'firebase/firestore'; // This imports the Firestore DocumentData type
 
 export default function ResumePage() {
   return (
     <DashboardLayout>
-      {/* Your page JSX here */}
+      <div className="p-6 text-center text-gray-500">Page Coming Soon</div>
     </DashboardLayout>
   );
 }
 
-export default function ReferAndEarnPage() {
+export function ReferAndEarnPage() {
   const [user, loading] = useAuthState(auth);
-  const [referrals, setReferrals] = useState<DocumentData[]>([]);
+  const [referrals, setReferrals] = useState<DocumentData[]>([]);  // Correctly typed as DocumentData[]
   const [referralCode, setReferralCode] = useState('');
 
   useEffect(() => {
@@ -52,7 +48,7 @@ export default function ReferAndEarnPage() {
   if (loading || !user) return null;
 
   return (
-    <MainLayout>
+    <DashboardLayout>
       <Head>
         <title>Refer & Earn | LoveGPT</title>
       </Head>
@@ -113,6 +109,6 @@ export default function ReferAndEarnPage() {
           </ul>
         </div>
       </div>
-    </MainLayout>
+    </DashboardLayout>
   );
 }

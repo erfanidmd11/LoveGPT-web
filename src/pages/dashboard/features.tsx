@@ -5,16 +5,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import Head from 'next/head';
-import DashboardLayout from '@/layouts/DashboardLayout'; // ✅ Add this last
-
-export default function ResumePage() {
-  return (
-    <DashboardLayout>
-      {/* Your page JSX here */}
-    </DashboardLayout>
-  );
-}
 
 const features = [
   {

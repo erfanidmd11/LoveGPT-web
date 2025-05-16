@@ -6,6 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import { getCoreValuesResultFromAnswers } from '@/utils/core-values/aggregateCoreValues'; // Import the function to aggregate Core Values
 
 export default function ResumePage() {
   const [user] = useAuthState(auth);
@@ -25,6 +26,7 @@ export default function ResumePage() {
       setAudioReady(true);
       setAudioURL('/audio/sample-summary.mp3');
     }
+
     if (user) {
       const fetchResume = async () => {
         const ref = doc(db, 'userResumes', user.uid);
@@ -33,7 +35,7 @@ export default function ResumePage() {
           const data = snap.data();
           setMbtiType(data.mbti || '');
           setVisibility(data.visibility || 'private');
-          setCoreValues(data.coreValues?.selected || []);
+          setCoreValues(data.coreValues?.selected || []); // Fetch saved Core Values
         }
       };
       fetchResume();
@@ -52,13 +54,40 @@ export default function ResumePage() {
 
   const zodiacData = zodiacProfiles[zodiac];
 
-  const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
+  // Core Values aggregation logic
+  useEffect(() => {
+    const answers: Record<string, string> = {};
+
+    // Simulate retrieving answers from localStorage (you need to have corresponding answers saved in localStorage)
+    for (let i = 1; i <= 10; i++) { // Example, adjust if you have more steps
+      const step = localStorage.getItem(`core-values-step-${i}`);
+      if (step) {
+        const parsed = JSON.parse(step);
+        Object.assign(answers, parsed);
+      }
+    }
+
+    const aggregatedCoreValues = getCoreValuesResultFromAnswers(answers);
+    setCoreValues(aggregatedCoreValues);
+
+    if (user?.uid) {
+      const ref = doc(db, 'userResumes', user.uid);
+      setDoc(ref, {
+        coreValues: {
+          selected: aggregatedCoreValues,
+          updatedAt: new Date(),
+        },
+      }, { merge: true });
+    }
+  }, [user]);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files!);
     const newFiles = files.map((file) => URL.createObjectURL(file));
     setProfileMedia([...profileMedia, ...newFiles]);
   };
 
-  const removeMedia = (indexToRemove) => {
+  const removeMedia = (indexToRemove: number) => {
     setProfileMedia((prev) => prev.filter((_, i) => i !== indexToRemove));
   };
 
@@ -112,9 +141,9 @@ export default function ResumePage() {
             <section className="bg-teal-50 border border-teal-300 rounded-xl p-4">
               <h2 className="text-lg font-semibold text-teal-700">🌱 Core Values</h2>
               <ul className="grid grid-cols-2 gap-3 mt-3 text-sm text-gray-800">
-          <li>
-            <a href="/dashboard/personality/core-values/summary" className="text-pink-600 underline hover:text-pink-700">🌱 View Core Value Summary</a>
-          </li>
+                <li>
+                  <a href="/dashboard/personality/core-values/summary" className="text-pink-600 underline hover:text-pink-700">🌱 View Core Value Summary</a>
+                </li>
                 {coreValues.map((val, idx) => (
                   <li key={idx} className="bg-white border px-3 py-2 rounded shadow-sm text-center">{val}</li>
                 ))}

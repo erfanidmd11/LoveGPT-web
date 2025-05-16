@@ -1,4 +1,4 @@
-// src/config/onboardingSteps.ts
+// src/utils/onboardingSteps.ts
 
 import Step1APhoneOTP from '@/components/onboarding/Identity/Step1APhoneOTP';
 import Step1BEmailOTP from '@/components/onboarding/Identity/Step1BEmailOTP';

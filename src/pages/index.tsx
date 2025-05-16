@@ -1,25 +1,56 @@
-// src/pages/index.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import MainLayout from '@/layouts/MainLayout';
 import ARIAChat from '@/components/ARIAChat';
-import InvitationModal from '@/components/InvitationModal';
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  Stack,
-  Text,
-  VStack,
-  useDisclosure,
-  Highlight,
-} from '@chakra-ui/react';
+import PhoneEntryModal from '@/components/onboarding/PhoneEntryModal';
+import WaitlistRequestModal from '@/components/onboarding/WaitlistRequestModal';
+import InvitationModal from '@/components/onboarding/InvitationModal';
+import { Box, Button, Center, Heading, Stack, Text, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { getUserSession, logout } from '@/utils/auth'; // Assume you have a helper for auth
 
 export default function Home() {
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false); 
+  const [showPhoneEntryModal, setShowPhoneEntryModal] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [user, setUser] = useState<any>(null); // Store user session details
+  const router = useRouter();
 
-  const handleJoinClick = () => setShowInviteModal(true);
+  // Check user session on component mount
+  useEffect(() => {
+    const userSession = getUserSession();
+    if (userSession) {
+      setUser(userSession);
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLoginLogout = () => {
+    if (isLoggedIn) {
+      logout(); // Clear user session
+      setIsLoggedIn(false);
+      setUser(null);
+      router.push('/'); // Redirect to homepage
+    } else {
+      setShowPhoneEntryModal(true); // Show Phone Entry Modal for login
+    }
+  };
+
+  const handleJoinClick = () => {
+    if (isLoggedIn) {
+      // Check if user profile is complete and navigate accordingly
+      if (user.onboardingComplete) {
+        router.push('/dashboard'); // Redirect to dashboard if onboarding is complete
+      } else {
+        router.push(`/onboarding/step${user.onboardingStep || 1}`); // Redirect to where the user left off in onboarding
+      }
+    } else {
+      setShowPhoneEntryModal(true); // Show Phone Entry Modal for new user
+    }
+  };
+
+  const handleApplyForInvitation = () => setShowWaitlistModal(true);
 
   return (
     <MainLayout>
@@ -43,7 +74,7 @@ export default function Home() {
         </Text>
 
         <Button
-          onClick={handleJoinClick}
+          onClick={handleJoinClick}  
           bg="pink.500"
           color="white"
           px={8}
@@ -54,46 +85,20 @@ export default function Home() {
           boxShadow="md"
           _hover={{ bg: 'pink.600' }}
         >
-          Start Your Journey
+          {isLoggedIn ? 'Go to Dashboard' : 'Start Your Journey'}
         </Button>
 
         <Text fontSize="sm" color="gray.500" mt={4}>
-          Already have an account?{' '}
-          <Button variant="link" colorScheme="blue" onClick={handleJoinClick}>
-            Log In
-          </Button>
+          {isLoggedIn ? (
+            <Button variant="link" colorScheme="blue" onClick={handleLoginLogout}>
+              Log Out
+            </Button>
+          ) : (
+            <Button variant="link" colorScheme="blue" onClick={handleLoginLogout}>
+              Log In
+            </Button>
+          )}
         </Text>
-
-        <Box
-          bg="white"
-          border="1px solid"
-          borderColor="pink.100"
-          shadow="lg"
-          p={4}
-          rounded="xl"
-          w="full"
-          maxW="md"
-          mx="auto"
-          mt={10}
-        >
-          <Text fontSize="sm" color="gray.500">
-            “From first reflection to first kiss — I’m here for it all.” —{' '}
-            <Text as="span" color="pink.500" fontWeight="semibold">ARIA</Text>
-          </Text>
-          <Text fontSize="xs" color="gray.400" mt={2}>
-            ARIA stands for Artificial Relationship Intelligence Assistant — your emotional mirror and growth companion.
-          </Text>
-        </Box>
-
-        {/* Tailwind Verification Box Equivalents */}
-        <VStack spacing={4} mt={6}>
-          <Box bg="green.500" color="white" p={4} rounded="xl" shadow="lg">
-            ✅ Tailwind is working perfectly!
-          </Box>
-          <Box bg="yellow.400" color="black" p={4} rounded="lg" shadow="md">
-            ✅ Tailwind is LIVE and styling your app!
-          </Box>
-        </VStack>
       </Box>
 
       {/* Why LoveGPT Section */}
@@ -160,7 +165,7 @@ export default function Home() {
             "Imagine if Grammarly and a therapist had a baby — and she coached your love life."
           </Text>
           <Button
-            onClick={handleJoinClick}
+            onClick={handleApplyForInvitation}  // Opens Waitlist Request Modal
             mt={4}
             bg="purple.600"
             _hover={{ bg: 'purple.700' }}
@@ -178,8 +183,17 @@ export default function Home() {
 
       <ARIAChat />
 
+      {/* Show Modals */}
       {showInviteModal && (
         <InvitationModal onClose={() => setShowInviteModal(false)} />
+      )}
+
+      {showWaitlistModal && (
+        <WaitlistRequestModal onClose={() => setShowWaitlistModal(false)} />
+      )}
+
+      {showPhoneEntryModal && (
+        <PhoneEntryModal onClose={() => setShowPhoneEntryModal(false)} />
       )}
     </MainLayout>
   );

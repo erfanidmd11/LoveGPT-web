@@ -4,6 +4,7 @@ import { auth, db } from '@/lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import Head from 'next/head';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import { getBig5ResultFromAnswers } from '@/utils/big5/aggregateBig5'; // Import Big5 result function
 
 export default function Big5Summary() {
   const [user] = useAuthState(auth);

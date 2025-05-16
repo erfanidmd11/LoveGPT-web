@@ -1,18 +1,17 @@
 import Head from 'next/head';
 import MainLayout from '@/layouts/MainLayout';
 import Link from 'next/link';
-import Head from 'next/head';
 import DashboardLayout from '@/layouts/DashboardLayout'; // ✅ Add this last
 
 export default function ResumePage() {
   return (
     <DashboardLayout>
-      {/* Your page JSX here */}
-    </DashboardLayout>
+  <div className="p-6 text-center text-gray-500">Page Coming Soon</div>
+</DashboardLayout>
   );
 }
 
-export default function PersonalityDashboard() {
+export function PersonalityDashboard() {
   return (
     <MainLayout>
       <Head>

@@ -1,12 +1,18 @@
-import { db } from '@/lib/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+// scripts/generateInviteCodes.ts
 
-/**
- * Generates a clean alphanumeric code (avoids ambiguous characters like 0/O, 1/I).
- */
-export const generateCode = (length: number = 8): string => {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+import admin from 'firebase-admin';
+import { db } from '@/lib/firebaseAdmin'; // server-safe
+
+const CHARSET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+export const generateCode = (length: number = 6): string => {
+  return 'LOVE-' + Array.from({ length }, () =>
+    CHARSET[Math.floor(Math.random() * CHARSET.length)]
+  ).join('');
+};
+
+const isValidReferralCode = (code: string): boolean => {
+  return /^LOVE-[A-Z0-9]{6}$/.test(code);
 };
 
 interface InviteCodeOptions {
@@ -17,11 +23,6 @@ interface InviteCodeOptions {
   lineage?: string[];
 }
 
-/**
- * Creates multiple invitation codes with Firestore documents.
- * @param count Number of codes to create (default: 10)
- * @param options Options to attach to each invite
- */
 export const generateInviteCodes = async (
   count: number = 10,
   options: InviteCodeOptions = {}
@@ -37,26 +38,47 @@ export const generateInviteCodes = async (
   const codes: string[] = [];
 
   for (let i = 0; i < count; i++) {
-    const code = generateCode();
-    const ref = doc(db, 'invitationCodes', code);
+    let code = generateCode();
+    let attempts = 0;
 
-    const data = {
+    while (attempts < 5) {
+      const ref = db.collection('invitationCodes').doc(code);
+      const snapshot = await ref.get();
+
+      if (!snapshot.exists) break;
+      code = generateCode();
+      attempts++;
+    }
+
+    if (!isValidReferralCode(code)) {
+      console.warn(`❌ Invalid format for generated code: ${code}`);
+      continue;
+    }
+
+    await db.collection('invitationCodes').doc(code).set({
       code,
-      createdAt: serverTimestamp(),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
       createdBy,
       maxUses,
       usedCount: 0,
-      status: 'active', // or 'inactive', 'filled'
-      expiresAt: expiresAt ? new Date(expiresAt) : null,
+      status: 'active',
+      expiresAt: expiresAt || null,
       level,
       lineage,
-    };
+    });
 
-    await setDoc(ref, data);
     codes.push(code);
   }
 
-  console.log(`✅ Generated ${codes.length} invite codes:`);
+  console.log(`✅ Successfully generated ${codes.length} code(s):`);
   console.table(codes);
   return codes;
 };
+
+// Optional: run automatically when executed
+if (require.main === module) {
+  generateInviteCodes(5, {
+    maxUses: 3,
+    createdBy: 'system',
+  }).catch(console.error);
+}

@@ -17,7 +17,6 @@ import {
   IconButton,
   VStack,
   HStack,
-  Spacer,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 
@@ -46,15 +45,19 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       {/* Header */}
       <Box bg="white" px={4} py={3} shadow="md">
         <Flex maxW="7xl" mx="auto" align="center" justify="space-between">
-          <NextLink href="/" passHref>
-            <ChakraLink display="flex" alignItems="center">
-              <Image src="/lovegpt-logo.png" alt="Logo" w={8} h={8} />
-              <Heading size="md" ml={2}>
-                <Text as="span" color="pink.500">Love</Text>
-                <Text as="span" color="blue.500">GPT</Text>
-              </Heading>
-            </ChakraLink>
-          </NextLink>
+          <ChakraLink
+            as={NextLink}
+            href="/"
+            display="flex"
+            alignItems="center"
+            _hover={{ textDecoration: 'none' }}
+          >
+            <Image src="/lovegpt-logo.png" alt="Logo" w={8} h={8} />
+            <Heading size="md" ml={2}>
+              <Text as="span" color="pink.500">Love</Text>
+              <Text as="span" color="blue.500">GPT</Text>
+            </Heading>
+          </ChakraLink>
 
           <IconButton
             aria-label="Menu"
@@ -64,13 +67,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           />
 
           <HStack display={{ base: 'none', md: 'flex' }} spacing={5} fontWeight="medium">
-            <NextLink href="/" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Home</ChakraLink></NextLink>
-            <NextLink href="/about" passHref><ChakraLink _hover={{ color: 'pink.500' }}>About Us</ChakraLink></NextLink>
-            <NextLink href="/aria" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Meet ARIA</ChakraLink></NextLink>
-            <NextLink href="/pricing" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Cost</ChakraLink></NextLink>
+            <ChakraLink as={NextLink} href="/" _hover={{ color: 'pink.500' }}>Home</ChakraLink>
+            <ChakraLink as={NextLink} href="/about" _hover={{ color: 'pink.500' }}>About Us</ChakraLink>
+            <ChakraLink as={NextLink} href="/aria" _hover={{ color: 'pink.500' }}>Meet ARIA</ChakraLink>
+            <ChakraLink as={NextLink} href="/pricing" _hover={{ color: 'pink.500' }}>Cost</ChakraLink>
             {user ? (
               <>
-                <NextLink href="/dashboard" passHref><ChakraLink _hover={{ color: 'pink.500' }}>Dashboard</ChakraLink></NextLink>
+                <ChakraLink as={NextLink} href="/dashboard" _hover={{ color: 'pink.500' }}>Dashboard</ChakraLink>
                 <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
               </>
             ) : (
@@ -84,13 +87,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
         {menuOpen && (
           <VStack align="start" spacing={3} px={4} mt={4} display={{ md: 'none' }}>
-            <NextLink href="/" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Home</ChakraLink></NextLink>
-            <NextLink href="/about" passHref><ChakraLink onClick={() => setMenuOpen(false)}>About Us</ChakraLink></NextLink>
-            <NextLink href="/aria" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Meet ARIA</ChakraLink></NextLink>
-            <NextLink href="/pricing" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Cost</ChakraLink></NextLink>
+            <ChakraLink as={NextLink} href="/" onClick={() => setMenuOpen(false)}>Home</ChakraLink>
+            <ChakraLink as={NextLink} href="/about" onClick={() => setMenuOpen(false)}>About Us</ChakraLink>
+            <ChakraLink as={NextLink} href="/aria" onClick={() => setMenuOpen(false)}>Meet ARIA</ChakraLink>
+            <ChakraLink as={NextLink} href="/pricing" onClick={() => setMenuOpen(false)}>Cost</ChakraLink>
             {user ? (
               <>
-                <NextLink href="/dashboard" passHref><ChakraLink onClick={() => setMenuOpen(false)}>Dashboard</ChakraLink></NextLink>
+                <ChakraLink as={NextLink} href="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</ChakraLink>
                 <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
               </>
             ) : (
@@ -111,9 +114,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       {/* Footer */}
       <Box textAlign="center" fontSize="sm" color="gray.500" py={4} mt={10}>
         <HStack justify="center" spacing={4} mb={2}>
-          <NextLink href="/privacy" passHref><ChakraLink>Privacy Policy</ChakraLink></NextLink>
-          <NextLink href="/terms" passHref><ChakraLink>Terms of Use</ChakraLink></NextLink>
-          <NextLink href="/investors" passHref><ChakraLink>Investors</ChakraLink></NextLink>
+          <ChakraLink as={NextLink} href="/privacy">Privacy Policy</ChakraLink>
+          <ChakraLink as={NextLink} href="/terms">Terms of Use</ChakraLink>
+          <ChakraLink as={NextLink} href="/investors">Investors</ChakraLink>
         </HStack>
         © {new Date().getFullYear()} LoveGPT • Built with ❤️ by ARIA
       </Box>
