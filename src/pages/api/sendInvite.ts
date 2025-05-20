@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAuth } from 'firebase-admin/auth';
 import { sendInviteEmail } from '@/lib/mailgun/sendInviteEmail';
-import { doc, setDoc, Timestamp, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { generateCode } from '@/utils/invite/generateInviteCode';
-
-const CHARSET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+import { createInviteCode } from '@/lib/invites';
+import { getReferralLineage } from '@/lib/referrals';
 
 const isValidReferralCode = (code: string): boolean =>
   /^LOVE-[A-Z0-9]{6}$/.test(code);
@@ -45,30 +45,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Failed to generate invite code' });
     }
 
-    // Fetch referring user info
-    const senderRef = doc(db, 'users', senderUid);
-    const senderSnap = await getDoc(senderRef);
-    const senderData = senderSnap.exists() ? senderSnap.data() : {};
+    // 🧠 Get full referral lineage from referrer
+    const { lineage, level } = await getReferralLineage(senderUid);
 
-    const parentLevel = senderData?.referralLevel || 0;
-    const referralLineage = Array.isArray(senderData?.referralLineage) ? senderData.referralLineage : [];
-    referralLineage.push(senderUid);
-
-    const inviteRef = doc(db, 'invitationCodes', inviteCode);
-    const inviteData = {
-      code: inviteCode,
-      createdAt: Timestamp.now(),
-      createdBy: senderEmail || 'admin',
+    // 💾 Save invite document using shared utility
+    await createInviteCode(inviteCode, senderEmail || 'admin', {
       referredBy: senderUid,
-      level: parentLevel + 1,
-      referralLineage,
-      usedCount: 0,
+      referralLineage: lineage,
+      level,
       maxUses: 1,
-      status: 'active',
-      expiresAt: Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)), // 1 week
-    };
+      expiresInDays: 7,
+    });
 
-    await setDoc(inviteRef, inviteData);
+    // 📬 Send the actual invite email
     await sendInviteEmail({ to, firstName, inviteCode });
 
     return res.status(200).json({ success: true, code: inviteCode });

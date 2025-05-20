@@ -1,56 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, TextInput, TouchableOpacity, ActivityIndicator, Alert, View, Text } from 'react-native';
-import { useHistory } from 'react-router-dom';
-import { getDoc, doc } from 'firebase/firestore';
-import { auth, db } from './firebase/firebaseConfig';  // Ensure proper import for Firestore
+import { setupRecaptcha, sendOtp, confirmOtp } from '../lib/authUtils';
 
 interface OtpVerificationModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onPhoneVerified: (phone: string, confirmation: any) => void; // Callback for when OTP is verified
+  onPhoneVerified: (phone: string, confirmation: any) => void;
 }
 
 const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({ isVisible, onClose, onPhoneVerified }) => {
   const [otp, setOtp] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('+15555551111'); // Firebase test number
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<string>(''); 
-  const history = useHistory();
+  const [status, setStatus] = useState('');
 
-  const handleVerifyOtp = async () => {
-    if (otp.length !== 6) {
-      Alert.alert('Please enter a valid 6-digit OTP');
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setupRecaptcha();
+    }
+  }, []);
+
+  const handleSendOtp = async () => {
+    if (!phoneNumber) {
+      Alert.alert('Please enter a valid phone number');
       return;
     }
 
     setLoading(true);
-    setStatus('Verifying OTP...');
-
-    const confirmationResult = window.confirmationResult;
+    setStatus('Sending OTP...');
 
     try {
-      // In dev mode, we skip OTP and use a test user
-      if (__DEV__) {
-        console.log('Dev mode: Skipping OTP and reCAPTCHA');
-        
-        // Automatically skip OTP validation in dev mode
-        window.confirmationResult = { 
-          confirm: () => Promise.resolve({ user: { uid: 'test-user-id', phoneNumber: '+15555555555' } })
-        };
-        onPhoneVerified('+15555555555', window.confirmationResult);
-        onClose();  // Close the modal after the phone is verified
-      } else {
-        // In production, use OTP and reCAPTCHA
-        const appVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, auth);
-        window.recaptchaVerifier = appVerifier; // Store reCAPTCHA instance
-
-        const confirmation = await signInWithPhoneNumber(auth, `+1${otp}`, appVerifier);
-        window.confirmationResult = confirmation;
-        onPhoneVerified(`+1${otp}`, confirmation); // Send the confirmation result to the parent component
-        onClose(); // Close the modal
-      }
+      const confirmation = await sendOtp(phoneNumber);
+      window.confirmationResult = confirmation;
+      setStatus('OTP sent. Enter the code.');
     } catch (error: any) {
-      setStatus('Error: ' + error.message);
-      Alert.alert('Invalid OTP', 'Please try again');
+      console.error('OTP Error:', error);
+      Alert.alert('Error', error.message || 'Failed to send OTP');
+      setStatus('Failed to send OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      Alert.alert('Please enter a 6-digit OTP');
+      return;
+    }
+
+    setLoading(true);
+    setStatus('Verifying...');
+
+    try {
+      const result = await confirmOtp(otp);
+      onPhoneVerified(phoneNumber, result);
+      onClose();
+    } catch (error: any) {
+      console.error('OTP Verification Error:', error);
+      Alert.alert('Error', error.message || 'Verification failed');
+      setStatus('Invalid code');
     } finally {
       setLoading(false);
     }
@@ -59,26 +67,39 @@ const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({ isVisible, 
   return (
     <Modal visible={isVisible} onRequestClose={onClose}>
       <View style={{ padding: 24 }}>
-        <Text style={{ fontSize: 24, fontWeight: '700', textAlign: 'center', marginBottom: 12 }}>
-          Enter the code sent to your phone
+        <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 10 }}>
+          Enter your phone number
         </Text>
         <TextInput
-          style={{ padding: 10, borderWidth: 1, marginBottom: 12, borderRadius: 8 }}
+          style={{ borderWidth: 1, padding: 10, marginBottom: 10 }}
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          placeholder="+15555551111"
+          keyboardType="phone-pad"
+        />
+        <TouchableOpacity onPress={handleSendOtp} style={{ marginBottom: 20, backgroundColor: '#007bff', padding: 12 }}>
+          <Text style={{ color: '#fff', textAlign: 'center' }}>Send OTP</Text>
+        </TouchableOpacity>
+
+        <Text style={{ fontSize: 18, marginBottom: 8 }}>Enter OTP</Text>
+        <TextInput
+          style={{ borderWidth: 1, padding: 10, marginBottom: 10 }}
           value={otp}
           onChangeText={setOtp}
-          placeholder="6-digit OTP"
-          maxLength={6}
+          placeholder="123456"
+          keyboardType="number-pad"
         />
-        <TouchableOpacity onPress={handleVerifyOtp} style={{ padding: 12, backgroundColor: '#007bff', borderRadius: 8 }}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff', textAlign: 'center' }}>Verify OTP</Text>}
+
+        <TouchableOpacity onPress={handleVerifyOtp} style={{ backgroundColor: '#28a745', padding: 12 }}>
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff', textAlign: 'center' }}>Verify</Text>}
         </TouchableOpacity>
+
+        <Text style={{ marginTop: 10, color: 'gray' }}>{status}</Text>
       </View>
 
-      {/* Invisible reCAPTCHA container */}
       <div id="recaptcha-container"></div>
     </Modal>
   );
 };
 
 export default OtpVerificationModal;
-

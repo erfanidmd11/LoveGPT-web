@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Input, Text, VStack, Heading, Textarea } from '@chakra-ui/react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { doc, setDoc, getDoc, getDocs, collection, query, where } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -10,7 +10,7 @@ import Header from '@/components/Header';  // Import Header
 import Footer from '@/components/Footer';  // Import Footer
 
 const Step3Email: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [sent, setSent] = useState(false);
@@ -23,12 +23,12 @@ const Step3Email: React.FC = () => {
       setUid(userSession.phone);  // Assuming phone is used as UID in your case
       // If the user has already completed their profile, navigate directly to the next step
       if (userSession.onboardingComplete) {
-        history.push('/dashboard'); // Redirect to dashboard if onboarding is complete
+        navigate('/dashboard', { replace: true }); // Redirect to dashboard if onboarding is complete
       } else {
         fetchUserDetails(userSession.phone); // Fetch user details from Firestore
       }
     } else {
-      history.push('/'); // Redirect to homepage if the user is not logged in
+      navigate('/', { replace: true }); // Redirect to homepage if the user is not logged in
     }
   }, []);
 
@@ -105,7 +105,7 @@ const Step3Email: React.FC = () => {
       );
 
       // After saving, move to next step (Step 4 - DOB)
-      history.push('/onboarding/step4-dob'); // Navigate to Step4DOB
+      navigate('/onboarding/step4-dob', { replace: true }); // Navigate to Step4DOB
     } catch (error) {
       console.error('Error saving email:', error);
       alert('Could not save your email. Try again.');
@@ -168,7 +168,7 @@ const Step3Email: React.FC = () => {
       )}
 
       {/* Back Button (Navigates back to Homepage on Web) */}
-      <Button variant="link" colorScheme="blue" onClick={() => history.push('/')}>
+      <Button variant="link" colorScheme="blue" onClick={() => navigate('/')}>
         Back to Homepage
       </Button>
 

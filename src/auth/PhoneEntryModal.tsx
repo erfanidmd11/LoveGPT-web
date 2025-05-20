@@ -1,27 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, TextInput, TouchableOpacity, ActivityIndicator, Alert, View, Text } from 'react-native';
-import { signInWithPhoneNumber, RecaptchaVerifier } from 'firebase/auth';
-import { auth } from './firebase/firebaseConfig'; // Firebase configuration
+import {
+  Modal,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  View,
+  Text
+} from 'react-native';
+import { setupRecaptcha, sendOtp } from '../lib/authUtils';
 
 interface PhoneEntryModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onPhoneVerified: (phone: string, confirmation: any) => void; // Callback for when OTP is verified
+  onPhoneVerified: (phone: string, confirmation: any) => void;
 }
 
-const PhoneEntryModal: React.FC<PhoneEntryModalProps> = ({ isVisible, onClose, onPhoneVerified }) => {
+declare global {
+  interface Window {
+    recaptchaVerifier?: any;
+    confirmationResult?: {
+      confirm: (code: string) => Promise<any>;
+    };
+  }
+}
+
+const PhoneEntryModal: React.FC<PhoneEntryModalProps> = ({
+  isVisible,
+  onClose,
+  onPhoneVerified
+}) => {
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Clean the phone number to ensure it has the correct format
-  const cleanPhone = (phone: string) => {
-    return phone.replace(/\D/g, ''); // Remove all non-digit characters
-  };
+  const cleanPhone = (phone: string) => phone.replace(/\D/g, '');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setupRecaptcha(); // ✅ always ensures reCAPTCHA is ready
+    }
+  }, []);
 
   const handleSendOTP = async () => {
     const cleanedPhone = cleanPhone(phone);
-
-    // Validate phone number
     if (!cleanedPhone || cleanedPhone.length < 10) {
       Alert.alert('Invalid Number', 'Please enter a valid phone number.');
       return;
@@ -31,28 +52,21 @@ const PhoneEntryModal: React.FC<PhoneEntryModalProps> = ({ isVisible, onClose, o
 
     try {
       if (__DEV__) {
-        // In dev mode, skip OTP and reCAPTCHA, use test users
         console.log('Dev mode: Skipping OTP and reCAPTCHA');
-        
-        // Automatically skip OTP validation in dev mode
-        window.confirmationResult = { 
+        window.confirmationResult = {
           confirm: () => Promise.resolve({ user: { uid: 'test-user-id', phoneNumber: cleanedPhone } })
         };
         onPhoneVerified(cleanedPhone, window.confirmationResult);
-        onClose();  // Close the phone entry modal
+        onClose();
       } else {
-        // In production, send OTP and use reCAPTCHA
-        const appVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, auth);
-        window.recaptchaVerifier = appVerifier; // Store reCAPTCHA instance
-
-        const confirmation = await signInWithPhoneNumber(auth, `+1${cleanedPhone}`, appVerifier);
+        const confirmation = await sendOtp(`+1${cleanedPhone}`);
         window.confirmationResult = confirmation;
-        onPhoneVerified(cleanedPhone, confirmation); // Call the callback when OTP is ready
-        onClose(); // Close the phone entry modal
+        onPhoneVerified(cleanedPhone, confirmation);
+        onClose();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending OTP:', error);
-      Alert.alert('Error', 'Failed to send OTP');
+      Alert.alert('Error', error.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
     }
@@ -71,22 +85,23 @@ const PhoneEntryModal: React.FC<PhoneEntryModalProps> = ({ isVisible, onClose, o
           placeholder="Phone number"
           keyboardType="phone-pad"
         />
-        <TouchableOpacity 
-          onPress={handleSendOTP} 
+        <TouchableOpacity
+          onPress={handleSendOTP}
           style={{ padding: 12, backgroundColor: '#007bff', borderRadius: 8 }}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff', textAlign: 'center' }}>Send OTP</Text>}
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={{ color: '#fff', textAlign: 'center' }}>Send OTP</Text>
+          )}
         </TouchableOpacity>
       </View>
 
-      {/* Invisible reCAPTCHA container */}
+      {/* Firebase reCAPTCHA mount target */}
       <div id="recaptcha-container"></div>
     </Modal>
   );
 };
 
 export default PhoneEntryModal;
-
-
-

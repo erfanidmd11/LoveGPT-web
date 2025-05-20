@@ -1,18 +1,34 @@
+// src/pages/dashboard/referrals.tsx
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
-import { useEffect, useState } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import UserBadgeDisplay from '@/components/UserBadgeDisplay';
+import {
+  Box,
+  Text,
+  Spinner,
+  Input,
+  Button,
+  Heading,
+  HStack,
+  VStack
+} from '@chakra-ui/react';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 
 export default function ReferralDashboard() {
   const [user, loading] = useAuthState(auth);
   const [referrals, setReferrals] = useState<any[]>([]);
   const [totalCoins, setTotalCoins] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [badge, setBadge] = useState<string>('');
 
   useEffect(() => {
-    if (user) fetchReferrals();
+    if (user) {
+      fetchReferrals();
+      fetchBadge();
+    }
   }, [user]);
 
   const fetchReferrals = async () => {
@@ -21,8 +37,16 @@ export default function ReferralDashboard() {
     const list = snapshot.docs.map(doc => doc.data());
     setReferrals(list);
 
-    const coinsEarned = list.reduce((sum, r) => sum + (r.level || 1) * 10, 0); // 10 coins per level
+    const coinsEarned = list.reduce((sum, r) => sum + (r.level || 1) * 10, 0);
     setTotalCoins(coinsEarned);
+  };
+
+  const fetchBadge = async () => {
+    const ref = doc(db, 'users', user?.uid || '');
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      setBadge(snap.data()?.badges?.[0] || '');
+    }
   };
 
   const referralLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/?ref=${user?.uid}`;
@@ -37,7 +61,7 @@ export default function ReferralDashboard() {
     }
   };
 
-  if (loading || !user) return null;
+  if (loading || !user) return <Spinner color="pink.500" mt={20} />;
 
   return (
     <DashboardLayout>
@@ -45,52 +69,49 @@ export default function ReferralDashboard() {
         <title>My Referrals | LoveGPT</title>
       </Head>
 
-      <div className="max-w-4xl mx-auto px-6 py-16">
-        <h1 className="text-4xl font-bold text-indigo-700 mb-6">📣 Your Referrals</h1>
+      <Box maxW="4xl" mx="auto" px={6} py={16}>
+        <Heading size="lg" color="pink.600" mb={4}>📣 Your Referrals</Heading>
 
-        <p className="text-lg text-gray-600 mb-2">
+        <HStack mb={4} align="center">
+          <Text fontSize="md">Your Badge:</Text>
+          <UserBadgeDisplay badge={badge} size={28} />
+        </HStack>
+
+        <Text fontSize="lg" color="gray.600" mb={2}>
           You’ve referred <strong>{referrals.length}</strong> member{referrals.length !== 1 ? 's' : ''} and earned a total of{' '}
           <span className="text-pink-600 font-bold">{totalCoins}</span> Love Coins 💖
-        </p>
+        </Text>
 
-        <div className="bg-white border p-4 rounded-xl mb-6">
-          <p className="text-sm text-gray-700 mb-2">Your personal invite link:</p>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={referralLink}
-              readOnly
-              className="flex-1 border px-3 py-2 rounded text-sm"
-            />
-            <button
-              onClick={copyToClipboard}
-              className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 text-sm rounded"
-            >
+        <Box bg="white" border="1px solid #e2e8f0" p={4} rounded="xl" mb={6}>
+          <Text fontSize="sm" color="gray.700" mb={2}>Your personal invite link:</Text>
+          <HStack spacing={2}>
+            <Input value={referralLink} readOnly fontSize="sm" />
+            <Button size="sm" colorScheme="pink" onClick={copyToClipboard}>
               {copied ? 'Copied!' : 'Copy Link'}
-            </button>
-          </div>
-          <p className="text-xs text-gray-500 mt-2">
+            </Button>
+          </HStack>
+          <Text fontSize="xs" color="gray.500" mt={2}>
             You earn Love Coins for each signup, up to 5 levels deep: 10, 7, 5, 3, 2 per level.
-          </p>
-        </div>
+          </Text>
+        </Box>
 
         {referrals.length === 0 ? (
-          <p className="text-gray-500">No referrals yet. Invite someone today!</p>
+          <Text color="gray.500">No referrals yet. Invite someone today!</Text>
         ) : (
-          <div className="grid gap-4">
+          <VStack spacing={4} align="stretch">
             {referrals.map((ref, i) => (
-              <div key={i} className="bg-white shadow rounded-xl p-4 border-l-4 border-pink-500">
-                <h3 className="text-lg font-semibold text-pink-600">{ref.firstName} {ref.lastName}</h3>
-                <p className="text-sm text-gray-600">Level: {ref.level || 1}</p>
-                <p className="text-sm text-gray-600">Email: {ref.email}</p>
-                <p className="text-sm text-gray-500 mt-1">
+              <Box key={i} bg="white" shadow="sm" p={4} rounded="xl" borderLeft="4px solid #ec4899">
+                <Text fontWeight="bold" color="pink.600">{ref.firstName} {ref.lastName}</Text>
+                <Text fontSize="sm" color="gray.600">Level: {ref.level || 1}</Text>
+                <Text fontSize="sm" color="gray.600">Email: {ref.email}</Text>
+                <Text fontSize="sm" color="gray.500" mt={1}>
                   Match Intent: {ref.isMatchIntent ? 'Yes' : 'No'}
-                </p>
-              </div>
+                </Text>
+              </Box>
             ))}
-          </div>
+          </VStack>
         )}
-      </div>
+      </Box>
     </DashboardLayout>
   );
 }

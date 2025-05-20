@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
+import { getDocs, collection, deleteDoc, doc } from 'firebase/firestore';
 import { nanoid } from 'nanoid';
+import { createInviteCode } from '@/lib/invites';
+import { db, auth } from '@/lib/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 export default function AdminInviteGenerator() {
+  const [user] = useAuthState(auth);
   const [code, setCode] = useState('');
   const [status, setStatus] = useState('idle');
   const [allCodes, setAllCodes] = useState([]);
 
   const generateCode = () => `LOVE-${nanoid(6).toUpperCase()}`;
 
-  const createInviteCode = async () => {
+  const handleCreateInvite = async () => {
     const newCode = generateCode();
     setStatus('creating');
 
     try {
-      await setDoc(doc(db, 'invitationCodes', newCode), {
-        code: newCode,
-        used: false,
-        createdAt: new Date(),
-        usedBy: null,
-        claimedAt: null,
-      });
-
+      await createInviteCode(newCode, user?.email || 'admin'); // ✅ use shared logic
       setCode(newCode);
       setStatus('success');
       fetchAllCodes();
@@ -59,7 +55,7 @@ export default function AdminInviteGenerator() {
       <h2 className="text-2xl font-bold text-pink-600 mb-4">🔐 Super Admin: Generate Invite Code</h2>
 
       <button
-        onClick={createInviteCode}
+        onClick={handleCreateInvite}
         className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded font-semibold"
       >
         Generate New Code

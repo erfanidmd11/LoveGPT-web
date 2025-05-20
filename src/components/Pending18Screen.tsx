@@ -1,21 +1,34 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Button, Text, VStack, Heading, Center, Image } from '@chakra-ui/react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';  // Update for React Router v6
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
 import AriaSignature from '@/components/common/AriaSignature';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { db } from '../firebase/firebaseConfig';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+
+// Adding some simulated user data to use later
+const saveUserProgress = async (uid: string) => {
+  try {
+    const userRef = doc(db, 'users', uid);
+    await updateDoc(userRef, {
+      lastVisited: serverTimestamp(),  // Save the last visited time
+      currentStep: 'pending18',  // Save the current step to help with progression tracking
+    });
+  } catch (error) {
+    console.error('Error saving user progress: ', error);
+  }
+};
 
 const Pending18Screen: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();  // Use React Router v6 `useNavigate` for navigation
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const handleExit = () => {
-    history.reset({
-      index: 0,
-      routes: [{ name: 'Login' }],
-    });
+    saveUserProgress('user123');  // Save user progress on exit (you may replace 'user123' with actual user data)
+    navigate('/login', { replace: true });  // After exit, navigate to the login page or home
   };
 
   useEffect(() => {
@@ -29,6 +42,8 @@ const Pending18Screen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
+        <Header />  {/* Add Header Component */}
+        
         <Box textAlign="center" mb={8}>
           <Heading as="h2" size="lg" mb={4}>
             🌟 Just a Little More Time...
@@ -62,13 +77,16 @@ const Pending18Screen: React.FC = () => {
           message="🌟 Hey future legend. You're just a little early for LoveGPT — but good news: I'm building something epic just for high-achievers like you. 🌱 Stay tuned — greatness is already yours."
           isIntro
         />
+        
         <AriaSignature />
+        
+        <Footer />  {/* Add Footer Component */}
       </Animated.View>
     </SafeAreaView>
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     padding: '24px',
     flex: 1,
@@ -76,6 +94,6 @@ const styles = {
     backgroundColor: '#f9fafb',
     alignItems: 'center',
   },
-};
+});
 
 export default Pending18Screen;

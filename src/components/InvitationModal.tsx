@@ -3,13 +3,26 @@ import { toast } from 'react-toastify';
 import { db } from '@/lib/firebase';
 import {
   collection,
-  addDoc,
   Timestamp,
   getDoc,
   doc,
-  updateDoc
+  updateDoc,
+  query,
+  where,
+  getDocs
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { validateInviteCode, markInviteCodeAsUsed } from '@/lib/invites';
+import { submitInviteApplication } from '@/lib/applications';
+
+const getReferralBadge = (count: number): string => {
+  if (count >= 20) return '🧠 LoveGPT Luminary';
+  if (count >= 10) return '💖 Matchmaker Elite';
+  if (count >= 5) return "💌 Cupid's Assistant";
+  if (count >= 3) return '💞 Spark Spreader';
+  if (count >= 1) return '🌱 Seed Planter';
+  return '';
+};
 
 export default function InvitationModal({ onClose }) {
   const [inviteCode, setInviteCode] = useState('');
@@ -32,18 +45,43 @@ export default function InvitationModal({ onClose }) {
     if (!inviteCode) return toast.error('Please enter a code.');
 
     try {
+      const isValid = await validateInviteCode(inviteCode);
+      if (!isValid) return toast.error('❌ Invalid or inactive invitation code.');
+
       const inviteRef = doc(db, 'invitationCodes', inviteCode);
       const inviteSnap = await getDoc(inviteRef);
-
-      if (!inviteSnap.exists()) return toast.error('❌ Invalid invitation code.');
-
       const invite = inviteSnap.data();
 
-      if (invite.status !== 'active') return toast.error('This invitation code is no longer active.');
-      if (invite.expiresAt && invite.expiresAt.toDate() < new Date()) return toast.error('This invitation code has expired.');
-      if (invite.maxUses > 0 && invite.usedCount >= invite.maxUses) return toast.error('This invitation code has already been used.');
+      if (invite.expiresAt && invite.expiresAt.toDate() < new Date()) {
+        return toast.error('This invitation code has expired.');
+      }
 
-      await updateDoc(inviteRef, { usedCount: (invite.usedCount || 0) + 1 });
+      if (invite.maxUses > 0 && invite.usedCount >= invite.maxUses) {
+        return toast.error('This invitation code has already been used.');
+      }
+
+      const authUser = getAuth().currentUser;
+      const usedBy = authUser?.uid || 'anonymous';
+      await markInviteCodeAsUsed(inviteCode, usedBy);
+
+      if (authUser) {
+        const userRef = doc(db, 'users', authUser.uid);
+        const snap = await getDocs(query(collection(db, 'invitationCodes'), where('referredBy', '==', authUser.uid)));
+        const referralCount = snap.size;
+        const badge = getReferralBadge(referralCount + 1);
+
+        await updateDoc(userRef, {
+          invitedByCode: inviteCode,
+          invitedAt: Timestamp.now(),
+          points: {
+            total: 100,
+            earnedFrom: {
+              referrals: 100,
+            }
+          },
+          badges: badge ? [badge] : [],
+        });
+      }
 
       toast.success('✅ Invitation code accepted. Welcome!');
       localStorage.setItem('inviteCode', inviteCode);
@@ -64,33 +102,9 @@ export default function InvitationModal({ onClose }) {
     }
 
     try {
-      const appRef = await addDoc(collection(db, 'inviteApplications'), {
-        ...form,
-        createdAt: Timestamp.now(),
-        status: 'pending',
-        reviewedBy: 'system-auto',
-      });
-
-      const user = getAuth().currentUser;
-      const token = user ? await user.getIdToken() : null;
-
-      const res = await fetch('/api/sendInvite', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ to: email, firstName }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || 'Request failed');
-
-      toast.success("🎉 Application approved! You've been invited.");
-      localStorage.setItem('inviteCode', data.code);
+      await submitInviteApplication({ ...form });
+      toast.success("🎉 Application received! We'll review and reach out soon.");
       onClose();
-      window.location.href = '/onboarding/Step1APhoneOTP';
     } catch (err) {
       console.error('Application failed:', err);
       toast.error('Error submitting application. Try again.');

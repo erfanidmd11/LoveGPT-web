@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Input, Text, VStack, Heading } from '@chakra-ui/react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -9,7 +9,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const Step2Name: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [uid, setUid] = useState<string | null>(null);
@@ -20,7 +20,7 @@ const Step2Name: React.FC = () => {
       setUid(userSession.phone);
       fetchUserDetails(userSession.phone);
     } else {
-      history.push('/');
+      navigate('/', { replace: true });
     }
   }, []);
 
@@ -61,7 +61,7 @@ const Step2Name: React.FC = () => {
         { merge: true }
       );
 
-      history.replace('/onboarding/step3-email');
+      navigate('/onboarding/step3-email', { replace: true });
     } catch (error) {
       console.error('Error saving name:', error);
       alert('Could not save your name. Try again.');

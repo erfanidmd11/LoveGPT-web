@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Input, Text, Heading, VStack } from '@chakra-ui/react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -10,7 +10,7 @@ import Header from '@/components/Header';  // Import Header
 import Footer from '@/components/Footer';  // Import Footer
 
 const Step5Location: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [location, setLocation] = useState('');
   const [firstName, setFirstName] = useState('');
   const [uid, setUid] = useState<string | null>(null); // To store user UID
@@ -22,7 +22,7 @@ const Step5Location: React.FC = () => {
       setUid(userSession.phone);  // Assuming phone is used as UID in your case
       fetchUserDetails(userSession.phone); // Fetch user details from Firestore
     } else {
-      history.push('/'); // Redirect to homepage if the user is not logged in
+      navigate('/', { replace: true }); // Redirect to homepage if the user is not logged in
     }
   }, []);
 
@@ -64,7 +64,7 @@ const Step5Location: React.FC = () => {
       );
 
       // After saving, move to the next step (Step 6 - Gender)
-      history.push('/onboarding/step6-gender');
+      navigate('/onboarding/step6-gender', { replace: true });
     } catch (error) {
       console.error('Error saving location:', error);
       alert('Could not save your location. Try again.');
@@ -115,7 +115,7 @@ const Step5Location: React.FC = () => {
         variant="link"
         colorScheme="blue"
         size="sm"
-        onClick={() => history.push('/onboarding/step4-dob')} // Go to the previous step
+        onClick={() => navigate('/onboarding/step4-dob')} // Go to the previous step
         mt={4}
       >
         Back to Previous Step

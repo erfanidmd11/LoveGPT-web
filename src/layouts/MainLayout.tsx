@@ -5,26 +5,15 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, auth } from '@/lib/firebase';
 import ARIAChat from '@/components/ARIAChat';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import {
-  Box,
-  Flex,
-  Text,
-  Heading,
-  Image,
-  Button,
-  Link as ChakraLink,
-  IconButton,
-  VStack,
-  HStack,
+  Box, Flex, Text, Heading, Image, Button,
+  Link as ChakraLink, IconButton, VStack, HStack,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 
 const LoginModal = dynamic(() => import('@/components/common/LoginModal'), { ssr: false });
-
-const useAuthState = typeof window !== 'undefined'
-  ? require('react-firebase-hooks/auth').useAuthState
-  : () => [null, true];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -33,25 +22,26 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleLoginClick = () => setShowLoginModal(true);
-  const handleSignUpClick = () => router.push("/signup");
+  const handleSignUpClick = () => router.push('/signup');
   const handleLogoutClick = async () => {
     await signOut(auth);
-    localStorage.removeItem("admin_logged_in");
-    router.push("/");
+    localStorage.removeItem('admin_logged_in');
+    router.push('/');
   };
+
+  const handleNavClick = (href: string) => {
+    setMenuOpen(false);
+    router.push(href);
+  };
+
+  const isActive = (href: string) => router.pathname === href;
 
   return (
     <Box minH="100vh" bgGradient="linear(to-br, pink.50, purple.100)">
       {/* Header */}
       <Box bg="white" px={4} py={3} shadow="md">
         <Flex maxW="7xl" mx="auto" align="center" justify="space-between">
-          <ChakraLink
-            as={NextLink}
-            href="/"
-            display="flex"
-            alignItems="center"
-            _hover={{ textDecoration: 'none' }}
-          >
+          <ChakraLink as={NextLink} href="/" display="flex" alignItems="center" _hover={{ textDecoration: 'none' }}>
             <Image src="/lovegpt-logo.png" alt="Logo" w={8} h={8} />
             <Heading size="md" ml={2}>
               <Text as="span" color="pink.500">Love</Text>
@@ -67,13 +57,33 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           />
 
           <HStack display={{ base: 'none', md: 'flex' }} spacing={5} fontWeight="medium">
-            <ChakraLink as={NextLink} href="/" _hover={{ color: 'pink.500' }}>Home</ChakraLink>
-            <ChakraLink as={NextLink} href="/about" _hover={{ color: 'pink.500' }}>About Us</ChakraLink>
-            <ChakraLink as={NextLink} href="/aria" _hover={{ color: 'pink.500' }}>Meet ARIA</ChakraLink>
-            <ChakraLink as={NextLink} href="/pricing" _hover={{ color: 'pink.500' }}>Cost</ChakraLink>
+            {['/', '/about', '/aria', '/pricing'].map((path, i) => (
+              <ChakraLink
+                key={i}
+                as={NextLink}
+                href={path}
+                position="relative"
+                _hover={{ color: 'pink.500' }}
+                color={isActive(path) ? 'pink.600' : 'gray.700'}
+                fontWeight={isActive(path) ? 'bold' : 'medium'}
+                _after={isActive(path) ? {
+                  content: '""',
+                  position: 'absolute',
+                  width: '100%',
+                  height: '2px',
+                  bg: 'pink.500',
+                  bottom: '-4px',
+                  left: 0,
+                } : {}}
+              >
+                {path === '/' ? 'Home' : path.replace('/', '').replace(/\b\w/g, c => c.toUpperCase())}
+              </ChakraLink>
+            ))}
             {user ? (
               <>
-                <ChakraLink as={NextLink} href="/dashboard" _hover={{ color: 'pink.500' }}>Dashboard</ChakraLink>
+                <ChakraLink as={NextLink} href="/dashboard" _hover={{ color: 'pink.500' }} color={isActive('/dashboard') ? 'pink.600' : 'gray.700'} fontWeight={isActive('/dashboard') ? 'bold' : 'medium'}>
+                  Dashboard
+                </ChakraLink>
                 <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
               </>
             ) : (
@@ -87,13 +97,22 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
         {menuOpen && (
           <VStack align="start" spacing={3} px={4} mt={4} display={{ md: 'none' }}>
-            <ChakraLink as={NextLink} href="/" onClick={() => setMenuOpen(false)}>Home</ChakraLink>
-            <ChakraLink as={NextLink} href="/about" onClick={() => setMenuOpen(false)}>About Us</ChakraLink>
-            <ChakraLink as={NextLink} href="/aria" onClick={() => setMenuOpen(false)}>Meet ARIA</ChakraLink>
-            <ChakraLink as={NextLink} href="/pricing" onClick={() => setMenuOpen(false)}>Cost</ChakraLink>
+            {['/', '/about', '/aria', '/pricing'].map((path, i) => (
+              <Text
+                key={i}
+                onClick={() => handleNavClick(path)}
+                color={isActive(path) ? 'pink.600' : 'gray.700'}
+                fontWeight={isActive(path) ? 'bold' : 'medium'}
+                cursor="pointer"
+              >
+                {path === '/' ? 'Home' : path.replace('/', '').replace(/\b\w/g, c => c.toUpperCase())}
+              </Text>
+            ))}
             {user ? (
               <>
-                <ChakraLink as={NextLink} href="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</ChakraLink>
+                <Text onClick={() => handleNavClick('/dashboard')} color={isActive('/dashboard') ? 'pink.600' : 'gray.700'} fontWeight={isActive('/dashboard') ? 'bold' : 'medium'} cursor="pointer">
+                  Dashboard
+                </Text>
                 <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
               </>
             ) : (

@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
-import { Box, Button, Input, Text, Checkbox, useToast, VStack, HStack, Heading, IconButton } from '@chakra-ui/react';
+import {
+  Box, Button, Input, Text, Checkbox, useToast, VStack, HStack, Heading, IconButton
+} from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
-import { doc, getDoc, updateDoc, addDoc, collection, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase'; // Firebase Firestore methods
+import { doc, getDoc, addDoc, collection, Timestamp, updateDoc, query, where, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { getAuth } from 'firebase/auth';
+import { markInviteCodeAsUsed, validateInviteCode } from '@/lib/invites';
 
 interface InvitationModalProps {
+  isVisible: boolean;
   onClose: () => void;
   referredBy?: string;
 }
 
-const InvitationModal: React.FC<InvitationModalProps> = ({ onClose, referredBy }) => {
+const getReferralBadge = (count: number): string => {
+  if (count >= 20) return '🧠 LoveGPT Luminary';
+  if (count >= 10) return '💖 Matchmaker Elite';
+  if (count >= 5) return "💌 Cupid's Assistant";
+  if (count >= 3) return '💞 Spark Spreader';
+  if (count >= 1) return '🌱 Seed Planter';
+  return '';
+};
+
+const InvitationModal: React.FC<InvitationModalProps> = ({ isVisible, onClose, referredBy }) => {
   const [inviteCode, setInviteCode] = useState('');
   const [showApplication, setShowApplication] = useState(false);
   const [form, setForm] = useState({
@@ -22,13 +36,11 @@ const InvitationModal: React.FC<InvitationModalProps> = ({ onClose, referredBy }
   });
   const toast = useToast();
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
-  // Check if the invitation code is valid and unused
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -38,47 +50,57 @@ const InvitationModal: React.FC<InvitationModalProps> = ({ onClose, referredBy }
     }
 
     try {
-      // Check Firestore if this code exists and hasn't been used
-      const invitationRef = doc(db, 'invitationCodes', inviteCode);
-      const invitationSnap = await getDoc(invitationRef);
-
-      if (!invitationSnap.exists()) {
-        toast({ status: 'error', description: '❌ Invalid invitation code.' });
+      const isValid = await validateInviteCode(inviteCode);
+      if (!isValid) {
+        toast({ status: 'error', description: '❌ Invalid or already used code.' });
         return;
       }
 
-      const invitationData = invitationSnap.data();
-      if (invitationData?.used) {
-        toast({ status: 'error', description: '❌ Invitation code has already been used.' });
-        return;
-      }
+      const authUser = getAuth().currentUser;
+      const usedBy = authUser?.uid || 'anonymous';
 
-      // If valid and unused, mark the code as used and proceed to onboarding
-      await updateDoc(invitationRef, { used: true });
+      await markInviteCodeAsUsed(inviteCode, usedBy);
+
+      if (authUser) {
+        const userRef = doc(db, 'users', authUser.uid);
+
+        const q = query(collection(db, 'invitationCodes'), where('referredBy', '==', authUser.uid));
+        const snap = await getDocs(q);
+        const referralCount = snap.size;
+        const badge = getReferralBadge(referralCount + 1);
+
+        await updateDoc(userRef, {
+          invitedByCode: inviteCode,
+          invitedAt: Timestamp.now(),
+          points: {
+            total: 100,
+            earnedFrom: {
+              referrals: 100,
+            }
+          },
+          badges: badge ? [badge] : [],
+        });
+      }
 
       toast({ status: 'success', description: '✅ Invitation code accepted. Welcome!' });
-      onClose(); // Close the modal
-      window.location.href = '/onboarding/Step1APhoneOTP'; // Redirect to onboarding
-
+      onClose();
+      window.location.href = '/onboarding/Step1APhoneOTP';
     } catch (err) {
       console.error('Error validating invitation code:', err);
       toast({ status: 'error', description: '❌ Something went wrong. Please try again.' });
     }
   };
 
-  // Submit the application for waitlist request
   const handleApplicationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const { firstName, lastName, email, phone, handle } = form;
-
     if (!firstName || !lastName || !email || !phone || !handle) {
       toast({ status: 'error', description: 'Please complete all fields.' });
       return;
     }
 
     try {
-      // Submit application to Firestore (Super Admin will review manually)
       await addDoc(collection(db, 'inviteApplications'), {
         ...form,
         referredBy: referredBy || null,
@@ -88,8 +110,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({ onClose, referredBy }
       });
 
       toast({ status: 'success', description: "🎉 Application received! We'll review and reach out soon." });
-      onClose(); // Close modal after submission
-
+      onClose();
     } catch (err) {
       console.error('Application submission failed:', err);
       toast({ status: 'error', description: 'Error submitting application. Try again.' });

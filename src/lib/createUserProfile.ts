@@ -1,7 +1,9 @@
-import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import { getUserProfile } from './getUserProfile';
 import { User } from 'firebase/auth';
+import { validateInviteCode, markInviteCodeAsUsed } from './invites'; // ✅ shared logic
+import { registerReferral } from './referrals'; // ✅ shared logic
 
 export async function createUserProfile(user: User | null): Promise<void> {
   if (!user) return;
@@ -9,7 +11,6 @@ export async function createUserProfile(user: User | null): Promise<void> {
   const localProfile = getUserProfile();
   const userRef = doc(db, 'users', user.uid);
 
-  // 🔁 Referral logic
   const inviteCode = localStorage.getItem('inviteCode');
   let referralInfo = {
     invitedBy: null,
@@ -18,15 +19,15 @@ export async function createUserProfile(user: User | null): Promise<void> {
   };
 
   if (inviteCode) {
-    const inviteRef = doc(db, 'invitationCodes', inviteCode);
-    const inviteSnap = await getDoc(inviteRef);
+    const isValid = await validateInviteCode(inviteCode);
+    if (isValid) {
+      await markInviteCodeAsUsed(inviteCode, user.uid);
+      await registerReferral(user.uid, inviteCode); // will create referrer + chain
 
-    if (inviteSnap.exists()) {
-      const inviteData = inviteSnap.data();
       referralInfo = {
-        invitedBy: inviteData.createdBy || null,
-        lineage: [...(inviteData.lineage || []), user.uid],
-        level: (inviteData.level || 0) + 1,
+        invitedBy: inviteCode,
+        lineage: [], // This will now be managed in registerReferral
+        level: 1,    // Optionally track direct level; chain itself is stored
       };
     }
   }
@@ -39,7 +40,7 @@ export async function createUserProfile(user: User | null): Promise<void> {
       zodiac: localProfile.zodiacSign || '',
       loveLanguages: [localProfile.loveLanguage || ''],
       bio: '',
-      gender: '', // Optional: Update from future input
+      gender: '',
       photos: [],
       lookingFor: localProfile.relationshipGoals || '',
       preferences: {},
@@ -77,6 +78,6 @@ export async function createUserProfile(user: User | null): Promise<void> {
       lastMessageSent: null,
       matchedUserIds: [],
     },
-    referral: referralInfo, // ✅ Include referral lineage here
+    referral: referralInfo, // ✅ still included, but now simplified
   });
 }

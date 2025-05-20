@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Input, Text, Heading, VStack } from '@chakra-ui/react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -11,7 +11,7 @@ import Header from '@/components/Header';  // Import Header
 import Footer from '@/components/Footer';  // Import Footer
 
 const Step4DOB: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [dobInput, setDobInput] = useState('');
   const [zodiacSign, setZodiacSign] = useState('');
   const [chineseZodiacSign, setChineseZodiacSign] = useState('');
@@ -26,12 +26,12 @@ const Step4DOB: React.FC = () => {
       setUid(userSession.phone);  // Assuming phone is used as UID in your case
       // If the user has already completed their profile, navigate directly to the next step
       if (userSession.onboardingComplete) {
-        history.push('/dashboard'); // Redirect to dashboard if onboarding is complete
+        navigate('/dashboard', { replace: true }); // Redirect to dashboard if onboarding is complete
       } else {
         fetchUserDetails(userSession.phone); // Fetch user details from Firestore
       }
     } else {
-      history.push('/'); // Redirect to homepage if the user is not logged in
+      navigate('/', { replace: true }); // Redirect to homepage if the user is not logged in
     }
   }, []);
 
@@ -131,7 +131,7 @@ const Step4DOB: React.FC = () => {
           },
           { merge: true }
         );
-        history.push('/pending18'); // Redirect to underage page
+        navigate('/pending18', { replace: true }); // Redirect to underage page
       } catch (error) {
         console.error('Error saving underage user:', error);
       }
@@ -153,7 +153,7 @@ const Step4DOB: React.FC = () => {
         { merge: true }
       );
 
-      history.push('/onboarding/step5-location');
+      navigate('/onboarding/step5-location', { replace: true });
     } catch (error) {
       console.error('Error saving DOB:', error);
       alert('Could not save your birthday. Try again.');
@@ -206,7 +206,7 @@ const Step4DOB: React.FC = () => {
       <AnimatedValueCue message={getPersonalizedCue()} />
 
       {/* Back Button (Navigates back to Homepage on Web) */}
-      <Button variant="link" colorScheme="blue" onClick={() => history.push('/')}>
+      <Button variant="link" colorScheme="blue" onClick={() => navigate('/')}>
         Back to Homepage
       </Button>
 

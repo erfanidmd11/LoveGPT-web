@@ -17,6 +17,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import StyledTextInput from '@/components/common/StyledTextInput';
 import BackButton from '@/components/common/BackButton';
 import { submitWaitlistRequest } from '../firebase/waitlist';
+import { db } from '../firebase/firebaseConfig';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function WaitlistRequest() {
   const navigation = useNavigation();
@@ -36,6 +38,7 @@ export default function WaitlistRequest() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle input changes
   const handleChange = (field, value) => {
@@ -61,15 +64,25 @@ export default function WaitlistRequest() {
     }
 
     try {
+      setIsSubmitting(true);
       const requestId = await submitWaitlistRequest(form);
+      
+      // Save data in Firestore to ensure progress is saved
+      await setDoc(doc(db, 'waitlistRequests', requestId), {
+        ...form,
+        createdAt: new Date(),
+      });
+
       Alert.alert(
         'You’re on our radar! 💌',
         `Your request has been received.\n\nWhen we’re ready to open more doors, you’ll be among the first to know. Keep an eye on your inbox — and don’t forget to check spam folders (sometimes ARIA’s magic lands there ✨).`
       );
-      navigation.navigate('Step1InvitationCode'); // After successful form submission, navigate to the next step
+      navigation.navigate('Step1InvitationCode', { replace: true }); // After successful form submission, navigate to the next step
     } catch (err) {
       console.error(err);
       Alert.alert('Error', 'Could not submit your request. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -143,8 +156,10 @@ export default function WaitlistRequest() {
               </View>
             ))}
 
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Submit Request</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
+              <Text style={styles.buttonText}>
+                {isSubmitting ? 'Submitting...' : 'Submit Request'}
+              </Text>
             </TouchableOpacity>
           </ScrollView>
 

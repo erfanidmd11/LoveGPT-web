@@ -1,13 +1,12 @@
-// utils/auth.ts
-import { getAuth, signOut } from 'firebase/auth';
-
+// src/utils/auth.ts
 export const getUserSession = () => {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  return user ? { phone: user.phoneNumber, profileComplete: user.profileComplete } : null;
-};
-
-export const logout = () => {
-  const auth = getAuth();
-  signOut(auth).catch((error) => console.error('Logout failed', error));
+  // Simulate fetching session or user data (replace this with actual authentication logic)
+  const user = getUserFromAuth();  // Replace with your actual user fetching logic (e.g., Firebase Auth)
+  
+  // Ensure that 'onboardingComplete' exists in the session object
+  return {
+    phone: user.phone,
+    profileComplete: user.profileComplete,
+    onboardingComplete: user.onboardingComplete || false,  // Add default value to handle undefined case
+  };
 };

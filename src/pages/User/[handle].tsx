@@ -1,3 +1,4 @@
+// src/pages/profile/[handle].tsx
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { db, auth } from '@/lib/firebase';
@@ -5,6 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import Head from 'next/head';
 import MainLayout from '@/layouts/MainLayout';
+import UserBadgeDisplay from '@/components/UserBadgeDisplay';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell
@@ -18,6 +20,7 @@ export default function PublicProfile() {
   const [profile, setProfile] = useState<any>(null);
   const [visibility, setVisibility] = useState<'private' | 'semi' | 'public'>('private');
   const [ownerUid, setOwnerUid] = useState('');
+  const [badge, setBadge] = useState('');
 
   useEffect(() => {
     if (!handle) return;
@@ -40,6 +43,7 @@ export default function PublicProfile() {
         const data = resumeSnap.data();
         setProfile(data);
         setVisibility(data.visibility || 'private');
+        setBadge(data.badges?.[0] || '');
       }
       setLoading(false);
     }
@@ -68,7 +72,10 @@ export default function PublicProfile() {
       </Head>
 
       <div className="max-w-3xl mx-auto px-6 py-16 text-gray-800">
-        <h1 className="text-3xl font-bold mb-4 text-indigo-700">💫 LoveGPT Public Resume</h1>
+        <h1 className="text-3xl font-bold mb-4 text-indigo-700 flex items-center gap-2">
+          💫 LoveGPT Public Resume
+          {badge && <UserBadgeDisplay badge={badge} size={32} />}
+        </h1>
 
         <div className="bg-white shadow p-6 rounded-xl space-y-6">
           {aiSummary && (
@@ -127,14 +134,7 @@ export default function PublicProfile() {
               <h2 className="text-xl font-semibold text-rose-600 mb-2">💞 Readiness Score</h2>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
-                  <Pie
-                    dataKey="value"
-                    data={readinessData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={90}
-                    label
-                  >
+                  <Pie dataKey="value" data={readinessData} cx="50%" cy="50%" outerRadius={90} label>
                     {readinessData.map((_, i) => (
                       <Cell key={`cell-${i}`} fill={pieColors[i % pieColors.length]} />
                     ))}

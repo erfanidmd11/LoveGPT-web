@@ -116,9 +116,9 @@ export default function OnboardingFlow() {
         const oneDay = 24 * 60 * 60 * 1000;
 
         if (!lastAsked || now.getTime() - lastAsked.getTime() > oneDay) {
-          navigation.navigate('ValueCuePrompt', { uid: userSnap.id });
+          navigation.navigate('ValueCuePrompt', { uid: userSnap.id }, { replace: true });
         } else {
-          navigation.navigate('Dashboard');
+          navigation.navigate('Dashboard', { replace: true });
         }
       } else {
         // Incomplete onboarding user

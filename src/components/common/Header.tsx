@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Heading, IconButton, useDisclosure, HStack, VStack, Link, Avatar, Menu, MenuButton, MenuList, MenuItem, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { getUserSession } from '@/utils/auth'; // Utility to check if user is logged in
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isOpen: drawerIsOpen, onOpen, onClose } = useDisclosure();
-  const history = useHistory();
+  const navigate = useNavigate();
   const userSession = getUserSession();  // Get user session to check if logged in
 
   const toggleDrawer = () => {
@@ -19,7 +19,7 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     // Logic to logout user
     // For now we will redirect to homepage, assuming a logout function exists
-    history.push('/');
+    navigate('/', { replace: true });
   };
 
   // Conditional rendering for logged in vs logged out
@@ -50,13 +50,15 @@ const Header: React.FC = () => {
         </Heading>
 
         {/* Hamburger Icon for Mobile */}
-        <IconButton
-          icon={<HamburgerIcon />}
-          onClick={toggleDrawer}
-          display={{ base: 'block', md: 'none' }}  // Only show on mobile
-          colorScheme="pink"
-          variant="outline"
-        />
+       <IconButton
+        icon={<HamburgerIcon />}
+        onClick={toggleDrawer}
+        display={{ base: 'block', md: 'none' }}
+        colorScheme="pink"
+        variant="outline"
+        aria-label="Open navigation menu"
+      />
+
 
         {/* Logged In or Out Menu */}
         {userSession ? loggedInMenu : loggedOutMenu}
