@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Ox_male: ZodiacNarrative = {
 summary: "A gentle powerhouse — emotionally wise, quietly strong, fiercely loyal, and deeply committed to a love that feels calm, purposeful, and soul-connected.",

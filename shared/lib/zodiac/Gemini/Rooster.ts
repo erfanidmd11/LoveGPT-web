@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Rooster_male: ZodiacNarrative = {
 summary: "A confident perfectionist — clever, polished, exacting, and deeper than he lets on.",

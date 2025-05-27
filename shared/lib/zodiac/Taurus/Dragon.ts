@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Taurus_Dragon_male: ZodiacNarrative = {
 summary: "A commanding builder — magnetic, intense, and built for legacy, not performance.",

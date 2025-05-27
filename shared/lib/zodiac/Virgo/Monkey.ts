@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Monkey_male: ZodiacNarrative = {
 summary: "A clever romantic — quick-witted, emotionally intelligent, secretly loyal, and far deeper than he lets on.",

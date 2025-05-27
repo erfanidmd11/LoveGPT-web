@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Rabbit_male: ZodiacNarrative = {
 summary: "A gentle innovator — visionary, emotionally reserved, deeply thoughtful, and fiercely loyal to a love that feels like freedom with emotional safety.",

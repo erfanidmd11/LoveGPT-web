@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aries_Ox_male: ZodiacNarrative = {
 summary: "A juggernaut of ambition and restraint — grounded fire with a blueprint.",

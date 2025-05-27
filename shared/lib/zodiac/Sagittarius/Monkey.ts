@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Monkey_male: ZodiacNarrative = {
 summary: "A wild-hearted thinker — witty, passionate, emotionally sharp, and loyal to the love that keeps up without trying to control his fire.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Rat_male: ZodiacNarrative = {
 summary: "A cerebral protector — observant, loyal, emotionally reserved, and always ten steps ahead of the noise.",

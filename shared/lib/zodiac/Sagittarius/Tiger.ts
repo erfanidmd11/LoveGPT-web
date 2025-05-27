@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Tiger_male: ZodiacNarrative = {
 summary: "A fearless flame — adventurous, passionate, emotionally intense, and loyal to the love that can handle his fire without trying to contain it.",

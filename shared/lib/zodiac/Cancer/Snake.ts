@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Snake_male: ZodiacNarrative = {
 summary: "A soulful strategist — emotionally deep, quietly protective, and more sensitive than he lets on.",

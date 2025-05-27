@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Monkey_male: ZodiacNarrative = {
 summary: "A charming disruptor — magnetic, clever, emotionally layered, and fiercely loyal to those who see past the show.",

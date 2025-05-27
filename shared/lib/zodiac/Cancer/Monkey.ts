@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Monkey_male: ZodiacNarrative = {
 summary: "A playful protector — charming, emotionally intuitive, and loyal with a twist of mischief.",

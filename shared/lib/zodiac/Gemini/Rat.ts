@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Rat_male: ZodiacNarrative = {
 summary: "A clever shapeshifter — magnetic, mentally agile, and more complex than he lets on.",

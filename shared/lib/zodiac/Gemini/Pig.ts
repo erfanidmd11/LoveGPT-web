@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Pig_male: ZodiacNarrative = {
 summary: "A soulful charmer — generous, witty, emotionally warm, and more romantic than he lets on.",

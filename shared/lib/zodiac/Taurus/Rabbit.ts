@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Taurus_Rabbit_male: ZodiacNarrative = {
 summary: "A calm creator — romantic, grounded, and deeply in tune with life's quiet beauty.",

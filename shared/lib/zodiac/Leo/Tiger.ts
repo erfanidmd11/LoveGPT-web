@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Tiger_male: ZodiacNarrative = {
 summary: "A fearless romantic — bold, magnetic, emotionally intense, and loyal to those who dare to hold his fire.",

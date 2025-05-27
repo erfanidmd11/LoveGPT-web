@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Goat_male: ZodiacNarrative = {
 summary: "A poetic thinker — emotionally sensitive, charmingly elusive, and more grounded than he seems.",

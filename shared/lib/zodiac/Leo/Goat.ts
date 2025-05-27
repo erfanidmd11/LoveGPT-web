@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Goat_male: ZodiacNarrative = {
 summary: "A poetic protector — romantic, emotionally rich, creative, and fiercely loyal to the people who see his softness as strength.",

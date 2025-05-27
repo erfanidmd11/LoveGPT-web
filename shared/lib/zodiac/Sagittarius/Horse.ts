@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Horse_male: ZodiacNarrative = {
 summary: "A wild-hearted philosopher — magnetic, emotionally bold, loyal on his own terms, and always chasing love that moves with him, not after him.",

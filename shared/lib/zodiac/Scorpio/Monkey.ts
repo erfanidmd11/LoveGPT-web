@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Monkey_male: ZodiacNarrative = {
 summary: "A magnetic disruptor — witty, emotionally layered, fiercely loyal once aligned, and always more serious about love than he lets on.",

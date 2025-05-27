@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Monkey_male: ZodiacNarrative = {
 summary: "A charismatic disruptor — clever, curious, emotionally complex, and fiercely loyal to a love that sparks his mind and honors his need for motion and meaning.",

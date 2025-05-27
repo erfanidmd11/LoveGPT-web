@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Ox_male: ZodiacNarrative = {
 summary: "A steady visionary — unconventional, grounded, emotionally composed, and fiercely loyal to a love that respects both his structure and his wild mind.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Pig_male: ZodiacNarrative = {
 summary: "A gentle provider — emotionally generous, thoughtful, deeply loyal, and grounded in love that's quiet but unwavering.",

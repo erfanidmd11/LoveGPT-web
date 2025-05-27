@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Monkey_male: ZodiacNarrative = {
 summary: "A clever romantic — emotionally layered, creatively electric, deeply intuitive, and fiercely loyal to a love that feeds both his freedom and his feelings.",

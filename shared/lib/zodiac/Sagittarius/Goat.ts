@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Goat_male: ZodiacNarrative = {
 summary: "A thoughtful wanderer — emotionally rich, creative, loyal once understood, and in search of a love that supports both his softness and his soul's desire to grow.",

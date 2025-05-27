@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aries_Goat_male: ZodiacNarrative = {
 summary: "A sensitive rebel — emotionally rich, fiercely creative, and quietly defiant.",

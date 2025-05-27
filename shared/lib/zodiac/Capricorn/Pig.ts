@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Pig_male: ZodiacNarrative = {
 summary: "A grounded romantic — steady, loyal, emotionally generous, and fiercely devoted to a love that honors both softness and structure.",

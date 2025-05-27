@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Dog_male: ZodiacNarrative = {
 summary: "A principled communicator — loyal, expressive, emotionally tuned, and wired for depth over drama.",

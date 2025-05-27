@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Snake_male: ZodiacNarrative = {
 summary: "A poised storm — emotionally intense, protective, strategic in love, and loyal to the truth that moves beneath the surface.",

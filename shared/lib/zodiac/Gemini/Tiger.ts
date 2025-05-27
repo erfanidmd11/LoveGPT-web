@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Tiger_male: ZodiacNarrative = {
 summary: "A magnetic storm — bold, clever, hard to hold, and harder to forget.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Ox_male: ZodiacNarrative = {
 summary: "A steadfast builder — loyal, disciplined, protective, and deeply committed to everything he cares about.",

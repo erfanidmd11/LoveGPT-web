@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Dragon_male: ZodiacNarrative = {
 summary: "A charismatic visionary — fierce, clever, and magnetic with a hidden romantic core.",

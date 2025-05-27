@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Goat_male: ZodiacNarrative = {
 summary: "A poetic guardian — emotionally deep, intuitive, quietly protective, and devoted to love that honors his softness as well as his strength.",

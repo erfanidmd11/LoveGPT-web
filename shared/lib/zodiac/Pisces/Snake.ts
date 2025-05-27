@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Snake_male: ZodiacNarrative = {
 summary: "A soulful tactician — emotionally deep, spiritually curious, quietly magnetic, and fiercely loyal to a love that respects both his mystery and his mind.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Rabbit_male: ZodiacNarrative = {
 summary: "A gentle protector — emotionally rich, intuitive, and built for love that actually lasts.",

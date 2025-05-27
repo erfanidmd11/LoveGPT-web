@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Ox_male: ZodiacNarrative = {
 summary: "A loyal anchor — emotionally deep, patient, and strong in all the ways that matter most.",

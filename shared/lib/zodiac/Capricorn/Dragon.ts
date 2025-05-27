@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Dragon_male: ZodiacNarrative = {
 summary: "A commanding visionary — focused, emotionally disciplined, fiercely loyal, and committed to building a love that stands the test of ego, time, and fire.",

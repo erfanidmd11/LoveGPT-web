@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Rooster_male: ZodiacNarrative = {
 summary: "A structured romantic — composed, emotionally intentional, loyal, and quietly powerful in how he shows up for the people and love he chooses.",

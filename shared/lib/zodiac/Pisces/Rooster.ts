@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Rooster_male: ZodiacNarrative = {
 summary: "A structured dreamer — emotionally sensitive, intellectually precise, quietly romantic, and fiercely loyal to a love that honors both his order and his depth.",

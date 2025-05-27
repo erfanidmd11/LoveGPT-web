@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Dragon_male: ZodiacNarrative = {
 summary: "A focused fire — confident, principled, emotionally deep, and fiercely loyal to the people and purpose he claims as his own.",

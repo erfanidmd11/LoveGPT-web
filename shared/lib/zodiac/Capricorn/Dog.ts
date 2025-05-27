@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Dog_male: ZodiacNarrative = {
   summary: "A loyal guardian — grounded, principled, emotionally restrained, and fiercely devoted to a love that honors loyalty, legacy, and quiet strength.",

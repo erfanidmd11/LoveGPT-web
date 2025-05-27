@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Dragon_male: ZodiacNarrative = {
 summary: "A soulful force — emotionally deep, spiritually charged, creatively bold, and fiercely loyal to a love that awakens his heart without containing his fire.",

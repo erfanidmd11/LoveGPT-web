@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Ox_male: ZodiacNarrative = {
 summary: "A steady builder — grounded, thoughtful, loyal, and devoted to creating love that feels like home, not theater.",

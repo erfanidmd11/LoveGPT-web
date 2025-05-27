@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Snake_male: ZodiacNarrative = {
 summary: "A focused fire — charming, emotionally intelligent, selective with his loyalty, and fiercely devoted to love that brings depth without drama.",

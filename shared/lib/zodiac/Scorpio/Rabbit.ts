@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Rabbit_male: ZodiacNarrative = {
 summary: "A poetic protector — emotionally rich, soft-spoken but intense, and deeply loyal to the love that respects his peace and his depth.",

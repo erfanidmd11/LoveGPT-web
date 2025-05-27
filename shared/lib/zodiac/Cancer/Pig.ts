@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Pig_male: ZodiacNarrative = {
 summary: "A gentle romantic — emotionally loyal, nurturing, and full of depth he rarely shows at first glance.",

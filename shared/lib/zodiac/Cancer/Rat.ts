@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Rat_male: ZodiacNarrative = {
 summary: "A guarded empath — intuitive, strategic, loyal, and quietly protective of his heart and people.",

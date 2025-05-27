@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Dragon_male: ZodiacNarrative = {
 summary: "A force of nature — emotionally powerful, fiercely loyal, and built to protect the love and vision he believes in, no matter the cost.",

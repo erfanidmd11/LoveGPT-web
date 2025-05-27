@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Rabbit_male: ZodiacNarrative = {
 summary: "A poetic protector — gentle, emotionally rich, quietly wise, and fiercely devoted to a love that feels soft, soulful, and completely safe.",

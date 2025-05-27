@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Goat_male: ZodiacNarrative = {
 summary: "A poetic protector — emotionally deep, spiritually intuitive, quietly resilient, and fiercely loyal to a love that nurtures his soul without disrupting his peace.",

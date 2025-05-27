@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Rat_male: ZodiacNarrative = {
 summary: "A visionary rebel — mentally sharp, emotionally elusive, fiercely independent, and loyal to a love that stimulates his mind and respects his freedom.",

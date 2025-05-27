@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Tiger_male: ZodiacNarrative = {
 summary: "A daring romantic — passionate, emotionally deep, charming, and fiercely loyal once his heart finds the one worth staying wild for.",

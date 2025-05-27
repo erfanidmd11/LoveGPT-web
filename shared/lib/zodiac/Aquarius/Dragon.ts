@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Dragon_male: ZodiacNarrative = {
 summary: "A cosmic disruptor — bold, idealistic, emotionally elusive, and fiercely loyal to a love that fuels his greatness without demanding his surrender.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Rabbit_male: ZodiacNarrative = {
 summary: "A poetic romantic — gentle, emotionally intuitive, charming, and loyal once he feels safe being fully seen.",

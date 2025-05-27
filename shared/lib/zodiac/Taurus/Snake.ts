@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Taurus_Snake_male: ZodiacNarrative = {
 summary: "A quiet strategist — composed, sensual, and always ten steps ahead.",

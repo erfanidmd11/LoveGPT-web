@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Goat_male: ZodiacNarrative = {
 summary: "A soulful romantic — creative, sensitive, loyal, and quietly anchored in deep emotional wisdom.",

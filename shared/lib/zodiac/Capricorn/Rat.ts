@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Rat_male: ZodiacNarrative = {
 summary: "A silent strategist — intelligent, emotionally steady, loyal once tested, and fully committed to love that builds legacy, not just sparks.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Horse_male: ZodiacNarrative = {
 summary: "A wild-hearted protector — emotionally intense, fiercely loyal, independent by nature, and unwavering once he chooses to stay.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Rat_male: ZodiacNarrative = {
 summary: "A dreamy strategist — emotionally deep, intellectually agile, quietly loyal, and fiercely devoted to a love that feels soulful, stable, and *real*.",

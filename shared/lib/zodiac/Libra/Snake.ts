@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Snake_male: ZodiacNarrative = {
 summary: "A graceful tactician — emotionally sharp, composed, loyal, and quietly intense in the way he protects love and connection that feels real.",

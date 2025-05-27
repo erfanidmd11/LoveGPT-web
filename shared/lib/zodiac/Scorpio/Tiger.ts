@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Tiger_male: ZodiacNarrative = {
 summary: "A bold-hearted storm — passionate, protective, emotionally deep, and loyal in a way that transforms every room and every relationship he commits to.",

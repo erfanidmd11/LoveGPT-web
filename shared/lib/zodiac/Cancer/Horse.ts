@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Horse_male: ZodiacNarrative = {
 summary: "A passionate protector — emotionally deep, restless at times, but always searching for love that feels like freedom and home.",

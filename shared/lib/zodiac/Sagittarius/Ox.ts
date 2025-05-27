@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Ox_male: ZodiacNarrative = {
 summary: "A grounded dreamer — ambitious, emotionally steady, deeply loyal, and built to love with integrity, presence, and long-term purpose.",

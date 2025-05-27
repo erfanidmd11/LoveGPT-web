@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Dog_male: ZodiacNarrative = {
 summary: "A loyal visionary — principled, emotionally reserved, fiercely independent, and deeply devoted to a love that aligns with his truth and protects his freedom.",

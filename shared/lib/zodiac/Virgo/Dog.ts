@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Dog_male: ZodiacNarrative = {
   summary: "A principled protector — loyal, emotionally grounded, and steady in the kind of love that builds peace, not noise.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Taurus_Pig_male: ZodiacNarrative = {
 summary: "A soulful provider — romantic, steady, and loyal to the people he lets into his circle.",

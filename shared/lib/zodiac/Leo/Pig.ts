@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Pig_male: ZodiacNarrative = {
 summary: "A heart-led protector — affectionate, emotionally generous, loyal, and steady in the kind of love that makes people feel safe and seen.",

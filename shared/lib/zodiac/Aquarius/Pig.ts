@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Pig_male: ZodiacNarrative = {
 summary: "A gentle visionary — idealistic, emotionally generous, intellectually curious, and fiercely loyal to a love that feels both free and deeply kind.",

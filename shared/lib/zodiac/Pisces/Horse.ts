@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Horse_male: ZodiacNarrative = {
 summary: "A soulful wanderer — emotionally vibrant, romantically idealistic, fiercely independent, and deeply loyal to a love that feels like freedom wrapped in trust.",

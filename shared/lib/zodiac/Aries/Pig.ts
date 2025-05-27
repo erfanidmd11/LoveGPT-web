@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aries_Pig_male: ZodiacNarrative = {
 summary: "A grounded giver — generous, affectionate, and not as gentle as he looks.",

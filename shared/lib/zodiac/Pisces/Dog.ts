@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Dog_male: ZodiacNarrative = {
 summary: "A loyal empath — emotionally wise, spiritually devoted, quietly protective, and fiercely committed to a love that feels honest, deep, and unwavering.",

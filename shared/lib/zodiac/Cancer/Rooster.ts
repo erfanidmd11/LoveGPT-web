@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Rooster_male: ZodiacNarrative = {
 summary: "A structured empath — protective, emotionally loyal, and sharper than his silence suggests.",

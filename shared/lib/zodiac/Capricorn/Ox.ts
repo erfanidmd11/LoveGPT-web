@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Ox_male: ZodiacNarrative = {
 summary: "A rock in motion — emotionally steady, deeply loyal, purpose-driven, and devoted to a love that stands the test of time and never flinches under pressure.",

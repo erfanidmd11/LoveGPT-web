@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Rabbit_male: ZodiacNarrative = {
 summary: "A poetic protector — emotionally steady, intuitive, loyal in silence, and devoted to love that feels like sanctuary, not spectacle.",

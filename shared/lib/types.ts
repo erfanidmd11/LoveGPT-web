@@ -1,6 +1,7 @@
 export type ZodiacNarrative = {
   summary: string;
-  compatibilityTips: string;
-  challengeThemes: string;
-  narrative: string;
+  qualities?: string[];
+  archetype?: string;
+  compatibilityNotes?: string;
+  [key: string]: any;
 };

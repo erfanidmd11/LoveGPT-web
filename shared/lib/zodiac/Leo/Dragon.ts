@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Dragon_male: ZodiacNarrative = {
 summary: "A commanding force — bold, magnetic, emotionally intense, and loyal to the love and vision he believes in.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Tiger_male: ZodiacNarrative = {
   summary: "A passionate protector — emotionally fierce, deeply loyal, and a storm with a soul.",

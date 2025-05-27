@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Horse_male: ZodiacNarrative = {
 summary: "A rebellious wanderer — charismatic, freedom-driven, emotionally complex, and fiercely loyal to a love that lets him roam without letting him go.",

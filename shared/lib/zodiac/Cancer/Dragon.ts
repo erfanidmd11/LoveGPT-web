@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Dragon_male: ZodiacNarrative = {
 summary: "A heart-led leader — passionate, protective, emotionally complex, and loyal to his core.",

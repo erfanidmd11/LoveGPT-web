@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Ox_male: ZodiacNarrative = {
 summary: "A cerebral builder — practical, focused, and more charming than you expect.",

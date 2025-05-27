@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Ox_male: ZodiacNarrative = {
 summary: "A composed romantic — emotionally grounded, loyal, and built to love with quiet strength and long-term intention.",

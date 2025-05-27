@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Snake_male: ZodiacNarrative = {
 summary: "A magnetic strategist — composed, fiercely loyal, emotionally intense, and always ten steps ahead of the room.",

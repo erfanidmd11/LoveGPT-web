@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Rooster_male: ZodiacNarrative = {
 summary: "A structured visionary — disciplined, emotionally driven, loyal, and committed to a love that grows with purpose and passion, not pressure.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Rat_male: ZodiacNarrative = {
 summary: "A spirited strategist — clever, bold, emotionally insightful, and loyal once he finds a love that respects his freedom and feeds his fire.",

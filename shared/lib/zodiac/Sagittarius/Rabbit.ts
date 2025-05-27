@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Rabbit_male: ZodiacNarrative = {
 summary: "A gentle flame — emotionally intelligent, idealistic, quietly loyal, and built to love with warmth, wisdom, and the freedom to evolve alongside someone who truly sees him.",

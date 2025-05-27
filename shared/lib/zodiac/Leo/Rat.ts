@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Rat_male: ZodiacNarrative = {
 summary: "A magnetic mind — confident, strategic, emotionally complex, and always leading with intention.",

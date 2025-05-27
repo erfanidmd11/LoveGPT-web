@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Horse_male: ZodiacNarrative = {
 summary: "A bold-hearted romantic — passionate, independent, magnetic, and fiercely loyal to love that keeps up without holding him back.",

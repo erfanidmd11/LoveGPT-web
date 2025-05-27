@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Leo_Rooster_male: ZodiacNarrative = {
 summary: "A refined leader — disciplined, charismatic, emotionally loyal, and built to protect what he earns and believes in.",

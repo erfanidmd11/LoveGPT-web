@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Snake_male: ZodiacNarrative = {
 summary: "A cerebral mystic — composed, intuitive, emotionally self-contained, and fiercely loyal to a love that values depth over display and freedom over force.",

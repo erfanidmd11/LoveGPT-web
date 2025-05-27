@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Cancer_Dog_male: ZodiacNarrative = {
 summary: "A grounded guardian — emotionally loyal, quietly intense, and built for long-term love and deep connection.",

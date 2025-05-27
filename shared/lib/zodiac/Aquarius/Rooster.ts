@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Rooster_male: ZodiacNarrative = {
 summary: "A precise visionary — disciplined, intellectually sharp, emotionally restrained, and fiercely loyal to a love that respects both his structure and his wild mind.",

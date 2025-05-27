@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Tiger_male: ZodiacNarrative = {
 summary: "A bold tactician — emotionally intense, disciplined, fiercely loyal, and built to lead with purpose while protecting the love he builds with everything he's got.",

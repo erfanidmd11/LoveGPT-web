@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aries_Snake_male: ZodiacNarrative = {
 summary: "Calculated fire — an enigmatic thinker with passion in his eyes and strategy in his bones.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Horse_male: ZodiacNarrative = {
 summary: "A magnetic free spirit — charming, passionate, emotionally sharp, and loyal to the love that lets him move *and* stay without losing himself.",

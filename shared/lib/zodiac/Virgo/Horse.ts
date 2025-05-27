@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Horse_male: ZodiacNarrative = {
 summary: "A thoughtful rebel — energetic, principled, emotionally sharp, and loyal to the love that lets him run *and* stay.",

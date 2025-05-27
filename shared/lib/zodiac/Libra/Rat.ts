@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Rat_male: ZodiacNarrative = {
 summary: "A smooth realist — clever, emotionally attuned, loyal once committed, and always reading more than he says.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Rat_female: ZodiacNarrative = {
 summary: "A seductive strategist — emotionally intelligent, loyal, mysterious, and driven by truth she doesn't always speak aloud.",

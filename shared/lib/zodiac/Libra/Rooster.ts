@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Rooster_male: ZodiacNarrative = {
 summary: "A balanced perfectionist — loyal, emotionally intelligent, structured in love, and protective of the peace and values he devotes himself to.",

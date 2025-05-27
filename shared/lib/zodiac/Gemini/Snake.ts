@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Snake_male: ZodiacNarrative = {
 summary: "A seductive strategist — intelligent, emotionally guarded, and always a few moves ahead.",

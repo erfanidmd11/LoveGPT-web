@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Snake_male: ZodiacNarrative = {
 summary: "A quiet master — emotionally deep, intellectually sharp, loyal once tested, and built to love with consistency, care, and no tolerance for games.",

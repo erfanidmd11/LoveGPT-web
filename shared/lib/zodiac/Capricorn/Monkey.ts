@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Monkey_male: ZodiacNarrative = {
 summary: "A calculated innovator — strategic, witty, emotionally self-contained, and fiercely loyal to a love that respects both his mind and his mission.",

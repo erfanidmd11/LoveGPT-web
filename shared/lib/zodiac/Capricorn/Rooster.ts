@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Rooster_male: ZodiacNarrative = {
 summary: "A disciplined visionary — precise, principled, emotionally restrained, and fiercely loyal to a love that respects his structure and fuels his purpose.",

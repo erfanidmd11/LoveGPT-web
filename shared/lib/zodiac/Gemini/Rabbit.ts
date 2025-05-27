@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Gemini_Rabbit_male: ZodiacNarrative = {
 summary: "A gentle charmer — emotionally perceptive, quick-witted, and wired for connection.",

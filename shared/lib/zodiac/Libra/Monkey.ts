@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Monkey_male: ZodiacNarrative = {
 summary: "A clever romantic — charming, witty, emotionally intelligent, and loyal to the love that brings joy *and* depth.",

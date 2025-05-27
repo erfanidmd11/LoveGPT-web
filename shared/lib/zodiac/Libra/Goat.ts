@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Goat_male: ZodiacNarrative = {
 summary: "A poetic romantic — emotionally intuitive, loyal, and quietly protective of the peace and love he carefully creates.",

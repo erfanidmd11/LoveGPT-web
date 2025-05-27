@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Tiger_male: ZodiacNarrative = {
 summary: "A passionate dreamer — emotionally intense, creatively bold, fiercely loyal, and deeply devoted to a love that lets him feel everything without losing himself.",

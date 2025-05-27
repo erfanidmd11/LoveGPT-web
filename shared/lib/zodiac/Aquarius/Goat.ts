@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Goat_male: ZodiacNarrative = {
 summary: "A thoughtful rebel — emotionally nuanced, creatively driven, quietly loyal, and fiercely devoted to a love that honors both his depth and his need for space.",

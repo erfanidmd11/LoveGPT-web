@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Pisces_Pig_male: ZodiacNarrative = {
 summary: "A tender idealist — emotionally generous, spiritually kind, deeply romantic, and fiercely loyal to a love that feels peaceful, wholehearted, and true.",

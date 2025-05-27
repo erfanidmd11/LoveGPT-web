@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Sagittarius_Dragon_male: ZodiacNarrative = {
 summary: "A fearless visionary — passionate, emotionally sharp, loyal to truth and freedom, and devoted to a love that inspires growth and ignites legacy.",

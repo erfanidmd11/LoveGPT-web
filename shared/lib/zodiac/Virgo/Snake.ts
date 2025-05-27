@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Snake_male: ZodiacNarrative = {
 summary: "A thoughtful strategist — quiet, emotionally intelligent, loyal, and always in control of his depth, until someone proves they can handle it.",

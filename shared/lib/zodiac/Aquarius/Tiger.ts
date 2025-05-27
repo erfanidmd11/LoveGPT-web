@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Aquarius_Tiger_female: ZodiacNarrative = {
 summary: "A cosmic catalyst — fierce, free-spirited, emotionally complex, and fiercely loyal to a love that fuels her fire without trying to cage her soul.",

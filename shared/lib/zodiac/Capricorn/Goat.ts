@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Goat_male: ZodiacNarrative = {
 summary: "A patient architect — wise, grounded, quietly intense, and deeply loyal to a love that mirrors his depth and respects his solitude.",

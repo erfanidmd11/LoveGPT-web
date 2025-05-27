@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Libra_Dragon_male: ZodiacNarrative = {
 summary: "A magnetic force — bold, emotionally deep, protective, and fiercely loyal to a love that elevates both passion and purpose.",

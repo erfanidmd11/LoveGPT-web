@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Capricorn_Horse_male: ZodiacNarrative = {
 summary: "A grounded force with wild vision — ambitious, independent, emotionally reserved, and fiercely loyal to a love that respects his pace and purpose.",

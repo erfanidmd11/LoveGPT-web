@@ -1,4 +1,4 @@
-shared/lib/zodiac/index.ts on web: import { ZodiacNarrative } from '..';
+shared/lib/zodiac/index.ts on web: import { ZodiacNarrative } from '../../types';
 
 shared/lib/zodiac/index.ts on web: import { ZodiacNarrative } from '../../types';
 

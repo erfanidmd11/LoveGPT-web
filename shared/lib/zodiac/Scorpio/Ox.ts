@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Ox_female: ZodiacNarrative = {
   summary: "A sacred sentinel — deeply loyal, emotionally grounded, quietly intense, and protective of the peace she creates and the love she chooses.",

@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Scorpio_Rooster_male: ZodiacNarrative = {
 summary: "A composed warrior — emotionally intense, precise in love, protective of his peace, and fiercely loyal once he chooses to stand beside someone fully.",

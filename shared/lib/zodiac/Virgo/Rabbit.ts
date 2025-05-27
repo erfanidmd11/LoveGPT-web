@@ -1,4 +1,4 @@
-import { ZodiacNarrative } from '..';
+import { ZodiacNarrative } from '../../types';
 
 export const Virgo_Rabbit_male: ZodiacNarrative = {
 summary: "A poetic realist — emotionally grounded, quietly romantic, deeply loyal, and protective of peace and depth in every connection.",
