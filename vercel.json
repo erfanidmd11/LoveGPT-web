@@ -1,0 +1,11 @@
+{
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_IPINFO_TOKEN": "@next_public_ipinfo_token"
+    }
+  },
+  "rewrites": [],
+  "projectSettings": {
+    "framework": "nextjs"
+  }
+}

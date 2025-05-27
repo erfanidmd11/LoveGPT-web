@@ -12,7 +12,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -35,6 +35,11 @@ export default function Step31OpennessLevel() {
   const [openness, setOpenness] = useState('');
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step31OpennessLevel').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     if (uid) {
       loadOpennessLevel();
     }
@@ -62,6 +67,10 @@ export default function Step31OpennessLevel() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step31', values);
+      await saveAnswerToFirestore(uid, 'Step31', values);
+    }
     if (!openness) {
       Alert.alert('Choose One', 'Please select how open you consider yourself.');
       return;
@@ -86,7 +95,7 @@ export default function Step31OpennessLevel() {
       onboardingMemory.opennessLevel = openness;
       onboardingMemory.lastStepCompleted = 31;
 
-      navigation.replace('Step32ProfileSetup', { uid }); // ✅ Move to Step 32
+      router.replace("/onboarding/" + 'Step32ProfileSetup', { uid }.toLowerCase() + "?uid=" + uid); // ✅ Move to Step 32
     } catch (error) {
       console.error('Error saving openness level:', error);
       Alert.alert('Error', 'Could not save your response. Try again.');
@@ -94,7 +103,7 @@ export default function Step31OpennessLevel() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -156,7 +165,7 @@ export default function Step31OpennessLevel() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!openness}

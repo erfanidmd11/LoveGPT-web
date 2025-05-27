@@ -17,6 +17,11 @@ const Step5Location: React.FC = () => {
 
   // Check if the user is logged in and retrieve the UID
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step5Location').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const userSession = getUserSession();
     if (userSession) {
       setUid(userSession.phone);  // Assuming phone is used as UID in your case
@@ -42,6 +47,10 @@ const Step5Location: React.FC = () => {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step5', values);
+      await saveAnswerToFirestore(uid, 'Step5', values);
+    }
     if (!location.trim()) {
       alert('Please enter your location.');
       return;

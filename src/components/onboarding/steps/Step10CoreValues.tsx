@@ -1,285 +1,192 @@
+// ✅ Full Web-Compatible Replacement for Step10CoreValues
+// Replaces `react-native-draggable-flatlist` with `@dnd-kit/sortable`
+// Retains all logic and styling as close as possible for production testing
+
 import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Pressable,
-  Platform,
-  Keyboard,
-  ActivityIndicator,
-} from 'react-native';
-import DraggableFlatList from 'react-native-draggable-flatlist';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebaseConfig';
-import ProgressBar from '@/components/common/ProgressBar';
-import BackButton from '@/components/common/BackButton';
-import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
-import Header from '@/components/Header';  // Import Header
-import Footer from '@/components/Footer';  // Import Footer
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { useRouter } from 'next/router';
+import { CSS } from '@dnd-kit/utilities';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { saveAnswer, getAnswer, saveAnswerToFirestore } from '@/lib/saveAnswer';
 import onboardingMemory from '@/lib/onboardingMemory';
+import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
+import ProgressBar from '@/components/common/ProgressBar';
+import NavigationButtons from '@/components/common/NavigationButtons';
 
 const initialValues = [
-  'Family',
-  'Faith',
-  'Career',
-  'Adventure',
-  'Stability',
-  'Creativity',
-  'Growth',
-  'Freedom',
-  'Kindness',
-  'Health',
-  'Wisdom',
-  'Service',
+  'Family', 'Faith', 'Career', 'Adventure', 'Stability',
+  'Creativity', 'Growth', 'Freedom', 'Kindness', 'Health',
+  'Wisdom', 'Service',
 ];
 
-export default function Step10CoreValues() {
-  const navigation = useNavigation<any>();
-  const route = useRoute<any>();
-  const uid = route?.params?.uid;
+export default function Step10CoreValues({ phone, onNext, onBack }) {
+  const router = useRouter();
+  const uid = router.query.uid as string;
 
   const [values, setValues] = useState<{ key: string; label: string }[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step10CoreValues').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
+
     const fetchValues = async () => {
-      if (!uid) return;
+      if (!phone) return;
+      if (onboardingMemory.coreValuesRanked.length) {
+        setValues(onboardingMemory.coreValuesRanked);
+        return;
+      }
+
       try {
-        if (onboardingMemory.coreValuesRanked.length) {
-          setValues(onboardingMemory.coreValuesRanked);
-        } else {
-          const userRef = doc(db, 'users', uid);
-          const snap = await getDoc(userRef);
-          if (snap.exists()) {
-            const data = snap.data();
-            if (data?.coreValuesRanked) {
-              const sorted = data.coreValuesRanked
-                .sort((a: any, b: any) => a.rank - b.rank)
-                .map((item: any) => ({ key: item.value, label: item.value }));
-              setValues(sorted);
-              onboardingMemory.coreValuesRanked = sorted;
-            } else {
-              const defaults = initialValues.map((v) => ({ key: v, label: v }));
-              setValues(defaults);
-              onboardingMemory.coreValuesRanked = defaults;
-            }
+        const userRef = doc(db, 'users', phone);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data?.coreValuesRanked) {
+            const sorted = data.coreValuesRanked
+              .sort((a, b) => a.rank - b.rank)
+              .map((item) => ({ key: item.value, label: item.value }));
+            setValues(sorted);
+            onboardingMemory.coreValuesRanked = sorted;
+            return;
           }
         }
+        const defaults = initialValues.map(v => ({ key: v, label: v }));
+        setValues(defaults);
+        onboardingMemory.coreValuesRanked = defaults;
       } catch (err) {
         console.error('Error loading core values:', err);
       }
     };
     fetchValues();
-  }, [uid]);
+  }, [phone, uid]);
 
   const handleContinue = async () => {
-    if (!uid) {
-      Alert.alert('Error', 'Missing user ID. Cannot save.');
-      return;
-    }
-
+    if (!phone) return;
     const rankedCoreValues = values.map((item, index) => ({
       value: item.label,
       rank: index + 1,
     }));
 
     setSaving(true);
-
     try {
-      await setDoc(
-        doc(db, 'users', uid),
-        {
-          coreValuesRanked: rankedCoreValues,
-          onboardingStep: 10,
-        },
-        { merge: true }
-      );
+      await setDoc(doc(db, 'users', phone), {
+        coreValuesRanked: rankedCoreValues,
+        onboardingStep: 10,
+      }, { merge: true });
 
       onboardingMemory.coreValuesRanked = values;
 
-      navigation.replace('Step11Personality', { uid });
+      if (uid) {
+        saveAnswer('Step10CoreValues', values);
+        await saveAnswerToFirestore(uid, 'Step10CoreValues', values);
+      }
+
+      onNext();
     } catch (error) {
       console.error('Error saving core values:', error);
-      Alert.alert('Error', 'Could not save your core values. Try again.');
+      alert('Could not save your core values. Try again.');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
-  const getPersonalizedCue = () => {
-    if (!values.length) return '';
-    const top = values[0]?.label;
-    const second = values[1]?.label;
-    if (top && second) {
-      return `🌟 You treasure "${top}" most, closely followed by "${second}". ARIA sees your soul's beautiful blueprint.`;
-    }
-    if (top) {
-      return `🌟 "${top}" stands as your guiding light.`;
-    }
-    return '';
-  };
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor)
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fafb' }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    <div className="p-6 max-w-xl mx-auto">
+      <ProgressBar step={10} totalSteps={32} />
+      <h2 className="text-xl font-bold text-center text-pink-600 mb-2">Step 10 of 32 — Core Values</h2>
+      <p className="text-center text-gray-700 mb-3">
+        💡 <strong>Drag and drop</strong> to reorder your values.
+      </p>
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis]}
+        onDragEnd={({ active, over }) => {
+          if (active.id !== over?.id) {
+            const oldIndex = values.findIndex(v => v.key === active.id);
+            const newIndex = values.findIndex(v => v.key === over?.id);
+            const reordered = arrayMove(values, oldIndex, newIndex);
+            setValues(reordered);
+          }
+        }}
       >
-        <Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
-          <View style={styles.container}>
-            {/* Header */}
-            <Header />
+        <SortableContext items={values.map(v => v.key)} strategy={verticalListSortingStrategy}>
+          <ul className="space-y-2">
+            {values.map((item) => (
+              <SortableItem key={item.key} id={item.key} label={item.label} />
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
 
-            <ProgressBar current={10} total={32} />
-            <Text style={styles.progressText}>Step 10 of 32 — Core Values</Text>
-            <Text style={styles.title}>Rank Your Core Values</Text>
-            <Text style={styles.instructions}>
-              💡 <Text style={{ fontWeight: 'bold' }}>PRESS AND HOLD</Text> to drag and reorder your values.
-            </Text>
+      {values.length > 0 && (
+        <div className="my-4 bg-gray-100 p-3 rounded">
+          <AnimatedValueCue message={
+            `🌟 You treasure "${values[0]?.label}" most${values[1] ? `, closely followed by "${values[1].label}".` : '.'}`
+          } />
+        </div>
+      )}
 
-            <DraggableFlatList
-              data={values}
-              onDragEnd={({ data }) => setValues(data)}
-              keyExtractor={(item) => item.key}
-              renderItem={({ item, drag, isActive }) => (
-                <TouchableOpacity
-                  style={[styles.wordChip, isActive && styles.activeItem]}
-                  onLongPress={drag}
-                >
-                  <Text style={styles.wordText}>{item.label}</Text>
-                </TouchableOpacity>
-              )}
-              activationDistance={10}
-              scrollEnabled
-              showsVerticalScrollIndicator
-              contentContainerStyle={{ paddingBottom: 200 }}
-            />
-          </View>
-        </Pressable>
-      </KeyboardAvoidingView>
-
-      <View style={styles.footer}>
-        {values.length > 0 && (
-          <View style={styles.ariaContainer}>
-            <AnimatedValueCue message={getPersonalizedCue()} />
-          </View>
-        )}
-
-        <View style={styles.buttonRow}>
-          <BackButton onPress={handleBack} disabled={saving} />
-          <TouchableOpacity
-            style={[styles.nextButton, saving && styles.buttonDisabled]}
-            onPress={handleContinue}
-            disabled={saving}
-          >
-            {saving ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Next</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
+      <NavigationButtons
+        onBack={onBack}
+        onNext={handleContinue}
+        loading={saving}
+        nextLabel="Next"
+      />
+    </div>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 10,
-  },
-  progressText: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: '#6b7280',
-    marginTop: 4,
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginBottom: 4,
-    textAlign: 'center',
-    color: '#111827',
-  },
-  instructions: {
-    fontSize: 14,
-    color: '#ef4444',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  wordChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    marginVertical: 6,
-    marginHorizontal: 10,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-  },
-  activeItem: {
-    backgroundColor: '#f9a8d4',
-    ...Platform.select({
-      web: {
-        boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
-      },
-      default: {
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 6,
-        elevation: 6,
-      },
-    }),
-  },
-  wordText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  footer: {
-    backgroundColor: '#f9fafb',
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 16,
-    borderTopWidth: 1,
-    borderColor: '#e5e7eb',
-  },
-  ariaContainer: {
-    marginBottom: 8,
-    backgroundColor: '#f3f4f6',
-    padding: 12,
-    borderRadius: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  nextButton: {
-    backgroundColor: '#ec4899',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  buttonDisabled: {
-    backgroundColor: '#f9a8d4',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});
+function SortableItem({ id, label }: { id: string; label: string }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    cursor: 'grab',
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      className={`px-4 py-3 bg-white border rounded-lg shadow-sm ${isDragging ? 'ring-2 ring-pink-400' : ''}`}
+    >
+      <span className="font-medium text-gray-800">{label}</span>
+    </li>
+  );
+}

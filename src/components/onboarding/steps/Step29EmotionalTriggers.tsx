@@ -12,7 +12,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -58,6 +58,11 @@ export default function Step29EmotionalTriggers() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step29EmotionalTriggers').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadEmotionalTriggers = async () => {
       if (!uid) return;
       try {
@@ -89,6 +94,10 @@ export default function Step29EmotionalTriggers() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step29', values);
+      await saveAnswerToFirestore(uid, 'Step29', values);
+    }
     if (!uid) {
       Alert.alert('Error', 'Missing user ID. Cannot save.');
       return;
@@ -108,7 +117,7 @@ export default function Step29EmotionalTriggers() {
       );
 
       onboardingMemory.emotionalTriggers = selected;
-      navigation.replace('Step30ConditioningBeliefs', { uid }); // 🚀 move to Step30
+      router.replace("/onboarding/" + 'Step30ConditioningBeliefs', { uid }.toLowerCase() + "?uid=" + uid); // 🚀 move to Step30
     } catch (error) {
       console.error('Error saving emotional triggers:', error);
       Alert.alert('Error', 'Could not save your selection. Try again.');
@@ -118,7 +127,7 @@ export default function Step29EmotionalTriggers() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -171,7 +180,7 @@ export default function Step29EmotionalTriggers() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={selected.length === 0}

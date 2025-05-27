@@ -9,11 +9,11 @@ import {
   Keyboard,
   Pressable,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
-import BackButton from '@/components/common/BackButton';
+import NavigationButtons from '@/components/common/NavigationButtons';
 import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
 import { saveAnswer } from '@/lib/saveAnswer'; // ✅
 import Header from '@/components/Header';  // Import Header
@@ -30,8 +30,8 @@ const relationshipOptions = [
 ];
 
 export default function Step7RelationshipStatus() {
-  const navigation = useNavigation();
-  const route = useRoute();
+  const router = useRouter();
+  const uid = router.query.uid as string;
   const uid = route?.params?.uid; // ✅ Get UID from route.params
 
   const [status, setStatus] = useState('');
@@ -39,6 +39,11 @@ export default function Step7RelationshipStatus() {
   const [firstName, setFirstName] = useState('');
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step7RelationshipStatus').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     (async () => {
       if (uid) {
         const userRef = doc(db, 'users', uid);
@@ -54,6 +59,10 @@ export default function Step7RelationshipStatus() {
   }, [uid]);
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step7', values);
+      await saveAnswerToFirestore(uid, 'Step7', values);
+    }
     if (!status) {
       Alert.alert('Missing Info', 'Please select your relationship status.');
       return;
@@ -90,10 +99,10 @@ export default function Step7RelationshipStatus() {
         await saveAnswer('idealAgeRange', ageRange);
       }
 
-      navigation.replace('Step8Intentions', {
+      router.replace("/onboarding/" + 'Step8Intentions', {
         uid, // ✅ Pass uid
         relationshipStatus: status, // ✅ Pass selected status
-      });
+      }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving relationship status:', error);
       Alert.alert('Error', 'Could not save your answer. Try again.');

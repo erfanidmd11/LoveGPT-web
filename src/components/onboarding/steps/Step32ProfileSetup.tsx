@@ -15,7 +15,7 @@ import {
   Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -25,8 +25,7 @@ import onboardingMemory from '@/lib/onboardingMemory';
 
 export default function Step32ProfileSetup() {
   const navigation = useNavigation<any>();
-  const route = useRoute<any>();
-  const uid = route?.params?.uid;
+  const route =   const uid = route?.params?.uid;
   const userDOB = route?.params?.userDOB;
 
   const [photo, setPhoto] = useState<string | null>(null);
@@ -35,6 +34,11 @@ export default function Step32ProfileSetup() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step32ProfileSetup').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     if (uid) {
       loadProfileSetup();
     }
@@ -111,7 +115,7 @@ export default function Step32ProfileSetup() {
       onboardingMemory.idealRelationship = idealRelationship;
       onboardingMemory.lastStepCompleted = 32;
 
-      navigation.replace('DashboardHome', { uid }); // ✅ Move to Dashboard!
+      router.replace("/onboarding/DashboardHome?uid=" + uid); // ✅ Move to Dashboard!
     } catch (error) {
       console.error('Error saving profile setup:', error);
       Alert.alert('Error', 'Could not save your profile. Try again.');
@@ -121,7 +125,7 @@ export default function Step32ProfileSetup() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -149,7 +153,7 @@ export default function Step32ProfileSetup() {
         <Pressable onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 220 }}>
             <View style={styles.container}>
-              <ProgressBar current={32} total={32} />
+              <ProgressBar step=32 totalSteps=32 />
               <Text style={styles.title}>Create Your Public Profile</Text>
 
               <TouchableOpacity style={styles.photoButton} onPress={pickPhoto}>
@@ -196,7 +200,7 @@ export default function Step32ProfileSetup() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleFinish}
           onBack={handleBack}
           nextDisabled={!photo || bio.trim().length < 10 || idealRelationship.trim().length < 10}

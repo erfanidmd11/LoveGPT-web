@@ -12,7 +12,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -54,6 +54,11 @@ export default function Step25AttachmentStyle() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step25AttachmentStyle').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadAttachmentStyle = async () => {
       if (!uid) return;
       try {
@@ -93,6 +98,10 @@ export default function Step25AttachmentStyle() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step25', values);
+      await saveAnswerToFirestore(uid, 'Step25', values);
+    }
     if (!selected) {
       Alert.alert('Select One', 'Please choose the attachment style that feels closest to you.');
       return;
@@ -116,7 +125,7 @@ export default function Step25AttachmentStyle() {
       );
 
       onboardingMemory.attachmentStyle = selected;
-      navigation.replace('Step26FinancialPhilosophy', { uid }); // 🚀 Go to next step
+      router.replace("/onboarding/" + 'Step26FinancialPhilosophy', { uid }.toLowerCase() + "?uid=" + uid); // 🚀 Go to next step
     } catch (error) {
       console.error('Error saving attachment style:', error);
       Alert.alert('Error', 'Could not save your selection. Try again.');
@@ -126,7 +135,7 @@ export default function Step25AttachmentStyle() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -190,7 +199,7 @@ export default function Step25AttachmentStyle() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!selected}

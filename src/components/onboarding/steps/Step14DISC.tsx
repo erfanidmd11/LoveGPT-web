@@ -13,7 +13,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -45,6 +45,11 @@ export default function Step14DISC() {
   ];
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step14DISC').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadDISCAnswers = async () => {
       if (!uid) return;
       try {
@@ -88,6 +93,10 @@ export default function Step14DISC() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step14', values);
+      await saveAnswerToFirestore(uid, 'Step14', values);
+    }
     const allAnswered = discQuestions.every((q) => answers[q.key]);
     if (!allAnswered) {
       Alert.alert('Missing Info', 'Please answer all questions to continue.');
@@ -112,7 +121,7 @@ export default function Step14DISC() {
       );
 
       onboardingMemory.discAnswers = answers; // ✅ Save locally
-      navigation.replace('Step15CoreValueIndex', { uid });
+      router.replace("/onboarding/" + 'Step15CoreValueIndex', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving DISC data:', error);
       Alert.alert('Error', 'Could not save your DISC profile. Try again.');
@@ -122,7 +131,7 @@ export default function Step14DISC() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -196,7 +205,7 @@ export default function Step14DISC() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!Object.keys(answers).length}

@@ -1,11 +1,11 @@
-import React, { createContext } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
 import ARIAChat from '@/components/ARIAChat'; // Enable chat from this point forward
 
 export default function WelcomeToLoveGPT({ user }) {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const firstName = user?.firstName || 'You';
   const readiness = user?.readinessScore || 75;
@@ -23,7 +23,7 @@ export default function WelcomeToLoveGPT({ user }) {
 
       <AnimatedValueCue message="This isn’t just another app. It’s your emotional mirror. Your mentor in growth. Your companion in clarity. Let’s build something extraordinary — together." />
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Dashboard')}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/dashboard')}>
         <Text style={styles.buttonText}>Start Exploring →</Text>
       </TouchableOpacity>
 

@@ -8,28 +8,25 @@ import {
   Platform,
   Image
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import ProgressBar from '@/components/common/ProgressBar';
-import AnimatedTypingText from '@/components/common/AnimatedTypingText'; // Custom typing animation component
+import AnimatedTypingText from '@/components/common/AnimatedTypingText';
 import onboardingMemory from '@/lib/onboardingMemory';
 import Footer from '@/components/common/Footer';
-import { zodiacPersonalityMap } from '@/lib/zodiacPersonalityMap';
-import {
-  getWesternZodiacSign,
-  getChineseZodiacSign,
-} from '@/lib/zodiacProfiles';
+import { getZodiacNarrative } from '@/../shared/lib/zodiacMap';
+import { getWesternZodiacSign, getChineseZodiacSign } from '@/lib/zodiacProfiles';
+import { getAnswer } from '@shared/saveAnswer';
 
-const ARIAAvatar = require('@/assets/aria-avatar.png'); // Path to ARIA's avatar image
+const ARIAAvatar = require('@/assets/aria-avatar.png');
 
 export default function Step12ProfileReflection() {
-  const navigation = useNavigation<any>();
-  const route = useRoute<any>();
-  const uid = route?.params?.uid;
+  const router = useRouter();
+  const uid = router.query.uid as string;
 
   const [fullStory, setFullStory] = useState('');
   const [quote, setQuote] = useState('');
   const [readyToTypeStory, setReadyToTypeStory] = useState(false);
-  const [isTyping, setIsTyping] = useState(true); // To control typing animation
+  const [isTyping, setIsTyping] = useState(true);
 
   const user = onboardingMemory.profile || {};
   const gender = onboardingMemory.gender || 'male';
@@ -39,19 +36,26 @@ export default function Step12ProfileReflection() {
 
   const western = dob ? getWesternZodiacSign(dob.getMonth() + 1, dob.getDate()) : 'Unknown';
   const chinese = dob ? getChineseZodiacSign(dob.getFullYear()) : { sign: 'Unknown' };
-  const zodiacKey = `${western}_${chinese.sign}_${gender}`;
-  const zodiacProfile = zodiacPersonalityMap[zodiacKey] || {};
+  const zodiacNarrative = getZodiacNarrative(western, chinese.sign, gender);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step12ProfileReflection').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
+
     const generateFullStory = () => {
       let story = '';
-      story += generateNarrative(firstName, age, gender, western, chinese.sign);
-      story += '\n\n';
-      story += generateArchetype(zodiacProfile);
-      story += '\n\n';
-      story += generateLensInsight(zodiacProfile);
-      story += '\n\n';
-      story += generateCallToAction(firstName);
+
+      if (zodiacNarrative) {
+        story += `Hey ${firstName}, you’re about to see what ARIA sees when she looks at your soul blueprint.\n\n`;
+        story += `Based on your energy as a ${gender} ${western} born in the Year of the ${chinese.sign}, here’s what you need to know...\n\n`;
+        story += zodiacNarrative.fullNarrative;
+      } else {
+        story += `Hi ${firstName}, ARIA couldn’t find your full profile at this moment, but your journey is still sacred.`;
+      }
+
       return story;
     };
 
@@ -60,27 +64,25 @@ export default function Step12ProfileReflection() {
 
     setTimeout(() => {
       setReadyToTypeStory(true);
-      setIsTyping(false); // Stop typing animation after it finishes
-    }, 3000); // Simulating a delay for typing
-  }, []);
+      setIsTyping(false);
+    }, 3000);
+  }, [uid]);
 
-  const handleContinue = () => navigation.replace('Step13Enneagram', { uid });
-  const handleBack = () => navigation.goBack();
+  const handleContinue = () => router.replace("/onboarding/Step13Enneagram?uid=" + uid);
+  const handleBack = () => router.back();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fafb' }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 220 }}>
         <View style={styles.container}>
-          <ProgressBar current={12} total={32} />
+          <ProgressBar step={12} totalSteps={32} />
           <Text style={styles.progressText}>Step 12 of 32 — Awakening</Text>
           <Text style={styles.title}>Your Soul Map — Through ARIA’s Eyes</Text>
 
-          {/* ARIA's Avatar Animation */}
           <View style={styles.avatarContainer}>
             <Image source={ARIAAvatar} style={[styles.avatar, isTyping && styles.avatarPulsing]} />
           </View>
 
-          {/* ARIA's Typing Animation */}
           <View style={styles.storyBox}>
             {readyToTypeStory ? (
               <>
@@ -102,7 +104,7 @@ export default function Step12ProfileReflection() {
             style={styles.footerCueText}
           />
         </View>
-        <Footer onNext={handleContinue} onBack={handleBack} nextDisabled={false} saving={false} />
+        <Footer variant="onboarding" onNext={handleContinue} onBack={handleBack} nextDisabled={false} saving={false} />
       </View>
     </SafeAreaView>
   );
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   avatarPulsing: {
-    animation: 'pulse 1s infinite alternate', // You can replace with actual pulse animation
+    animation: 'pulse 1s infinite alternate',
   },
   storyBox: {
     backgroundColor: '#ffffff',

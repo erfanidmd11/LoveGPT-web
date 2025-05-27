@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Alert } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, getDoc, updateDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebaseConfig';
+import { db } from '@/lib/firebase';
 
 // Import each onboarding step screen
 import Step2Name from './steps/Step2Name';
@@ -37,7 +36,13 @@ import Step30ConditioningBeliefs from './steps/Step30ConditioningBeliefs';
 import Step31OpennessLevel from './steps/Step31OpennessLevel';
 import Step32ProfileSetup from './steps/Step32ProfileSetup';
 
-const steps = [
+interface OnboardingStepProps {
+  phone: string;
+  onNext: () => void;
+  onBack?: () => void;
+}
+
+const steps: React.ComponentType<OnboardingStepProps>[] = [
   Step2Name,
   Step3Email,
   Step4DOB,
@@ -72,21 +77,16 @@ const steps = [
 ];
 
 export default function OnboardingFlow() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const phone = route.params?.phone;
+  const router = useRouter();
+  const phone = router.query.phone as string;
 
   const [currentStep, setCurrentStep] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!phone) {
-      Alert.alert('Error', 'Missing phone number');
-      navigation.goBack();
-    } else {
-      initializeUserFlow();
-    }
-  }, []);
+    if (!phone) return;
+    initializeUserFlow();
+  }, [phone]);
 
   const initializeUserFlow = async () => {
     setLoading(true);
@@ -95,7 +95,6 @@ export default function OnboardingFlow() {
       const userSnap = await getDoc(userRef);
 
       if (!userSnap.exists()) {
-        // New user: create Firestore doc and start onboarding
         await updateDoc(userRef, {
           phoneNumber: phone,
           createdAt: serverTimestamp(),
@@ -110,23 +109,20 @@ export default function OnboardingFlow() {
       const userData = userSnap.data();
 
       if (userData.onboardingStep === 'completed') {
-        // Existing user who completed onboarding: check for daily question
         const lastAsked = userData.lastQuestionTimestamp?.toDate();
         const now = new Date();
         const oneDay = 24 * 60 * 60 * 1000;
 
         if (!lastAsked || now.getTime() - lastAsked.getTime() > oneDay) {
-          navigation.navigate('ValueCuePrompt', { uid: userSnap.id }, { replace: true });
+          router.replace(`/value-cue-prompt?uid=${userSnap.id}`);
         } else {
-          navigation.navigate('Dashboard', { replace: true });
+          router.replace('/dashboard');
         }
       } else {
-        // Incomplete onboarding user
         const startedAt = userData.startedAt?.toDate();
         const now = new Date();
 
         if (startedAt && now.getTime() - startedAt.getTime() > 14 * 24 * 60 * 60 * 1000) {
-          // Reset if it's been 14+ days
           await updateDoc(userRef, {
             onboardingStep: 0,
             onboardingComplete: false,
@@ -139,7 +135,7 @@ export default function OnboardingFlow() {
       }
     } catch (error) {
       console.error('Failed to initialize onboarding flow:', error);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      alert('Something went wrong. Please try again.');
     }
     setLoading(false);
   };
@@ -155,39 +151,21 @@ export default function OnboardingFlow() {
 
   if (loading || currentStep === null) {
     return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" />
-        <Text style={styles.loadingText}>Loading onboarding...</Text>
-      </View>
+      <div className="flex flex-col items-center justify-center h-screen text-gray-600">
+        <p className="text-lg">Loading onboarding...</p>
+      </div>
     );
   }
 
   const StepComponent = steps[currentStep];
 
   return (
-    <View style={styles.container}>
+    <div className="min-h-screen bg-white">
       <StepComponent
         phone={phone}
         onNext={() => goToStep(currentStep + 1)}
         onBack={currentStep > 0 ? () => goToStep(currentStep - 1) : undefined}
       />
-    </View>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9fafb',
-  },
-  loader: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-  },
-});

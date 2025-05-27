@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "lib",
+    "composite": true
+  },
+  "include": ["lib", "lib/zodiacTypes.ts"]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "lovegpt-shared",
+  "version": "1.0.0",
+  "main": "lib/index.ts",
+  "types": "lib/index.ts",
+  "description": "Shared logic and data used across LoveGPT apps",
+  "license": "ISC"
+}

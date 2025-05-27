@@ -15,6 +15,11 @@ const Step2Name: React.FC = () => {
   const [uid, setUid] = useState<string | null>(null);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step2Name').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const userSession = getUserSession();
     if (userSession) {
       setUid(userSession.phone);
@@ -39,6 +44,10 @@ const Step2Name: React.FC = () => {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step2', values);
+      await saveAnswerToFirestore(uid, 'Step2', values);
+    }
     if (!firstName.trim() || !lastName.trim()) {
       alert('Please enter both your first and last name.');
       return;

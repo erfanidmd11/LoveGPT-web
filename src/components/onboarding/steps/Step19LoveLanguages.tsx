@@ -12,7 +12,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -37,6 +37,11 @@ export default function Step19LoveLanguages() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step19LoveLanguages').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadLoveLanguages = async () => {
       if (!uid) return;
       try {
@@ -82,6 +87,10 @@ export default function Step19LoveLanguages() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step19', values);
+      await saveAnswerToFirestore(uid, 'Step19', values);
+    }
     if (!selected.length) {
       Alert.alert('Select One', 'Please select at least one love language.');
       return;
@@ -105,7 +114,7 @@ export default function Step19LoveLanguages() {
       );
 
       onboardingMemory.loveLanguages = selected;
-      navigation.replace('Step20InnerConflictStyle', { uid });
+      router.replace("/onboarding/" + 'Step20InnerConflictStyle', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving love languages:', error);
       Alert.alert('Error', 'Could not save your love languages. Try again.');
@@ -115,7 +124,7 @@ export default function Step19LoveLanguages() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -182,7 +191,7 @@ export default function Step19LoveLanguages() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!selected.length}

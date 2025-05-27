@@ -12,7 +12,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -60,6 +60,11 @@ export default function Step26FinancialPhilosophy() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step26FinancialPhilosophy').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadFinancialPhilosophy = async () => {
       if (!uid) return;
       try {
@@ -99,6 +104,10 @@ export default function Step26FinancialPhilosophy() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step26', values);
+      await saveAnswerToFirestore(uid, 'Step26', values);
+    }
     if (!selected) {
       Alert.alert('Choose One', 'Please choose your current financial philosophy.');
       return;
@@ -122,7 +131,7 @@ export default function Step26FinancialPhilosophy() {
       );
 
       onboardingMemory.financialPhilosophy = selected;
-      navigation.replace('Step27ConflictResolution', { uid }); // 🚀 Move to next step
+      router.replace("/onboarding/" + 'Step27ConflictResolution', { uid }.toLowerCase() + "?uid=" + uid); // 🚀 Move to next step
     } catch (error) {
       console.error('Error saving financial philosophy:', error);
       Alert.alert('Error', 'Could not save your selection. Try again.');
@@ -132,7 +141,7 @@ export default function Step26FinancialPhilosophy() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -199,7 +208,7 @@ export default function Step26FinancialPhilosophy() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!selected}

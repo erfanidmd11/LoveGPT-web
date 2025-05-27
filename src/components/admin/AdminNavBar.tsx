@@ -34,14 +34,17 @@ export default function AdminNavBar() {
   }
 
   return (
-    <div className="flex justify-between items-center bg-gray-100 px-6 py-4 border-b">
+    <div className="flex flex-wrap justify-between items-center bg-gray-100 px-6 py-4 border-b">
       <h1 className="text-lg font-bold text-pink-600">LoveGPT Admin Panel</h1>
-      <button
-        onClick={handleLogout}
-        className="text-sm text-red-500 hover:text-red-600 font-medium"
-      >
-        Logout
-      </button>
+      <div className="flex flex-wrap gap-4 items-center text-sm text-gray-700">
+        <button onClick={() => router.push('/admin')} className="hover:text-pink-500">Dashboard</button>
+        <button onClick={() => router.push('/admin/waitlist')} className="hover:text-pink-500">Waitlist</button>
+        <button onClick={() => router.push('/admin/applications')} className="hover:text-pink-500">Applications</button>
+        <button onClick={() => router.push('/admin/users/edit')} className="hover:text-pink-500">User Editor</button>
+        <button onClick={() => router.push('/admin/referrals')} className="hover:text-pink-500">Referrals</button>
+        <button onClick={() => router.push('/admin/badges')} className="hover:text-pink-500">Badges</button>
+        <button onClick={handleLogout} className="text-red-500 hover:text-red-600 font-medium">Logout</button>
+      </div>
     </div>
   );
 }

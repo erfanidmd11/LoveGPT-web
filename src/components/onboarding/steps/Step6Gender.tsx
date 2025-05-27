@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Keyboard, Pressable } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
-import BackButton from '@/components/common/BackButton';
+import NavigationButtons from '@/components/common/NavigationButtons';
 import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
 import { chineseZodiacData } from '@/data/chineseZodiacData';
 import { saveAnswer } from '@/lib/saveAnswer';
@@ -12,8 +12,8 @@ import Header from '@/components/Header';  // Import Header
 import Footer from '@/components/Footer';  // Import Footer
 
 export default function Step6Gender() {
-  const navigation = useNavigation();
-  const route = useRoute();
+  const router = useRouter();
+  const uid = router.query.uid as string;
 
   const uid = route?.params?.uid; // ✅ Get UID correctly
 
@@ -23,6 +23,11 @@ export default function Step6Gender() {
   const [chineseZodiacAnimal, setChineseZodiacAnimal] = useState('');
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step6Gender').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     (async () => {
       if (!uid) return;
 
@@ -45,6 +50,10 @@ export default function Step6Gender() {
   }, [uid]);
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step6', values);
+      await saveAnswerToFirestore(uid, 'Step6', values);
+    }
     if (!gender) {
       Alert.alert('Missing Info', 'Please select your gender to continue.');
       return;
@@ -68,7 +77,7 @@ export default function Step6Gender() {
 
       await saveAnswer('onboardingGender', gender);
 
-      navigation.replace('Step7RelationshipStatus', { uid }); // ✅ Pass UID to Step7
+      router.replace("/onboarding/" + 'Step7RelationshipStatus', { uid }.toLowerCase() + "?uid=" + uid); // ✅ Pass UID to Step7
     } catch (error) {
       console.error('Error saving gender:', error);
       Alert.alert('Error', 'Could not save your gender. Try again.');

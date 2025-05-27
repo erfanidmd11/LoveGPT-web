@@ -1,4 +1,4 @@
-// src/components/onboarding/ProgressBar.tsx
+// src/components/common/ProgressBar.tsx
 import React from 'react';
 
 interface Section {

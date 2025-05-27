@@ -2,55 +2,13 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import MainLayout from '@/layouts/MainLayout';
 import ARIAChat from '@/components/ARIAChat';
-import PhoneEntryModal from '@/components/onboarding/PhoneEntryModal';
 import WaitlistRequestModal from '@/components/onboarding/WaitlistRequestModal';
-import InvitationModal from '@/components/onboarding/InvitationModal';
 import { Box, Button, Center, Heading, Stack, Text, VStack } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import { getUserSession, logout } from '@/utils/auth'; // Assume you have a helper for auth
 
 export default function Home() {
-  const [showInviteModal, setShowInviteModal] = useState(false);
-  const [showWaitlistModal, setShowWaitlistModal] = useState(false); 
-  const [showPhoneEntryModal, setShowPhoneEntryModal] = useState(false); 
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [user, setUser] = useState<any>(null); // Store user session details
-  const router = useRouter();
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
 
-  // Check user session on component mount
-  useEffect(() => {
-    const userSession = getUserSession();
-    if (userSession) {
-      setUser(userSession);
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  const handleLoginLogout = () => {
-    if (isLoggedIn) {
-      logout(); // Clear user session
-      setIsLoggedIn(false);
-      setUser(null);
-      router.push('/'); // Redirect to homepage
-    } else {
-      setShowPhoneEntryModal(true); // Show Phone Entry Modal for login
-    }
-  };
-
-  const handleJoinClick = () => {
-    if (isLoggedIn) {
-      // Check if user profile is complete and navigate accordingly
-      if (user.onboardingComplete) {
-        router.push('/dashboard'); // Redirect to dashboard if onboarding is complete
-      } else {
-        router.push(`/onboarding/step${user.onboardingStep || 1}`); // Redirect to where the user left off in onboarding
-      }
-    } else {
-      setShowPhoneEntryModal(true); // Show Phone Entry Modal for new user
-    }
-  };
-
-  const handleApplyForInvitation = () => setShowWaitlistModal(true);
+  const handleJoinClick = () => setShowWaitlistModal(true);
 
   return (
     <MainLayout>
@@ -85,20 +43,8 @@ export default function Home() {
           boxShadow="md"
           _hover={{ bg: 'pink.600' }}
         >
-          {isLoggedIn ? 'Go to Dashboard' : 'Start Your Journey'}
+          Join Waitlist Now
         </Button>
-
-        <Text fontSize="sm" color="gray.500" mt={4}>
-          {isLoggedIn ? (
-            <Button variant="link" colorScheme="blue" onClick={handleLoginLogout}>
-              Log Out
-            </Button>
-          ) : (
-            <Button variant="link" colorScheme="blue" onClick={handleLoginLogout}>
-              Log In
-            </Button>
-          )}
-        </Text>
       </Box>
 
       {/* Why LoveGPT Section */}
@@ -121,7 +67,7 @@ export default function Home() {
             py={3}
             rounded="xl"
           >
-            Unlock Conscious Love
+            Join Waitlist Now
           </Button>
         </VStack>
       </Box>
@@ -148,7 +94,7 @@ export default function Home() {
             py={3}
             rounded="xl"
           >
-            I’m Ready to Grow
+            Join Waitlist Now
           </Button>
         </Center>
       </Box>
@@ -165,7 +111,7 @@ export default function Home() {
             "Imagine if Grammarly and a therapist had a baby — and she coached your love life."
           </Text>
           <Button
-            onClick={handleApplyForInvitation}  // Opens Waitlist Request Modal
+            onClick={handleJoinClick}
             mt={4}
             bg="purple.600"
             _hover={{ bg: 'purple.700' }}
@@ -176,24 +122,16 @@ export default function Home() {
             fontSize="lg"
             fontWeight="semibold"
           >
-            Apply for Invitation
+            Join Waitlist Now
           </Button>
         </VStack>
       </Box>
 
       <ARIAChat />
 
-      {/* Show Modals */}
-      {showInviteModal && (
-        <InvitationModal onClose={() => setShowInviteModal(false)} />
-      )}
-
+      {/* Show Waitlist Modal */}
       {showWaitlistModal && (
-        <WaitlistRequestModal onClose={() => setShowWaitlistModal(false)} />
-      )}
-
-      {showPhoneEntryModal && (
-        <PhoneEntryModal onClose={() => setShowPhoneEntryModal(false)} />
+        <WaitlistRequestModal isOpen={showWaitlistModal} onClose={() => setShowWaitlistModal(false)} />
       )}
     </MainLayout>
   );

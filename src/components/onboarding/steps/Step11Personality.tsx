@@ -12,36 +12,27 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebaseConfig';
+import { db } from '@/lib/firebase';
 import ProgressBar from '@/components/common/ProgressBar';
 import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
-import { saveAnswer, getAnswer } from '@/lib/saveAnswer';
+import { saveAnswer, getAnswer, saveAnswerToFirestore } from '@/lib/saveAnswer';
 import onboardingMemory from '@/lib/onboardingMemory';
-import Footer from '@/components/common/Footer'; // ✅ Using Footer component now
+import Footer from '@/components/common/Footer';
 
 const personalityTraits = [
-  'Empathetic',
-  'Growth-Oriented',
-  'Emotionally Intelligent',
-  'Loyal',
-  'Communicative',
-  'Playful',
-  'Ambitious',
-  'Romantic',
-  'Self-Aware',
+  'Empathetic', 'Growth-Oriented', 'Emotionally Intelligent', 'Loyal',
+  'Communicative', 'Playful', 'Ambitious', 'Romantic', 'Self-Aware',
 ];
 
 export default function Step11Personality() {
-  const navigation = useNavigation<any>();
-  const route = useRoute<any>();
-  const uid = route?.params?.uid;
+  const router = useRouter();
+  const uid = router.query.uid as string;
 
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
-  // Part 2 - Fetch traits from Firestore or Memory
   useEffect(() => {
     const fetchTraits = async () => {
       if (!uid) return;
@@ -49,10 +40,10 @@ export default function Step11Personality() {
         if (onboardingMemory.personalityTraits?.length) {
           setSelectedTraits(onboardingMemory.personalityTraits);
         } else {
-          const stored = await getAnswer('personalityTraits');
-          if (stored && Array.isArray(stored)) {
-            setSelectedTraits(stored);
-            onboardingMemory.personalityTraits = stored;
+          const stored = await getAnswer(uid, 'Step11');
+          if (stored && Array.isArray(stored.answer)) {
+            setSelectedTraits(stored.answer);
+            onboardingMemory.personalityTraits = stored.answer;
           } else {
             const userRef = doc(db, 'users', uid);
             const snap = await getDoc(userRef);
@@ -81,41 +72,39 @@ export default function Step11Personality() {
     }
     setSelectedTraits(updatedTraits);
     onboardingMemory.personalityTraits = updatedTraits;
-    await saveAnswer('personalityTraits', updatedTraits);
+    saveAnswer('Step11', updatedTraits);
   };
 
   const handleContinue = async () => {
     if (!uid) {
-      Alert.alert('Error', 'Missing user ID. Cannot save.');
+      alert('Missing user ID. Cannot save.');
       return;
     }
     if (!selectedTraits.length) {
-      Alert.alert('Missing Info', 'Please select at least one personality trait.');
+      alert('Please select at least one personality trait.');
       return;
     }
 
     setSaving(true);
     try {
-      await setDoc(
-        doc(db, 'users', uid),
-        {
-          personalityTraits: selectedTraits,
-          onboardingStep: 11,
-        },
-        { merge: true }
-      );
+      await setDoc(doc(db, 'users', uid), {
+        personalityTraits: selectedTraits,
+        onboardingStep: 11,
+      }, { merge: true });
 
-      navigation.replace('Step12ProfileReflection', { uid });
+      await saveAnswerToFirestore(uid, 'Step11', selectedTraits);
+
+      router.replace(`/onboarding/Step12ProfileReflection?uid=${uid}`);
     } catch (error) {
       console.error('Error saving personality traits:', error);
-      Alert.alert('Error', 'Could not save your traits. Try again.');
+      alert('Could not save your traits. Try again.');
     } finally {
       setSaving(false);
     }
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getPersonalizedCue = () => {
@@ -136,7 +125,6 @@ export default function Step11Personality() {
     return `✨ You are shaping a beautiful emotional profile, ${selectedTraits.length} traits strong.`;
   };
 
-  // Part 3 - Main return
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fafb' }}>
       <KeyboardAvoidingView
@@ -145,11 +133,9 @@ export default function Step11Personality() {
       >
         <Pressable onPress={Keyboard.dismiss}>
           <View style={styles.container}>
-            <ProgressBar current={11} total={32} />
+            <ProgressBar step={11} totalSteps={32} />
             <Text style={styles.progressText}>Step 11 of 32 — Personality</Text>
-
             <Text style={styles.title}>Describe Your Personality</Text>
-
             <ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
               <View style={styles.traitsContainer}>
                 {personalityTraits.map((trait) => (
@@ -176,25 +162,22 @@ export default function Step11Personality() {
           </View>
         </Pressable>
       </KeyboardAvoidingView>
-
-      {/* Footer */}
       <View style={styles.footer}>
         <View style={styles.ariaContainer}>
           <AnimatedValueCue message={getPersonalizedCue()} />
         </View>
-
-        <Footer
-          onNext={handleContinue}
-          onBack={handleBack}
-          nextDisabled={!selectedTraits.length}
-          saving={saving}
+       <Footer
+         onNext={handleContinue}
+         onBack={handleBack}
+         nextDisabled={!selectedTraits.length}
+         saving={saving}
+         variant="onboarding"
         />
       </View>
     </SafeAreaView>
   );
 }
 
-// Part 4 - Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -12,10 +12,20 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import BackButton from '@/components/common/BackButton';
+import NavigationButtons from '@/components/common/NavigationButtons';
+import { useRouter } from 'next/router';
+
+type SupportForm = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  oldPhone: string;
+  newPhone: string;
+  explanation: string;
+};
 
 export default function SupportRequest() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SupportForm>({
     firstName: '',
     lastName: '',
     email: '',
@@ -24,15 +34,16 @@ export default function SupportRequest() {
     explanation: '',
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Partial<Record<keyof SupportForm, string>>>({});
+  const router = useRouter();
 
-  const handleChange = (field, value) => {
+  const handleChange = (field: keyof SupportForm, value: string) => {
     setForm({ ...form, [field]: value });
-    setErrors({ ...errors, [field]: null });
+    setErrors({ ...errors, [field]: undefined });
   };
 
   const validate = () => {
-    const newErrors = {};
+    const newErrors: Partial<Record<keyof SupportForm, string>> = {};
     if (!form.firstName) newErrors.firstName = 'First name is required';
     if (!form.lastName) newErrors.lastName = 'Last name is required';
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Valid email required';
@@ -53,7 +64,7 @@ export default function SupportRequest() {
     // TODO: Send to backend or support team
   };
 
-  const placeholders = {
+  const placeholders: Record<keyof SupportForm, string> = {
     firstName: 'First Name',
     lastName: 'Last Name',
     email: 'Email',
@@ -72,7 +83,7 @@ export default function SupportRequest() {
           <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
             <Text style={styles.title}>Request to Change Phone Number</Text>
 
-            {Object.keys(form).map((field) => (
+            {(Object.keys(form) as (keyof SupportForm)[]).map((field) => (
               <View key={field} style={styles.inputWrapper}>
                 <TextInput
                   style={[styles.input, errors[field] && styles.errorInput]}
@@ -92,7 +103,10 @@ export default function SupportRequest() {
             </TouchableOpacity>
           </ScrollView>
 
-          <BackButton />
+          <NavigationButtons
+            onBack={() => router.back()}
+            showNext={false}
+          />
         </View>
       </KeyboardAvoidingView>
     </Pressable>

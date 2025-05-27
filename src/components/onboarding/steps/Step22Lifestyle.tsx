@@ -12,7 +12,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -38,6 +38,11 @@ export default function Step22Lifestyle() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step22Lifestyle').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadLifestyle = async () => {
       if (!uid) return;
       try {
@@ -77,6 +82,10 @@ export default function Step22Lifestyle() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step22', values);
+      await saveAnswerToFirestore(uid, 'Step22', values);
+    }
     if (!selected) {
       Alert.alert('Choose One', 'Please choose your current lifestyle before continuing.');
       return;
@@ -100,7 +109,7 @@ export default function Step22Lifestyle() {
       );
 
       onboardingMemory.lifestyleNow = selected;
-      navigation.replace('Step23DealBreakers', { uid });
+      router.replace("/onboarding/" + 'Step23DealBreakers', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving lifestyle:', error);
       Alert.alert('Error', 'Could not save your lifestyle preference. Try again.');
@@ -110,7 +119,7 @@ export default function Step22Lifestyle() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -180,7 +189,7 @@ export default function Step22Lifestyle() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!selected}

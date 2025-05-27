@@ -13,7 +13,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -45,6 +45,11 @@ export default function Step15CoreValueIndex() {
   ];
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step15CoreValueIndex').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadCVIAnswers = async () => {
       if (!uid) return;
       try {
@@ -88,6 +93,10 @@ export default function Step15CoreValueIndex() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step15', values);
+      await saveAnswerToFirestore(uid, 'Step15', values);
+    }
     const allAnswered = cviQuestions.every((q) => answers[q.key]);
     if (!allAnswered) {
       Alert.alert('Missing Info', 'Please answer all questions to continue.');
@@ -112,7 +121,7 @@ export default function Step15CoreValueIndex() {
       );
 
       onboardingMemory.cviAnswers = answers; // Save locally
-      navigation.replace('Step16BigFive', { uid }); // Move to next step
+      router.replace("/onboarding/" + 'Step16BigFive', { uid }.toLowerCase() + "?uid=" + uid); // Move to next step
     } catch (error) {
       console.error('Error saving CVI data:', error);
       Alert.alert('Error', 'Could not save your Core Value Index. Try again.');
@@ -122,7 +131,7 @@ export default function Step15CoreValueIndex() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -196,7 +205,7 @@ export default function Step15CoreValueIndex() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!Object.keys(answers).length}

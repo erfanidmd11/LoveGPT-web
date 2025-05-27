@@ -14,7 +14,7 @@ import {
   Modal,
   Animated,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -39,6 +39,11 @@ export default function Step17AIConsent() {
   const [modalOpacity] = useState(new Animated.Value(1));
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step17AIConsent').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadConsent = async () => {
       if (!uid) return;
       try {
@@ -129,6 +134,10 @@ export default function Step17AIConsent() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step17', values);
+      await saveAnswerToFirestore(uid, 'Step17', values);
+    }
     if (!uid) {
       console.error('Missing UID!');
       return;
@@ -159,11 +168,11 @@ export default function Step17AIConsent() {
           useNativeDriver: true,
         }).start(() => {
           setShowTrustModal(false);
-          navigation.replace('Step18Parenthood', { uid });
+          router.replace("/onboarding/" + 'Step18Parenthood', { uid }.toLowerCase() + "?uid=" + uid);
         });
       }, totalModalTime);
     } else {
-      navigation.replace('Step18Parenthood', { uid });
+      router.replace("/onboarding/" + 'Step18Parenthood', { uid }.toLowerCase() + "?uid=" + uid);
     }
   };
 
@@ -282,7 +291,7 @@ export default function Step17AIConsent() {
           <AnimatedValueCue message="Trust blooms slowly 🌱 — I'm here, no rush, no pressure." />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={() => navigation.goBack()}
           nextDisabled={false}

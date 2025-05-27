@@ -12,7 +12,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -42,6 +42,11 @@ export default function Step23DealBreakers() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step23DealBreakers').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadDealBreakers = async () => {
       if (!uid) return;
       try {
@@ -115,6 +120,10 @@ export default function Step23DealBreakers() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step23', values);
+      await saveAnswerToFirestore(uid, 'Step23', values);
+    }
     if (!uid) {
       Alert.alert('Error', 'Missing user ID. Cannot save.');
       return;
@@ -133,7 +142,7 @@ export default function Step23DealBreakers() {
       );
 
       onboardingMemory.dealBreakers = selected;
-      navigation.replace('Step24ConflictStyle', { uid });
+      router.replace("/onboarding/" + 'Step24ConflictStyle', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving deal breakers:', error);
       Alert.alert('Error', 'Could not save your deal breakers. Try again.');
@@ -143,7 +152,7 @@ export default function Step23DealBreakers() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -210,7 +219,7 @@ export default function Step23DealBreakers() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer onNext={handleContinue} onBack={handleBack} nextDisabled={false} saving={saving} />
+        <Footer variant="onboarding" onNext={handleContinue} onBack={handleBack} nextDisabled={false} saving={saving} />
       </View>
     </SafeAreaView>
   );

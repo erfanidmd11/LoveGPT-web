@@ -12,7 +12,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -47,6 +47,11 @@ export default function Step18Parenthood() {
   ];
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step18Parenthood').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadParenthoodAnswers = async () => {
       if (!uid) return;
       try {
@@ -90,6 +95,10 @@ export default function Step18Parenthood() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step18', values);
+      await saveAnswerToFirestore(uid, 'Step18', values);
+    }
     const allAnswered = parenthoodQuestions.every((q) => answers[q.key]);
     if (!allAnswered) {
       Alert.alert('Missing Info', 'Please answer all questions to continue.');
@@ -114,7 +123,7 @@ export default function Step18Parenthood() {
       );
 
       onboardingMemory.parenthoodAnswers = answers; // Save locally
-      navigation.replace('Step19LoveLanguages', { uid });
+      router.replace("/onboarding/" + 'Step19LoveLanguages', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving parenthood data:', error);
       Alert.alert('Error', 'Could not save your family vision. Try again.');
@@ -124,7 +133,7 @@ export default function Step18Parenthood() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -198,7 +207,7 @@ export default function Step18Parenthood() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!Object.keys(answers).length}

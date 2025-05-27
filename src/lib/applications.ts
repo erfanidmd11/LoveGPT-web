@@ -1,8 +1,7 @@
-// lib/applications.ts
 import { db } from './firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
-interface InviteApplicationData {
+export interface InviteApplicationData {
   firstName: string;
   lastName: string;
   email: string;
@@ -13,9 +12,15 @@ interface InviteApplicationData {
 }
 
 export async function submitInviteApplication(data: InviteApplicationData) {
-  const { firstName, lastName, email, phone, handle } = data;
-
-  if (!firstName || !lastName || !email || !phone || !handle) {
+  // Basic validation – make sure nothing critical is missing
+  if (
+    !data.firstName ||
+    !data.lastName ||
+    !data.email ||
+    !data.phone ||
+    !data.handle ||
+    data.isMatchIntent === undefined
+  ) {
     throw new Error('Missing required fields');
   }
 

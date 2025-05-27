@@ -1,11 +1,7 @@
-// src/layouts/MainLayout.tsx
 import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { signOut, auth } from '@/lib/firebase';
 import ARIAChat from '@/components/ARIAChat';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 import {
   Box, Flex, Text, Heading, Image, Button,
@@ -13,21 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 
-const LoginModal = dynamic(() => import('@/components/common/LoginModal'), { ssr: false });
-
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [user, loading] = useAuthState(auth);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const handleLoginClick = () => setShowLoginModal(true);
-  const handleSignUpClick = () => router.push('/signup');
-  const handleLogoutClick = async () => {
-    await signOut(auth);
-    localStorage.removeItem('admin_logged_in');
-    router.push('/');
-  };
 
   const handleNavClick = (href: string) => {
     setMenuOpen(false);
@@ -79,19 +63,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 {path === '/' ? 'Home' : path.replace('/', '').replace(/\b\w/g, c => c.toUpperCase())}
               </ChakraLink>
             ))}
-            {user ? (
-              <>
-                <ChakraLink as={NextLink} href="/dashboard" _hover={{ color: 'pink.500' }} color={isActive('/dashboard') ? 'pink.600' : 'gray.700'} fontWeight={isActive('/dashboard') ? 'bold' : 'medium'}>
-                  Dashboard
-                </ChakraLink>
-                <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
-              </>
-            ) : (
-              <>
-                <Button variant="outline" colorScheme="pink" onClick={handleLoginClick}>Login</Button>
-                <Button variant="outline" colorScheme="pink" onClick={handleSignUpClick}>Sign Up</Button>
-              </>
-            )}
           </HStack>
         </Flex>
 
@@ -108,19 +79,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 {path === '/' ? 'Home' : path.replace('/', '').replace(/\b\w/g, c => c.toUpperCase())}
               </Text>
             ))}
-            {user ? (
-              <>
-                <Text onClick={() => handleNavClick('/dashboard')} color={isActive('/dashboard') ? 'pink.600' : 'gray.700'} fontWeight={isActive('/dashboard') ? 'bold' : 'medium'} cursor="pointer">
-                  Dashboard
-                </Text>
-                <Button variant="outline" colorScheme="pink" onClick={handleLogoutClick}>Logout</Button>
-              </>
-            ) : (
-              <>
-                <Button variant="outline" colorScheme="pink" onClick={handleLoginClick}>Login</Button>
-                <Button variant="outline" colorScheme="pink" onClick={handleSignUpClick}>Sign Up</Button>
-              </>
-            )}
           </VStack>
         )}
       </Box>
@@ -141,10 +99,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </Box>
 
       <ARIAChat />
-
-      {showLoginModal && (
-        <LoginModal onClose={() => setShowLoginModal(false)} onSuccess={() => setShowLoginModal(false)} />
-      )}
     </Box>
   );
 }

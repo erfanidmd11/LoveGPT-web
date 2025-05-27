@@ -12,7 +12,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -50,6 +50,11 @@ export default function Step28PartnershipDynamic() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step28PartnershipDynamic').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadPartnershipDynamic = async () => {
       if (!uid) return;
       try {
@@ -89,6 +94,10 @@ export default function Step28PartnershipDynamic() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step28', values);
+      await saveAnswerToFirestore(uid, 'Step28', values);
+    }
     if (!selected) {
       Alert.alert(
         'Choose One',
@@ -115,7 +124,7 @@ export default function Step28PartnershipDynamic() {
       );
 
       onboardingMemory.partnershipDynamic = selected;
-      navigation.replace('Step29EmotionalTriggers', { uid }); // 🚀 Move to next step
+      router.replace("/onboarding/" + 'Step29EmotionalTriggers', { uid }.toLowerCase() + "?uid=" + uid); // 🚀 Move to next step
     } catch (error) {
       console.error('Error saving partnership dynamic:', error);
       Alert.alert('Error', 'Could not save your selection. Try again.');
@@ -125,7 +134,7 @@ export default function Step28PartnershipDynamic() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -191,7 +200,7 @@ export default function Step28PartnershipDynamic() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!selected}

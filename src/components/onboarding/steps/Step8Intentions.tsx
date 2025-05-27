@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert, StyleSheet, Keyboard, Pressable } from 'react-native';
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
-import BackButton from '@/components/common/BackButton';
+import NavigationButtons from '@/components/common/NavigationButtons';
 import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
 import Header from '@/components/Header';  // Import Header
 import Footer from '@/components/Footer';  // Import Footer
@@ -64,8 +64,8 @@ const optionsByStatus = {
 };
 
 export default function Step8Intentions() {
-  const navigation = useNavigation();
-  const route = useRoute();
+  const router = useRouter();
+  const uid = router.query.uid as string;
 
   const uid = route?.params?.uid;
   const relationshipStatusFromStep7 = route?.params?.relationshipStatus;
@@ -92,6 +92,10 @@ export default function Step8Intentions() {
   );
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step8', values);
+      await saveAnswerToFirestore(uid, 'Step8', values);
+    }
     if (!selected) {
       Alert.alert('Missing Info', 'Please select your intention to continue.');
       return;
@@ -113,11 +117,11 @@ export default function Step8Intentions() {
         { merge: true }
       );
 
-      navigation.replace('Step9Readiness', {
+      router.replace("/onboarding/" + 'Step9Readiness', {
         uid,
         relationshipStatus,
         relationshipGoals: selected,
-      });
+      }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving relationship goals:', error);
       Alert.alert('Error', 'Could not save your intention. Try again.');

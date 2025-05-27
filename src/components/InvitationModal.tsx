@@ -33,11 +33,15 @@ export default function InvitationModal({ onClose }) {
     email: '',
     phone: '',
     handle: '',
+    isMatchIntent: false,
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
   const handleCodeSubmit = async (e) => {
@@ -102,7 +106,7 @@ export default function InvitationModal({ onClose }) {
     }
 
     try {
-      await submitInviteApplication({ ...form });
+      await submitInviteApplication(form);
       toast.success("🎉 Application received! We'll review and reach out soon.");
       onClose();
     } catch (err) {
@@ -191,6 +195,18 @@ export default function InvitationModal({ onClose }) {
               onChange={handleChange}
               required
             />
+            <div className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                name="isMatchIntent"
+                checked={form.isMatchIntent}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              <label htmlFor="isMatchIntent" className="text-sm text-gray-700">
+                This is someone I’d like LoveGPT to help me evaluate for compatibility.
+              </label>
+            </div>
             <button
               type="submit"
               className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold mt-2"

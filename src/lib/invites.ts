@@ -5,8 +5,12 @@ import {
   updateDoc,
   addDoc,
   collection,
-  Timestamp
+  Timestamp,
+  query,
+  where,
+  getDocs
 } from 'firebase/firestore';
+import { db } from './firebase';
 
 /**
  * Creates a new invitation code document in Firestore with optional metadata.
@@ -63,4 +67,32 @@ export const markInviteCodeAsUsed = async (
     usedAt: Timestamp.now(),
     type: 'inviteUsed',
   });
+};
+
+/**
+ * Validates if an invitation code exists, is active, and has not been used or expired.
+ */
+export const validateInviteCode = async (code: string): Promise<boolean> => {
+  const q = query(
+    collection(db, 'invitationCodes'),
+    where('code', '==', code),
+    where('status', '==', 'active'),
+    where('used', '!=', true)
+  );
+  const snap = await getDocs(q);
+
+  if (snap.empty) return false;
+
+  const docData = snap.docs[0].data();
+  const now = Timestamp.now();
+
+  if (docData.expiresAt && docData.expiresAt.toMillis() < now.toMillis()) {
+    return false;
+  }
+
+  if (docData.maxUses && docData.usedCount >= docData.maxUses) {
+    return false;
+  }
+
+  return true;
 };

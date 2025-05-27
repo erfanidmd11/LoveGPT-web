@@ -13,7 +13,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -41,6 +41,11 @@ export default function Step16BigFive() {
   ];
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step16BigFive').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadBigFiveAnswers = async () => {
       if (!uid) return;
       try {
@@ -99,6 +104,10 @@ export default function Step16BigFive() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step16', values);
+      await saveAnswerToFirestore(uid, 'Step16', values);
+    }
     const allAnswered = bigFiveQuestions.every((q) => answers[q.key]);
     if (!allAnswered) {
       Alert.alert('Missing Info', 'Please answer all questions to continue.');
@@ -123,7 +132,7 @@ export default function Step16BigFive() {
       );
 
       onboardingMemory.bigFiveAnswers = answers; // ✅ Local memory
-      navigation.replace('Step17AIConsent', { uid }); // ✅ Go to next step
+      router.replace("/onboarding/" + 'Step17AIConsent', { uid }.toLowerCase() + "?uid=" + uid); // ✅ Go to next step
     } catch (error) {
       console.error('Error saving Big Five data:', error);
       Alert.alert('Error', 'Could not save your Big Five profile. Try again.');
@@ -133,7 +142,7 @@ export default function Step16BigFive() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -204,7 +213,7 @@ export default function Step16BigFive() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!Object.keys(answers).length}

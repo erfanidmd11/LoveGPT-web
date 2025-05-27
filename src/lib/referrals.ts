@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs, query, where } from 'firebase/firestore';
 
 /**
  * Registers a referral relationship by storing the referrer ID and building a 5-level chain.
@@ -17,7 +17,7 @@ export const registerReferral = async (userId: string, referrerId: string) => {
   await updateDoc(userRef, {
     referrerId,
     referralChain: newChain,
-    referralLineage: newChain,     // Optional: Keep both formats for clarity
+    referralLineage: newChain,
     referralLevel: newChain.length,
   });
 };
@@ -47,4 +47,35 @@ export const getReferralLineage = async (
   const level = (data?.referralLevel || 0) + 1;
 
   return { lineage, level };
+};
+
+/**
+ * Retrieves all users referred by the root user, including their level in the tree (up to 5 levels deep).
+ */
+export const getReferralTree = async (
+  rootUserId: string
+): Promise<{ userId: string; level: number }[]> => {
+  const queue: { userId: string; level: number }[] = [{ userId: rootUserId, level: 0 }];
+  const result: { userId: string; level: number }[] = [];
+  const visited = new Set<string>([rootUserId]);
+
+  while (queue.length > 0) {
+    const { userId, level } = queue.shift()!;
+    if (level >= 5) continue;
+
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('referrerId', '==', userId));
+    const snapshot = await getDocs(q);
+
+    for (const docSnap of snapshot.docs) {
+      const referredId = docSnap.id;
+      if (!visited.has(referredId)) {
+        visited.add(referredId);
+        result.push({ userId: referredId, level: level + 1 });
+        queue.push({ userId: referredId, level: level + 1 });
+      }
+    }
+  }
+
+  return result;
 };

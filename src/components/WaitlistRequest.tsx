@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -13,22 +12,17 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import StyledTextInput from '@/components/common/StyledTextInput';
-import BackButton from '@/components/common/BackButton';
+import NavigationButtons from '@/components/common/NavigationButtons';
 import { submitWaitlistRequest } from '../firebase/waitlist';
 import { db } from '../firebase/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
 
 export default function WaitlistRequest() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const passedPhone = route.params?.phone || '';
-
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
-    phone: passedPhone,
+    phone: '',
     email: '',
     instagram: '',
     location: '',
@@ -37,17 +31,16 @@ export default function WaitlistRequest() {
     referredBy: '',
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handle input changes
-  const handleChange = (field, value) => {
+  const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: null }));
+    setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
   const validate = () => {
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
     if (!form.firstName) newErrors.firstName = 'First name is required';
     if (!form.lastName) newErrors.lastName = 'Last name is required';
     if (!form.phone) newErrors.phone = 'Phone number is required';
@@ -66,8 +59,6 @@ export default function WaitlistRequest() {
     try {
       setIsSubmitting(true);
       const requestId = await submitWaitlistRequest(form);
-      
-      // Save data in Firestore to ensure progress is saved
       await setDoc(doc(db, 'waitlistRequests', requestId), {
         ...form,
         createdAt: new Date(),
@@ -77,7 +68,6 @@ export default function WaitlistRequest() {
         'You’re on our radar! 💌',
         `Your request has been received.\n\nWhen we’re ready to open more doors, you’ll be among the first to know. Keep an eye on your inbox — and don’t forget to check spam folders (sometimes ARIA’s magic lands there ✨).`
       );
-      navigation.navigate('Step1InvitationCode', { replace: true }); // After successful form submission, navigate to the next step
     } catch (err) {
       console.error(err);
       Alert.alert('Error', 'Could not submit your request. Please try again later.');
@@ -89,7 +79,7 @@ export default function WaitlistRequest() {
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const token = Constants.expoConfig.extra.IPINFO_TOKEN;
+        const token = process.env.NEXT_PUBLIC_IPINFO_TOKEN;
         const response = await fetch(`https://ipinfo.io/json?token=${token}`);
         const data = await response.json();
         const locationString = `${data.city}, ${data.region}, ${data.country}`;
@@ -103,7 +93,7 @@ export default function WaitlistRequest() {
     fetchLocation();
   }, []);
 
-  const placeholders = {
+  const placeholders: Record<string, string> = {
     firstName: 'First Name',
     lastName: 'Last Name',
     phone: 'Phone Number',
@@ -125,19 +115,14 @@ export default function WaitlistRequest() {
           <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
             <Text style={styles.title}>Join the Waitlist</Text>
 
-            {/* ✅ ARIA welcome section */}
             <View style={styles.ariaContainer}>
               <Image source={require('@/assets/aria-avatar.png')} style={styles.ariaAvatar} />
               <Text style={styles.ariaText}>
                 You're in the right place ✨ Just because you weren’t invited (yet) doesn’t mean
-                you're not important. We're building the first wave of visionaries — those who will
-                shape the future of connection, self-awareness, and authentic relationships. That
-                could very well be you. 😉
+                you're not important...
               </Text>
               <Text style={styles.ariaText}>
-                Know someone already vibing inside? Don’t be shy — ask them for their invite. 🌟 If
-                not, drop your deets below. If you're meant to be here (and we think you might be),
-                ARIA will find a way.
+                Know someone already vibing inside? Don’t be shy — ask them for their invite. 🌟 ...
               </Text>
               <Text style={styles.ariaSignature}>— ARIA 🌸</Text>
             </View>
@@ -148,7 +133,7 @@ export default function WaitlistRequest() {
                   style={errors[field] && styles.errorInput}
                   placeholder={placeholders[field]}
                   value={form[field]}
-                  onChangeText={(value) => handleChange(field, value)}
+                  onChangeText={(value: string) => handleChange(field, value)}
                   multiline={field === 'reason'}
                   numberOfLines={field === 'reason' ? 4 : 1}
                 />
@@ -163,7 +148,10 @@ export default function WaitlistRequest() {
             </TouchableOpacity>
           </ScrollView>
 
-          <BackButton onPress={() => navigation.navigate('Step1InvitationCode')} />
+          <NavigationButtons
+            onBack={() => window.history.back()}
+            showNext={false}
+          />
         </View>
       </KeyboardAvoidingView>
     </Pressable>

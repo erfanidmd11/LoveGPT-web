@@ -12,11 +12,11 @@ import {
   Keyboard,
   Pressable,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
-import BackButton from '@/components/common/BackButton';
+import NavigationButtons from '@/components/common/NavigationButtons';
 import AnimatedValueCue from '@/components/onboarding/AnimatedValueCue';
 import Header from '@/components/Header';  // Import Header
 import Footer from '@/components/Footer';  // Import Footer
@@ -72,7 +72,7 @@ export default function Step9Readiness() {
     if (!uid) {
       console.error('UID missing when loading Step9.');
       Alert.alert('Error', 'Missing user ID. Returning to previous screen.');
-      navigation.goBack();
+      router.back();
       return;
     }
 
@@ -118,6 +118,10 @@ export default function Step9Readiness() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step9', values);
+      await saveAnswerToFirestore(uid, 'Step9', values);
+    }
     if (!selected) {
       Alert.alert('Missing Info', 'Please select your emotional readiness.');
       return;
@@ -135,7 +139,7 @@ export default function Step9Readiness() {
         { merge: true }
       );
 
-      navigation.replace('Step10CoreValues', { uid });
+      router.replace("/onboarding/" + 'Step10CoreValues', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving readiness level:', error);
       Alert.alert('Error', 'Could not save your readiness. Try again.');

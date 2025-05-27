@@ -1,10 +1,13 @@
-// components/admin/AdminHeader.tsx
 import React from 'react';
 import { Box, Flex, HStack, Text, Link as ChakraLink } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const adminTabs = [
+  { label: 'Dashboard', href: '/admin' },
+  { label: 'Waitlist', href: '/admin/waitlist' },
+  { label: 'Applications', href: '/admin/applications' },
+  { label: 'User Editor', href: '/admin/users/edit' },
   { label: 'Referrals', href: '/admin/referrals' },
   { label: 'Badges', href: '/admin/badges' },
 ];

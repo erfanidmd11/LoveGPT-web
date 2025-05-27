@@ -21,6 +21,11 @@ const Step4DOB: React.FC = () => {
 
   // Check if the user is logged in and retrieve the UID
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step4DOB').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const userSession = getUserSession();
     if (userSession) {
       setUid(userSession.phone);  // Assuming phone is used as UID in your case
@@ -177,7 +182,7 @@ const Step4DOB: React.FC = () => {
       {/* Header */}
       <Header />
 
-      <ProgressBar current={4} total={32} />
+      <ProgressBar step=4 totalSteps=32 />
       <Heading as="h2" size="lg" textAlign="center" mb={6}>
         When were you born?
       </Heading>

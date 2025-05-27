@@ -12,7 +12,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -38,6 +38,11 @@ export default function Step20InnerConflictStyle() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step20InnerConflictStyle').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadConflictStyle = async () => {
       if (!uid) return;
       try {
@@ -80,6 +85,10 @@ export default function Step20InnerConflictStyle() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step20', values);
+      await saveAnswerToFirestore(uid, 'Step20', values);
+    }
     if (!selected) {
       Alert.alert('Choose One', 'Please select your typical inner conflict style.');
       return;
@@ -106,7 +115,7 @@ export default function Step20InnerConflictStyle() {
       onboardingMemory.innerConflictStyle = selected;
       onboardingMemory.aiToneStyle = toneMap[selected];
 
-      navigation.replace('Step21CommunicationStyle', { uid });
+      router.replace("/onboarding/" + 'Step21CommunicationStyle', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving conflict style:', error);
       Alert.alert('Error', 'Could not save your answer. Try again.');
@@ -116,7 +125,7 @@ export default function Step20InnerConflictStyle() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -184,7 +193,7 @@ export default function Step20InnerConflictStyle() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!selected}

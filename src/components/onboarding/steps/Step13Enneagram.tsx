@@ -13,7 +13,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter } from 'next/router';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import ProgressBar from '@/components/common/ProgressBar';
@@ -42,6 +42,11 @@ export default function Step13Enneagram() {
   ];
 
   useEffect(() => {
+    if (uid) {
+      getAnswer(uid, 'Step13Enneagram').then(data => {
+        if (data) console.log('Prefilled data:', data);
+      });
+    }
     const loadEnneagramAnswers = async () => {
       if (!uid) return;
       try {
@@ -85,6 +90,10 @@ export default function Step13Enneagram() {
   };
 
   const handleContinue = async () => {
+    if (uid) {
+      saveAnswer('Step13', values);
+      await saveAnswerToFirestore(uid, 'Step13', values);
+    }
     const allAnswered = enneagramQuestions.every((q) => answers[q.key]);
     if (!allAnswered) {
       Alert.alert('Missing Info', 'Please answer all questions to continue.');
@@ -109,7 +118,7 @@ export default function Step13Enneagram() {
       );
 
       onboardingMemory.enneagramAnswers = answers; // ✅ Save locally
-      navigation.replace('Step14DISC', { uid });
+      router.replace("/onboarding/" + 'Step14DISC', { uid }.toLowerCase() + "?uid=" + uid);
     } catch (error) {
       console.error('Error saving Enneagram data:', error);
       Alert.alert('Error', 'Could not save your answers. Try again.');
@@ -119,7 +128,7 @@ export default function Step13Enneagram() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const getSmartCue = () => {
@@ -193,7 +202,7 @@ export default function Step13Enneagram() {
           <AnimatedValueCue message={getSmartCue()} />
         </View>
 
-        <Footer
+        <Footer variant="onboarding"
           onNext={handleContinue}
           onBack={handleBack}
           nextDisabled={!Object.keys(answers).length}

@@ -3,7 +3,7 @@ import {
   Box, Button, Input, Text, Checkbox, useToast, VStack, HStack, Heading, IconButton
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
-import { doc, getDoc, addDoc, collection, Timestamp, updateDoc, query, where, getDocs } from 'firebase/firestore';
+import { doc, addDoc, collection, Timestamp, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { getAuth } from 'firebase/auth';
 import { markInviteCodeAsUsed, validateInviteCode } from '@/lib/invites';
@@ -12,6 +12,19 @@ interface InvitationModalProps {
   isVisible: boolean;
   onClose: () => void;
   referredBy?: string;
+}
+
+interface InviteApplicationData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  handle: string;
+  isMatchIntent: boolean;
+  referredBy?: string | null;
+  level: number;
+  createdAt: Timestamp;
+  status: 'pending';
 }
 
 const getReferralBadge = (count: number): string => {
@@ -26,7 +39,7 @@ const getReferralBadge = (count: number): string => {
 const InvitationModal: React.FC<InvitationModalProps> = ({ isVisible, onClose, referredBy }) => {
   const [inviteCode, setInviteCode] = useState('');
   const [showApplication, setShowApplication] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Omit<InviteApplicationData, 'referredBy' | 'level' | 'createdAt' | 'status'>>({
     firstName: '',
     lastName: '',
     email: '',
@@ -34,6 +47,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({ isVisible, onClose, r
     handle: '',
     isMatchIntent: false,
   });
+
   const toast = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,20 +108,27 @@ const InvitationModal: React.FC<InvitationModalProps> = ({ isVisible, onClose, r
   const handleApplicationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { firstName, lastName, email, phone, handle } = form;
+    const { firstName, lastName, email, phone, handle, isMatchIntent } = form;
     if (!firstName || !lastName || !email || !phone || !handle) {
       toast({ status: 'error', description: 'Please complete all fields.' });
       return;
     }
 
+    const data: InviteApplicationData = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      handle,
+      isMatchIntent,
+      referredBy: referredBy || null,
+      level: 1,
+      createdAt: Timestamp.now(),
+      status: 'pending',
+    };
+
     try {
-      await addDoc(collection(db, 'inviteApplications'), {
-        ...form,
-        referredBy: referredBy || null,
-        level: 1,
-        createdAt: Timestamp.now(),
-        status: 'pending',
-      });
+      await addDoc(collection(db, 'inviteApplications'), data);
 
       toast({ status: 'success', description: "🎉 Application received! We'll review and reach out soon." });
       onClose();
