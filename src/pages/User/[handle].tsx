@@ -6,7 +6,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import Head from 'next/head';
 import MainLayout from '@/layouts/MainLayout';
-import UserBadgeDisplay from '@/components/UserBadgeDisplay';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell
@@ -74,7 +73,7 @@ export default function PublicProfile() {
       <div className="max-w-3xl mx-auto px-6 py-16 text-gray-800">
         <h1 className="text-3xl font-bold mb-4 text-indigo-700 flex items-center gap-2">
           💫 LoveGPT Public Resume
-          {badge && <UserBadgeDisplay badge={badge} size={32} />}
+          {badge && }
         </h1>
 
         <div className="bg-white shadow p-6 rounded-xl space-y-6">
