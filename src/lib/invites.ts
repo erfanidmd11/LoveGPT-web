@@ -10,7 +10,6 @@ import {
   where,
   getDocs
 } from 'firebase/firestore';
-import { db } from './firebase';
 
 /**
  * Creates a new invitation code document in Firestore with optional metadata.
