@@ -1,7 +1,6 @@
 // pages/admin/referrals.tsx
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import DashboardLayout from '@/layouts/DashboardLayout';
 import AdminHeader from '@/components/admin/AdminHeader';
 import ReferralTree from '@/components/ReferralTree';
 import { Input, Button, Spinner, Box, Text } from '@chakra-ui/react';
@@ -45,18 +44,18 @@ export default function AdminReferralExplorer() {
   if (loading) return <Spinner mt={20} />;
   if (!user || !SUPER_ADMINS.includes(user.email)) {
     return (
-      <DashboardLayout>
+      
         <Box mt={20} textAlign="center">
           <Text fontSize="xl" color="red.500">
             ❌ You are not authorized to view this page.
           </Text>
         </Box>
-      </DashboardLayout>
+      
     );
   }
 
   return (
-    <DashboardLayout>
+    
       <AdminHeader />
       <Head>
         <title>Admin Referrals | LoveGPT</title>
@@ -93,6 +92,6 @@ export default function AdminReferralExplorer() {
           <ReferralTree rootUserId={submittedId} allowChainLinks={true} />
         )}
       </Box>
-    </DashboardLayout>
+    
   );
 }

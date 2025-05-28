@@ -4,7 +4,6 @@ import Head from 'next/head';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import MatchList from '@/components/match/MatchList';
-import DashboardLayout from '@/layouts/DashboardLayout';
 
 interface DealBreaker {
   value: string;
@@ -33,7 +32,7 @@ export default function MatchesPage() {
   };
 
   return (
-    <DashboardLayout>
+    
       <Head>
         <title>Your Matches | LoveGPT</title>
       </Head>
@@ -42,6 +41,6 @@ export default function MatchesPage() {
         <h1 className="text-3xl font-bold text-indigo-700 mb-6 text-center">💞 Suggested Matches</h1>
         <MatchList userProfile={userProfile} /> {/* Pass userProfile to MatchList */}
       </div>
-    </DashboardLayout>
+    
   );
 }
