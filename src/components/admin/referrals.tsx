@@ -15,11 +15,17 @@ export default function AdminReferrals() {
   useEffect(() => {
     const fetchReferrals = async () => {
       const snapshot = await getDocs(collection(db, 'inviteApplications'));
-      const filtered = snapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter(entry => entry.referredBy);
+      const filtered = snapshot.docs.map(doc => {
+        const data = doc.data() as Partial<ReferralEntry>;
+        return {
+          id: doc.id,
+          referredBy: data.referredBy || 'Unknown',
+          email: data.email || 'Unknown',
+          timestamp: data.timestamp || '',
+        };
+      });
 
-      setReferrals(filtered as ReferralEntry[]);
+      setReferrals(filtered);
     };
 
     fetchReferrals();
