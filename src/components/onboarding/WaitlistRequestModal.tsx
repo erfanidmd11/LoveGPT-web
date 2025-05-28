@@ -20,8 +20,25 @@ import { db } from '@/firebase/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 
-export default function WaitlistRequestModal({ isOpen, onClose }) {
-  const [form, setForm] = useState({
+interface WaitlistForm {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  instagram: string;
+  location: string;
+  reason: string;
+  heardFrom: string;
+  referredBy: string;
+}
+
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function WaitlistRequestModal({ isOpen, onClose }: Props) {
+  const [form, setForm] = useState<WaitlistForm>({
     firstName: '',
     lastName: '',
     phone: '',
@@ -32,18 +49,18 @@ export default function WaitlistRequestModal({ isOpen, onClose }) {
     heardFrom: '',
     referredBy: '',
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Partial<Record<keyof WaitlistForm, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
   const router = useRouter();
 
-  const handleChange = (field, value) => {
+  const handleChange = (field: keyof WaitlistForm, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
     setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
   const validate = () => {
-    const newErrors = {};
+    const newErrors: Partial<Record<keyof WaitlistForm, string>> = {};
     if (!form.firstName) newErrors.firstName = 'First name is required';
     if (!form.lastName) newErrors.lastName = 'Last name is required';
     if (!form.phone) newErrors.phone = 'Phone number is required';
@@ -66,7 +83,6 @@ export default function WaitlistRequestModal({ isOpen, onClose }) {
         ...form,
         createdAt: new Date(),
       });
-
       router.push('/thank-you');
     } catch (err) {
       console.error(err);
@@ -111,7 +127,7 @@ export default function WaitlistRequestModal({ isOpen, onClose }) {
             <Text fontStyle="italic" color="gray.600">
               You're in the right place ✨ Just because you weren’t invited (yet) doesn’t mean you're not important...
             </Text>
-            {[
+            {([
               ['firstName', 'First Name'],
               ['lastName', 'Last Name'],
               ['phone', 'Phone Number'],
@@ -121,8 +137,8 @@ export default function WaitlistRequestModal({ isOpen, onClose }) {
               ['reason', 'Why do you want to join LoveGPT?'],
               ['heardFrom', 'How did you hear about us?'],
               ['referredBy', 'Who referred you? (optional)'],
-            ].map(([field, label]) => (
-              <FormControl key={field} isInvalid={errors[field]}>
+            ] as [keyof WaitlistForm, string][]).map(([field, label]) => (
+              <FormControl key={field} isInvalid={!!errors[field]}>
                 <FormLabel>{label}</FormLabel>
                 {field === 'reason' ? (
                   <Textarea
