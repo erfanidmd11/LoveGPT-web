@@ -1,4 +1,3 @@
-// pages/admin/referrals.tsx
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import AdminHeader from '@/components/admin/AdminHeader';
@@ -44,18 +43,16 @@ export default function AdminReferralExplorer() {
   if (loading) return <Spinner mt={20} />;
   if (!user || !SUPER_ADMINS.includes(user.email)) {
     return (
-      
-        <Box mt={20} textAlign="center">
-          <Text fontSize="xl" color="red.500">
-            ❌ You are not authorized to view this page.
-          </Text>
-        </Box>
-      
+      <Box mt={20} textAlign="center">
+        <Text fontSize="xl" color="red.500">
+          ❌ You are not authorized to view this page.
+        </Text>
+      </Box>
     );
   }
 
   return (
-    
+    <Box>
       <AdminHeader />
       <Head>
         <title>Admin Referrals | LoveGPT</title>
@@ -92,6 +89,6 @@ export default function AdminReferralExplorer() {
           <ReferralTree rootUserId={submittedId} allowChainLinks={true} />
         )}
       </Box>
-    
+    </Box>
   );
 }

@@ -1,12 +1,18 @@
 // src/utils/auth.ts
+import { auth } from '@/lib/firebase';
+
 export const getUserSession = () => {
-  // Simulate fetching session or user data (replace this with actual authentication logic)
-  const user = getUserFromAuth();  // Replace with your actual user fetching logic (e.g., Firebase Auth)
-  
-  // Ensure that 'onboardingComplete' exists in the session object
+  const user = auth.currentUser;
+
+  if (!user) return null;
+
+  const phone = (user as any).phone || null;
+  const profileComplete = (user as any).profileComplete || false;
+  const onboardingComplete = (user as any).onboardingComplete || false;
+
   return {
-    phone: user.phone,
-    profileComplete: user.profileComplete,
-    onboardingComplete: user.onboardingComplete || false,  // Add default value to handle undefined case
+    phone,
+    profileComplete,
+    onboardingComplete,
   };
 };

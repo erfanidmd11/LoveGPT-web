@@ -1,18 +1,13 @@
 # LoveGPT Shared Data
 
-This project contains shared data and utilities used by the LoveGPT application, including gender-specific Zodiac profiles, personality data, and helper functions for generating personalized user stories.
+This module previously contained shared data and personality narratives including zodiac logic, which has now been removed.
 
-## Folder Structure
+## Current Usage
 
-- **lib/**: Contains Zodiac-related data, including detailed profiles for each Zodiac sign and gender.
-- **types/**: Contains TypeScript types used for defining data structures like Zodiac profiles.
-- **zodiac.ts**: Contains utility functions for retrieving Zodiac-related information.
-- **zodiacPersonalityMap.ts**: Maps gender-specific Zodiac profiles used in generating personalized content for ARIA.
+- This module is reserved for future shared utilities between web and mobile.
+- It currently exports only admin utilities and placeholder types.
 
-## How to Use
+## Cleanup Status
 
-1. **Install Dependencies**:
-   This module is a shared resource that is used in both the web and mobile parts of LoveGPT. To use it, simply install it as a local dependency in your web or mobile project.
+Zodiac data, personality mapping, and narrative exports have been fully removed as of [date].
 
-   ```bash
-   npm install lovegpt-shared

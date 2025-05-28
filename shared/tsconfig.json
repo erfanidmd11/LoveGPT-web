@@ -5,5 +5,5 @@
     "rootDir": "lib",
     "composite": true
   },
-  "include": ["lib", "lib/zodiacTypes.ts"]
+  "include": ["lib"]
 }
