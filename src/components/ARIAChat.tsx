@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Box, Button, Input, VStack, Image, Text, Modal, ModalOverlay, ModalContent,
-  ModalHeader, ModalBody, ModalFooter, ModalCloseButton, useDisclosure
+  ModalHeader, ModalBody, ModalFooter, ModalCloseButton, useDisclosure, HStack, Spinner
 } from '@chakra-ui/react';
 
 interface ChatMessage {
@@ -13,6 +13,7 @@ export default function ARIAChat() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState<ChatMessage[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -20,6 +21,7 @@ export default function ARIAChat() {
     const newMsg: ChatMessage = { role: 'user', content: message };
     setChat((prev) => [...prev, newMsg]);
     setMessage('');
+    setIsTyping(true); // show typing indicator
 
     try {
       const res = await fetch('/api/aria', {
@@ -33,6 +35,8 @@ export default function ARIAChat() {
       }
     } catch (err) {
       setChat((prev) => [...prev, { role: 'aria', content: 'Something went wrong. Try again.' }]);
+    } finally {
+      setIsTyping(false); // hide typing indicator
     }
   };
 
@@ -60,6 +64,12 @@ export default function ARIAChat() {
                   <Text fontSize="sm">{msg.content}</Text>
                 </Box>
               ))}
+              {isTyping && (
+                <HStack alignSelf="flex-start" spacing={2}>
+                  <Spinner size="sm" color="pink.500" />
+                  <Text fontSize="sm" color="gray.500">ARIA is typing...</Text>
+                </HStack>
+              )}
             </VStack>
           </ModalBody>
           <ModalFooter>
