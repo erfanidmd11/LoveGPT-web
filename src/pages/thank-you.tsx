@@ -1,5 +1,4 @@
 // src/pages/thank-you.tsx
-
 import React from 'react';
 import {
   Box,
@@ -10,6 +9,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import Head from 'next/head';
+import MainLayout from '@/layouts/MainLayout';
 
 const ThankYouPage = () => {
   const bg = useColorModeValue('white', 'gray.800');
@@ -17,7 +17,7 @@ const ThankYouPage = () => {
   const accent = useColorModeValue('purple.600', 'purple.300');
 
   return (
-    <>
+    <MainLayout>
       <Head>
         <title>Thank You – LoveGPT</title>
       </Head>
@@ -79,7 +79,7 @@ const ThankYouPage = () => {
           </VStack>
         </Box>
       </Container>
-    </>
+    </MainLayout>
   );
 };
 
