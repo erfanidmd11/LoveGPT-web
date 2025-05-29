@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import {
   collection,
   getDocs,
   updateDoc,
   doc,
   Timestamp,
+  setDoc,
 } from 'firebase/firestore';
-import { SUPER_ADMINS } from '@/config/admins';
+import { db } from '@/lib/firebase';
+import { generateCode } from '@/utils/invite/generateCode';
+import { sendInviteEmail } from '@/lib/mailgun/sendInviteEmail';
 
 interface InviteApplication {
   id: string;
@@ -23,20 +26,18 @@ interface InviteApplication {
   [key: string]: any;
 }
 
-export default function AdminDashboard() {
+export default function AdminApplications() {
   const [applications, setApplications] = useState<InviteApplication[]>([]);
   const [filter, setFilter] = useState('pending');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [user, authLoading] =
-    typeof window !== 'undefined' ? useAuthState(auth) : [null, true];
-
+  const [user, authLoading] = useAuthState(typeof window !== 'undefined' ? auth : null);
   const router = useRouter();
 
   useEffect(() => {
-    if (!authLoading && (!user || !SUPER_ADMINS.includes(user?.email ?? ''))) {
-      router.push('/admin/login');
+    if (!authLoading && (!user || user.email !== 'admin@thelovegpt.ai')) {
+      router.push('/login');
     }
   }, [user, authLoading]);
 
@@ -54,23 +55,26 @@ export default function AdminDashboard() {
   const approveApplication = async (application: InviteApplication) => {
     setLoading(true);
     try {
-      const currentUser = auth.currentUser;
-      const token = await currentUser?.getIdToken();
+      const code = generateCode();
+      const codeRef = doc(db, 'invitationCodes', code);
+      const oneWeekLater = new Date();
+      oneWeekLater.setDate(oneWeekLater.getDate() + 7);
 
-      const res = await fetch('/api/sendInvite', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          to: application.email,
-          firstName: application.firstName,
-        }),
+      await setDoc(codeRef, {
+        code,
+        createdAt: Timestamp.now(),
+        createdBy: user?.email || 'thelovegpt.ai@gmail.com',
+        maxUses: 1,
+        usedCount: 0,
+        status: 'active',
+        expiresAt: Timestamp.fromDate(oneWeekLater),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to send invite');
+      await sendInviteEmail({
+        to: application.email,
+        firstName: application.firstName,
+        inviteCode: code,
+      });
 
       await updateDoc(doc(db, 'inviteApplications', application.id), {
         status: 'approved',
@@ -79,7 +83,7 @@ export default function AdminDashboard() {
 
       fetchApplications();
     } catch (err) {
-      console.error('🔥 Error sending invite:', err);
+      console.error('Approval error:', err);
     } finally {
       setLoading(false);
     }
@@ -90,13 +94,15 @@ export default function AdminDashboard() {
     fetchApplications();
   };
 
-  const filteredApps = applications.filter(app =>
-    app.firstName.toLowerCase().includes(search.toLowerCase()) ||
-    app.lastName.toLowerCase().includes(search.toLowerCase()) ||
-    app.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredApps = applications.filter(app => {
+    return (
+      app.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      app.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      app.email.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
-  if (authLoading || !user || !SUPER_ADMINS.includes(user?.email ?? '')) return null;
+  if (authLoading || !user || user.email !== 'admin@thelovegpt.ai') return null;
 
   return (
     <>

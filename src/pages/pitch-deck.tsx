@@ -1,8 +1,10 @@
+import { ChakraProvider, Box, VStack, Heading, Text, SimpleGrid, Button as CButton } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+const MotionBox = motion(Box);
 import React, { useEffect } from "react";
 import { Phone, BarChart, FileText } from "lucide-react";
 import Link from "next/link";
 import MainLayout from "@/layouts/MainLayout";
-import { Button } from "@/components/ui/button";
 import ARIAChat from "@/components/ARIAChat";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import ContactModal from "@/components/ContactModal";
@@ -270,7 +272,8 @@ export default function PitchDeck() {
   
 
   return (
-    <MainLayout>
+    <ChakraProvider>
+      <MainLayout>
       <div className="fixed top-0 left-0 w-full h-1 bg-indigo-300 z-50">
         <div id="scroll-progress" className="h-full bg-indigo-600 transition-all ease-in-out duration-300" style={{ width: '0%' }} />
       </div>
@@ -287,11 +290,18 @@ export default function PitchDeck() {
 <section className="space-y-28 px-6 md:px-24 pb-24 ml-auto lg:w-4/5">
   {slides.map((slide, idx) => {
     return (
-      <div
-        key={idx}
-        id={`slide-${idx}`}
-        className="bg-white rounded-2xl p-8 shadow-xl animate-fade-in-up transition-opacity duration-1000 ease-in-out"
-      >
+      <MotionBox
+  key={idx}
+  bg="white"
+  borderRadius="2xl"
+  p={10}
+  boxShadow="2xl"
+  borderLeft="8px solid"
+  borderColor="purple.400"
+  initial={{ opacity: 0, y: 30 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: idx * 0.1 }}
+>
         <h2 className="text-3xl font-bold text-indigo-700 mb-4">{slide.title}</h2>
         <div className="text-lg leading-relaxed text-gray-700">
           {slide.title === 'Market Opportunity' ? (
@@ -357,7 +367,7 @@ export default function PitchDeck() {
             <div dangerouslySetInnerHTML={{ __html: slide.content }} />
           )}
         </div>
-      </div>
+      </MotionBox>
     );
   })}
 
@@ -371,30 +381,50 @@ export default function PitchDeck() {
 
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[1.618rem] max-w-[1440px] mx-auto">
     {/* Connect With Us opens the Contact Modal */}
-    <Button
-      onClick={() => setShowContactModal(true)}
-      className="w-full aspect-[1.618] bg-indigo-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md transition-transform duration-300 hover:scale-105"
-    >
-      💬 Connect With Us
-    </Button>
+    <CButton
+  onClick={() => setShowContactModal(true)}
+  width="100%"
+  paddingX="6"
+  paddingY="3"
+  fontSize="lg"
+  borderRadius="2xl"
+  boxShadow="md"
+  colorScheme="purple"
+>
+  💬 Connect With Us
+</CButton>
 
-    <a href="tel:+17607078542">
-      <Button className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md transition-transform duration-300 hover:scale-105">
-        <Phone className="mr-2" /> Call Us
-      </Button>
-    </a>
+    <Link href="mailto:admin@thelovegpt.ai">
+      <CButton width="100%" paddingX="6" paddingY="3" fontSize="lg" borderRadius="2xl" boxShadow="md" colorScheme="purple">
+        <FileText className="mr-2" /> Email Us
+      </CButton>
+    </Link>
 
-    <Button
-      className="w-full aspect-[1.618] bg-green-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md transition-transform duration-300 hover:scale-105"
-      onClick={() => window.open('/financials', '_blank')}
-    >
-      <BarChart className="mr-2" /> Financials
-    </Button>
+    <CButton
+  onClick={() => window.open('/financials', '_blank')}
+  width="100%"
+  paddingX="6"
+  paddingY="3"
+  fontSize="lg"
+  borderRadius="2xl"
+  boxShadow="md"
+  colorScheme="green"
+>
+  <BarChart style={{ marginRight: '0.5rem' }} /> Financials
+</CButton>
 
     <Link href="/investors">
-      <Button className="w-full aspect-[1.618] bg-indigo-600 text-white px-6 py-3 text-lg rounded-2xl shadow-md transition-transform duration-300 hover:scale-105">
-        <FileText className="mr-2" /> Executive Summary
-      </Button>
+      <CButton
+  width="100%"
+  paddingX="6"
+  paddingY="3"
+  fontSize="lg"
+  borderRadius="2xl"
+  boxShadow="md"
+  colorScheme="purple"
+>
+  <FileText style={{ marginRight: '0.5rem' }} /> Executive Summary
+</CButton>
     </Link>
   </div>
 
@@ -415,8 +445,11 @@ export default function PitchDeck() {
             </div>
             <div className="max-w-2xl mx-auto animate-fade-in-up transition duration-700 ease-out"><ARIAChat />
             </div>
-          </section>
+</section>
+
         </div>
     </MainLayout>
+  </ChakraProvider>
   );
 }
+

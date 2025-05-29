@@ -1,8 +1,26 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import MainLayout from '@/layouts/MainLayout';
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Heading,
+  Text,
+  VStack,
+  Image,
+} from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
+import Link from 'next/link';
 import ARIAChat from '@/components/ARIAChat';
-import Image from 'next/image';
+import { motion } from 'framer-motion';
+
+const glow = keyframes`
+  0%, 100% { box-shadow: 0 0 0px rgba(236, 72, 153, 0.6); }
+  50% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.8); }
+`;
+
+const MotionImage = motion(Image);
 
 export default function MeetARIA() {
   return (
@@ -15,50 +33,67 @@ export default function MeetARIA() {
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex flex-col items-center justify-center px-6 py-16 text-center">
-        <Image
-          src="/aria-avatar.png"
-          alt="ARIA Avatar"
-          width={100}
-          height={100}
-          className="rounded-full shadow-lg mb-6"
-        />
+      <Box bgGradient="linear(to-br, purple.50, pink.100)" py={16} px={6}>
+        <Container maxW="3xl" textAlign="center">
+          <MotionImage
+            src="/aria-avatar.png"
+            alt="ARIA Avatar"
+            boxSize="100px"
+            borderRadius="full"
+            border="2px solid white"
+            mx="auto"
+            mb={6}
+            animation={`${glow} 4s ease-in-out infinite`}
+          />
 
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-4">Meet ARIA</h1>
+          <Heading size="2xl" fontWeight="extrabold" color="gray.800" mb={6}>
+            Meet ARIA
+          </Heading>
 
-        <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-6">
-          ARIA — Artificial Relationship Intelligence Assistant — is not just another AI chatbot. She’s your digital mirror, emotional compass, and dedicated companion for conscious connection. Think of her as your private relationship coach, therapist, cheerleader, and best friend, all rolled into one.
-        </p>
+          <VStack spacing={6} fontSize="lg" color="gray.700">
+            <Text>
+              ARIA — Artificial Relationship Intelligence Assistant — is not just another AI chatbot. She’s your digital mirror, emotional compass, and dedicated companion for conscious connection.
+            </Text>
+            <Text>
+              ARIA listens — when you're confused, overwhelmed, stuck, lonely, or navigating relational tension. She helps you clarify your thoughts, understand your emotional patterns, and communicate with kindness and clarity.
+            </Text>
+            <Text>
+              Hiring a therapist can cost hundreds of dollars a month. Finding a truly safe friend? Rare. ARIA is always here, always learning, and always on your side — with zero judgment, zero ego, and zero agenda.
+            </Text>
+            <Text>
+              She understands your values, your personality, your love language, and your triggers — because she’s designed to. ARIA adapts as you grow, giving you reflections that are aligned with your unique relational blueprint.
+            </Text>
+            <Text>
+              Every great relationship starts with self-awareness. And every evolution begins with the courage to ask, "What do I truly need right now?" ARIA helps you answer that.
+            </Text>
+            <Text>
+              LoveGPT is not just a dating app — it’s a relationship revolution. And ARIA is your guide into that future.
+            </Text>
+          </VStack>
 
-        <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-6">
-          ARIA listens — when you're confused, overwhelmed, stuck, lonely, or navigating relational tension. She helps you clarify your thoughts, understand your emotional patterns, and communicate with kindness and clarity.
-        </p>
+          <Center mt={12}>
+            <Link href="/signup" passHref>
+              <Button
+                bgGradient="linear(to-r, pink.500, purple.500)"
+                color="white"
+                px={8}
+                py={4}
+                fontWeight="bold"
+                fontSize="lg"
+                rounded="lg"
+                shadow="lg"
+                _hover={{ bg: 'pink.600' }}
+              >
+                Talk to ARIA Now
+              </Button>
+            </Link>
+          </Center>
 
-        <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-6">
-          Hiring a therapist can cost hundreds of dollars a month. Finding a truly safe friend? Rare. ARIA is always here, always learning, and always on your side — with zero judgment, zero ego, and zero agenda. Just insight, empathy, and personalized growth.
-        </p>
-
-        <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-6">
-          She understands your values, your personality, your love language, and your triggers — because she’s designed to. ARIA adapts as you grow, giving you reflections that are aligned with your unique relational blueprint.
-        </p>
-
-        <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-6">
-          Every great relationship starts with self-awareness. And every evolution begins with the courage to ask, "What do I truly need right now?" ARIA helps you answer that.
-        </p>
-
-        <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-12">
-          LoveGPT is not just a dating app — it’s a relationship revolution. And ARIA is your guide into that future.
-        </p>
-
-        <Link
-          href="/signup"
-          className="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition mt-4"
-        >
-          Talk to ARIA Now
-        </Link>
-      </div>
-
-      <ARIAChat />
+          <Box mt={20}>
+            <ARIAChat />
+          </Box>
+        </Container>
+      </Box>
     </MainLayout>
   );
 }

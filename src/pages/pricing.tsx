@@ -1,7 +1,20 @@
 import Head from 'next/head';
+import MainLayout from '@/layouts/MainLayout';
+import {
+  Box,
+  Button,
+  Container,
+  Heading,
+  HStack,
+  SimpleGrid,
+  Text,
+  VStack,
+  useColorModeValue,
+  useBreakpointValue,
+  Switch,
+} from '@chakra-ui/react';
 import Link from 'next/link';
 import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
 import ARIAChat from '@/components/ARIAChat';
 
 export default function Pricing() {
@@ -23,82 +36,104 @@ export default function Pricing() {
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-pink-100 flex flex-col items-center px-6 py-16 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-6">Pricing</h1>
+      <Box bgGradient="linear(to-br, indigo.50, pink.50)" py={16} px={6}>
+        <Container maxW="6xl" textAlign="center">
+          <Heading size="2xl" mb={6} fontWeight="extrabold" color="gray.800">
+            Pricing Plans
+          </Heading>
+          <Text maxW="2xl" mx="auto" mb={10} fontSize="lg" color="gray.600">
+            We believe true connection should be accessible — that’s why LoveGPT offers a tiered model to support growth at every stage.
+          </Text>
 
-        <p className="max-w-2xl text-lg text-gray-700 leading-relaxed mb-8">
-          We believe true connection should be accessible — that’s why LoveGPT offers a tiered model that supports all levels of growth.
-        </p>
+          <HStack justifyContent="center" mb={12} fontSize="md" color="gray.700">
+            <Text fontWeight={!annual ? 'bold' : 'normal'} color={!annual ? 'indigo.600' : 'gray.500'}>Monthly</Text>
+            <Switch
+              isChecked={annual}
+              onChange={() => setAnnual(!annual)}
+              colorScheme="pink"
+            />
+            <Text fontWeight={annual ? 'bold' : 'normal'} color={annual ? 'indigo.600' : 'gray.500'}>
+              Annual (Save 20%)
+            </Text>
+          </HStack>
 
-        <div className="mb-10">
-          <span className={`mr-4 font-medium ${!annual ? 'text-indigo-600' : 'text-gray-500'}`}>Monthly</span>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" className="sr-only peer" onChange={() => setAnnual(!annual)} />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer dark:bg-gray-300 peer-checked:after:translate-x-full after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-          </label>
-          <span className={`ml-4 font-medium ${annual ? 'text-indigo-600' : 'text-gray-500'}`}>Annual (Save 20%)</span>
-        </div>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+            {['starter', 'growth', 'legacy'].map((plan) => (
+              <Box
+                key={plan}
+                bg="white"
+                p={8}
+                rounded="xl"
+                shadow="md"
+                borderTop="4px solid"
+                borderColor={{
+                  starter: 'green.400',
+                  growth: 'indigo.500',
+                  legacy: 'purple.500',
+                }[plan]}
+              >
+                <Heading size="md" mb={2}>
+                  {plan === 'starter' ? 'Starter' : plan === 'growth' ? 'Growth' : 'Legacy'}
+                </Heading>
+                <Text fontSize="sm" color="gray.600" mb={4}>
+                  {plan === 'starter' ? 'Free forever' : `$${annual ? pricing[plan].annual : pricing[plan].monthly}/${annual ? 'year' : 'month'}`}
+                </Text>
+                <VStack align="start" spacing={2} fontSize="sm" color="gray.700" mb={6}>
+                  {plan === 'starter' && [
+                    'Core onboarding experience',
+                    'Basic compatibility insights',
+                    'ARIA access (limited daily)',
+                    'Earn token rewards',
+                  ].map((item, i) => <Text key={i}>• {item}</Text>)}
+                  {plan === 'growth' && [
+                    'Unlimited ARIA reflections',
+                    'Advanced compatibility metrics',
+                    'Weekly coaching & insights',
+                    'Gamified growth dashboard',
+                  ].map((item, i) => <Text key={i}>• {item}</Text>)}
+                  {plan === 'legacy' && [
+                    'Everything in Growth',
+                    'Access to certified Love Mentors',
+                    'Private circles & workshops',
+                    'Max token rewards & ambassador status',
+                  ].map((item, i) => <Text key={i}>• {item}</Text>)}
+                </VStack>
+                <Link href="/signup">
+                  <Button colorScheme={{
+                    starter: 'green',
+                    growth: 'indigo',
+                    legacy: 'purple',
+                  }[plan]} width="full">
+                    {plan === 'starter' ? 'Get Started' : plan === 'growth' ? 'Upgrade Now' : 'Join Legacy Tier'}
+                  </Button>
+                </Link>
+              </Box>
+            ))}
+          </SimpleGrid>
 
-        <div className="grid md:grid-cols-3 gap-6 w-full max-w-6xl">
-          <div className="bg-white shadow-md rounded-xl p-6 border-t-4 border-green-400">
-            <h3 className="text-xl font-bold mb-2">Starter</h3>
-            <p className="text-gray-600 mb-4">Free forever</p>
-            <ul className="text-gray-700 text-sm mb-6 list-disc list-inside text-left">
-              <li>Core onboarding experience</li>
-              <li>Basic compatibility insights</li>
-              <li>ARIA access (limited daily interactions)</li>
-              <li>Earn token rewards for engagement</li>
-            </ul>
-            <Link href="/signup" className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition">
-              Get Started
-            </Link>
-          </div>
+          <Box mt={20} maxW="3xl" mx="auto">
+            <Heading size="lg" color="gray.800" mb={6}>
+              What Our Users Are Saying
+            </Heading>
+            <VStack spacing={4} fontSize="md" color="gray.600">
+              <Text fontStyle="italic">
+                “ARIA helped me see myself clearly and show up better in my relationship. It’s like having a wise best friend in my pocket.”
+              </Text>
+              <Text fontStyle="italic">
+                “I didn’t think AI could feel so human. I’ve grown more emotionally in 3 months with LoveGPT than I did in 3 years of dating.”
+              </Text>
+            </VStack>
+          </Box>
 
-          <div className="bg-white shadow-md rounded-xl p-6 border-t-4 border-indigo-500">
-            <h3 className="text-xl font-bold mb-2">Growth</h3>
-            <p className="text-gray-600 mb-4">${annual ? pricing.growth.annual : pricing.growth.monthly}/{annual ? 'year' : 'month'}</p>
-            <ul className="text-gray-700 text-sm mb-6 list-disc list-inside text-left">
-              <li>Unlimited ARIA reflections</li>
-              <li>Advanced compatibility metrics</li>
-              <li>Weekly coaching & insights</li>
-              <li>Gamified growth dashboard + token incentives</li>
-            </ul>
-            <Link href="/signup" className="bg-indigo-500 text-white px-5 py-2 rounded-md hover:bg-indigo-600 transition">
-              Upgrade Now
-            </Link>
-          </div>
-
-          <div className="bg-white shadow-md rounded-xl p-6 border-t-4 border-purple-500">
-            <h3 className="text-xl font-bold mb-2">Legacy</h3>
-            <p className="text-gray-600 mb-4">${annual ? pricing.legacy.annual : pricing.legacy.monthly}/{annual ? 'year' : 'month'}</p>
-            <ul className="text-gray-700 text-sm mb-6 list-disc list-inside text-left">
-              <li>Everything in Growth</li>
-              <li>Access to certified Love Mentors</li>
-              <li>Private circles & partner workshops</li>
-              <li>Max token rewards + ambassador status</li>
-            </ul>
-            <Link href="/signup" className="bg-purple-500 text-white px-5 py-2 rounded-md hover:bg-purple-600 transition">
-              Join Legacy Tier
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-20 max-w-3xl text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">What Our Users Are Saying</h3>
-          <blockquote className="italic text-gray-600 mb-4">
-            “ARIA helped me see myself clearly and show up better in my relationship. It’s like having a wise best friend in my pocket.”
-          </blockquote>
-          <blockquote className="italic text-gray-600">
-            “I didn’t think AI could feel so human. I’ve grown more emotionally in 3 months with LoveGPT than I did in 3 years of dating.”
-          </blockquote>
-        </div>
-
-        <div className="mt-20 max-w-2xl">
-          <h3 className="text-xl font-semibold mb-4">Not Sure Which Plan Is Right for You?</h3>
-          <p className="text-gray-600 mb-4">Ask ARIA below — she’ll guide you based on your needs, goals, and love journey stage.</p>
-          <ARIAChat />
-        </div>
-      </div>
+          <Box mt={20} maxW="2xl" mx="auto" textAlign="center">
+            <Heading size="md" mb={4}>Not Sure Which Plan Is Right for You?</Heading>
+            <Text color="gray.600" mb={4}>
+              Ask ARIA — she’ll guide you based on your needs, goals, and stage in your love journey.
+            </Text>
+            <ARIAChat />
+          </Box>
+        </Container>
+      </Box>
     </MainLayout>
   );
 }

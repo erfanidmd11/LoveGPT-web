@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import MainLayout from '@/layouts/MainLayout';
+import { Box, Heading, Text, VStack, Link, Container } from '@chakra-ui/react';
 
 export default function PrivacyPolicy() {
   return (
@@ -12,100 +13,115 @@ export default function PrivacyPolicy() {
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-white to-pink-50 px-6 py-16 flex flex-col items-center justify-start text-left">
-        <div className="max-w-3xl w-full">
-          <h1 className="text-4xl font-extrabold text-gray-800 mb-8 text-center">Privacy Policy</h1>
+      <Box bgGradient="linear(to-br, white, pink.50)" py={{ base: 12, md: 20 }} px={6}>
+        <Container maxW="3xl">
+          <Heading
+            textAlign="center"
+            fontSize={{ base: '3xl', md: '4xl' }}
+            fontWeight="extrabold"
+            color="gray.800"
+            mb={10}
+          >
+            Privacy Policy
+          </Heading>
 
-          <p className="text-gray-700 text-lg mb-6">
-            <strong>Effective Date:</strong> [Insert Date]
-          </p>
+          <VStack spacing={8} align="start" fontSize="lg" color="gray.700">
+            <Text><strong>Effective Date:</strong> [Insert Date]</Text>
 
-          <p className="text-gray-700 text-lg mb-6">
-            At LoveGPT, your trust means everything to us. This Privacy Policy explains how we collect, use, and protect your information when you use our services — including our emotionally intelligent AI guide, ARIA.
-          </p>
+            <Text>
+              At LoveGPT, your trust means everything to us. This Privacy Policy explains how we collect, use, and protect your information when you use our services — including our emotionally intelligent AI guide, ARIA.
+            </Text>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">1. Your Privacy, Your Power</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            We believe that emotional safety is foundational to conscious love. That’s why <strong>LoveGPT does not store, transmit, or sell your private conversations</strong>. What you share with ARIA stays with you — always.
-          </p>
+            <Box>
+              <Heading size="md" mb={2}>1. Your Privacy, Your Power</Heading>
+              <Text>
+                We believe that emotional safety is foundational to conscious love. That’s why <strong>LoveGPT does not store, transmit, or sell your private conversations</strong>. What you share with ARIA stays with you — always.
+              </Text>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">2. Information We Collect</h2>
-          <ul className="list-disc list-inside text-gray-700 text-lg mb-6">
-            <li><strong>Account Information:</strong> Name, email, phone number (optional), and authentication data</li>
-            <li><strong>Usage Data:</strong> Anonymized interaction metadata to help improve the platform</li>
-          </ul>
+            <Box>
+              <Heading size="md" mb={2}>2. Information We Collect</Heading>
+              <ul style={{ paddingLeft: '1.2rem', listStyle: 'disc' }}>
+                <li><strong>Account Info:</strong> Name, email, phone number (optional)</li>
+                <li><strong>Usage Data:</strong> Anonymized interaction metadata</li>
+              </ul>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">3. What We Don’t Collect</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            LoveGPT is a <strong>judgment-free, surveillance-free zone</strong>. That means:
-          </p>
-          <ul className="list-disc list-inside text-gray-700 text-lg mb-6">
-            <li>No voice recordings</li>
-            <li>No chat logs stored by default</li>
-            <li>No GPS tracking</li>
-            <li>No third-party ad tracking</li>
-          </ul>
+            <Box>
+              <Heading size="md" mb={2}>3. What We Don’t Collect</Heading>
+              <ul style={{ paddingLeft: '1.2rem', listStyle: 'disc' }}>
+                <li>No voice recordings</li>
+                <li>No chat logs by default</li>
+                <li>No GPS tracking</li>
+                <li>No third-party ad tracking</li>
+              </ul>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">4. How Your Data Is Used</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            We use your data to:
-          </p>
-          <ul className="list-disc list-inside text-gray-700 text-lg mb-6">
-            <li>Personalize ARIA’s responses</li>
-            <li>Understand how the platform is used (in aggregate)</li>
-            <li>Authenticate your account securely</li>
-          </ul>
-          <p className="text-gray-700 text-lg mb-6">
-            We <strong>never sell or share</strong> your data with advertisers.
-          </p>
+            <Box>
+              <Heading size="md" mb={2}>4. How Your Data Is Used</Heading>
+              <ul style={{ paddingLeft: '1.2rem', listStyle: 'disc' }}>
+                <li>Personalize ARIA’s responses</li>
+                <li>Understand usage trends</li>
+                <li>Securely authenticate your account</li>
+              </ul>
+              <Text mt={2}><strong>We never sell or share your data with advertisers.</strong></Text>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">5. Data Security</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            We use encryption, secure cloud architecture, and modern protocols (including quantum-resistant methods as we grow) to safeguard your information.
-          </p>
+            <Box>
+              <Heading size="md" mb={2}>5. Data Security</Heading>
+              <Text>
+                We use encryption, secure cloud architecture, and modern protocols — including quantum-resistant methods — to protect your information.
+              </Text>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">6. Your Rights</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            You have full control over your data. At any time, you may:
-          </p>
-          <ul className="list-disc list-inside text-gray-700 text-lg mb-6">
-            <li>Access or update your profile</li>
-            <li>Request deletion of your account and all data</li>
-            <li>Request a copy of your data</li>
-          </ul>
-          <p className="text-gray-700 text-lg mb-6">
-            Just email us at: <a href="mailto:team@thelovegpt.ai" className="text-pink-600 underline">team@thelovegpt.ai</a>
-          </p>
+            <Box>
+              <Heading size="md" mb={2}>6. Your Rights</Heading>
+              <ul style={{ paddingLeft: '1.2rem', listStyle: 'disc' }}>
+                <li>Access or update your data</li>
+                <li>Request deletion of your account</li>
+                <li>Request a full data export</li>
+              </ul>
+              <Text mt={2}>To exercise your rights, email us at: <Link href="mailto:team@thelovegpt.ai" color="pink.600">team@thelovegpt.ai</Link></Text>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">7. Third-Party Services</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            We may use trusted providers like Firebase and Stripe for secure sign-in and payments. They have their own privacy policies and are compliant with security standards.
-          </p>
+            <Box>
+              <Heading size="md" mb={2}>7. Third-Party Services</Heading>
+              <Text>
+                We may use trusted partners like Firebase and Stripe. These platforms are GDPR and security compliant.
+              </Text>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">8. Children’s Privacy</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            LoveGPT is not intended for users under 18. We do not knowingly collect data from minors.
-          </p>
+            <Box>
+              <Heading size="md" mb={2}>8. Children’s Privacy</Heading>
+              <Text>LoveGPT is not intended for users under 18. We do not knowingly collect data from minors.</Text>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">9. Policy Updates</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            If we change our privacy practices, we’ll notify you clearly and update this page. You always have the option to delete your account if you disagree with updates.
-          </p>
+            <Box>
+              <Heading size="md" mb={2}>9. Policy Updates</Heading>
+              <Text>
+                If we update our privacy policy, you’ll be notified. Continued use after changes indicates your agreement.
+              </Text>
+            </Box>
 
-          <h2 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">10. Contact Us</h2>
-          <p className="text-gray-700 text-lg mb-6">
-            Your emotional and digital safety matter. Contact us at:
-          </p>
-          <ul className="list-none text-gray-700 text-lg mb-6">
-            <li><strong>Email:</strong> <a href="mailto:team@thelovegpt.ai" className="text-pink-600 underline">team@thelovegpt.ai</a></li>
-            <li><strong>Website:</strong> <a href="https://www.thelovegpt.ai" className="text-pink-600 underline">www.thelovegpt.ai</a></li>
-          </ul>
+            <Box>
+              <Heading size="md" mb={2}>10. Contact Us</Heading>
+              <Text>Email: <Link href="mailto:team@thelovegpt.ai" color="pink.600">team@thelovegpt.ai</Link></Text>
+              <Text>Website: <Link href="https://www.thelovegpt.ai" color="pink.600" isExternal>thelovegpt.ai</Link></Text>
+            </Box>
 
-          <p className="text-center italic text-gray-600 mt-10">
-            LoveGPT was built on love, not data mining. Your heart is sacred — and so is your privacy.
-          </p>
-        </div>
-      </div>
+            <Text
+              fontSize="md"
+              textAlign="center"
+              fontStyle="italic"
+              color="gray.600"
+              mt={10}
+              w="full"
+            >
+              LoveGPT was built on love, not data mining. Your heart is sacred — and so is your privacy.
+            </Text>
+          </VStack>
+        </Container>
+      </Box>
     </MainLayout>
   );
 }

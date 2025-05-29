@@ -12,18 +12,21 @@ import {
   Timestamp,
   setDoc,
 } from 'firebase/firestore';
-import { generateCode } from '@/utils/invite/generateInviteCode';
+import { generateCode } from '@/utils/invite/generateCode';
 import { SUPER_ADMINS } from '@/config/admins';
 
 export default function InviteCodesDashboard() {
-  const [user, loading] = useAuthState(auth);
   const router = useRouter();
+
+  const [user, loading] =
+    typeof window !== 'undefined' ? useAuthState(auth) : [null, true];
+
   const [codes, setCodes] = useState<any[]>([]);
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    if (!loading && (!user || !SUPER_ADMINS.includes(user.email))) {
-      router.push('/login');
+    if (!loading && (!user || !SUPER_ADMINS.includes(user?.email ?? ''))) {
+      router.push('/admin/login');
     }
   }, [user, loading]);
 
@@ -54,7 +57,7 @@ export default function InviteCodesDashboard() {
     await setDoc(ref, {
       code,
       createdAt: Timestamp.now(),
-      createdBy: user?.email || 'admin',
+      createdBy: user?.email ?? 'admin',
       maxUses: 1,
       usedCount: 0,
       status: 'active',
@@ -64,7 +67,7 @@ export default function InviteCodesDashboard() {
     setCreating(false);
   };
 
-  if (loading || !user || !SUPER_ADMINS.includes(user.email)) return null;
+  if (loading || !user || !SUPER_ADMINS.includes(user?.email ?? '')) return null;
 
   return (
     <div className="p-6 max-w-4xl mx-auto">

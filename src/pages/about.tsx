@@ -1,6 +1,15 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import MainLayout from '@/layouts/MainLayout';
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Heading,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import Link from 'next/link';
 import ARIAChat from '@/components/ARIAChat';
 
 export default function About() {
@@ -14,45 +23,77 @@ export default function About() {
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-100 flex flex-col items-center justify-center px-6 py-16 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-6">The Heart Behind LoveGPT</h1>
+      <Box bgGradient="linear(to-br, pink.50, purple.100)" py={16} px={6}>
+        <Container maxW="4xl" textAlign="center">
+          <Heading size="2xl" fontWeight="extrabold" color="gray.800" mb={6}>
+            The Heart Behind LoveGPT
+          </Heading>
 
-        <p className="max-w-2xl text-gray-700 text-lg leading-relaxed mb-6">
-          LoveGPT was born from a single question: What if love could be understood, nurtured, and aligned — not by chance, but by design? In a world disconnected by distraction, we are reconnecting humanity at its core.
-        </p>
+          <VStack spacing={6} fontSize="lg" color="gray.700">
+            <Text>
+              LoveGPT was born from a single question: <strong>What if love could be understood, nurtured, and aligned — not by chance, but by design?</strong> In a world disconnected by distraction, we are reconnecting humanity at its core.
+            </Text>
 
-        <p className="max-w-2xl text-gray-700 text-lg leading-relaxed mb-6">
-          This isn’t just another app. It’s a movement. A conscious technology designed to guide people back to themselves — and to the kinds of relationships that uplift, support, and expand our lives.
-        </p>
+            <Text>
+              This isn’t just another app. It’s a movement. A conscious technology designed to guide people back to themselves — and to the kinds of relationships that uplift, support, and expand our lives.
+            </Text>
 
-        <p className="max-w-2xl text-gray-700 text-lg leading-relaxed mb-6">
-          We believe everyone deserves the opportunity to build an extraordinary life. And that extraordinary means something different for each of us. Whether it’s family, partnership, personal evolution, or impact — love is at the root of it all.
-        </p>
+            <Text>
+              We believe everyone deserves the opportunity to build an extraordinary life. Whether it’s family, partnership, personal evolution, or impact — love is at the root of it all.
+            </Text>
 
-        <p className="max-w-2xl text-gray-700 text-lg leading-relaxed mb-6">
-          With ARIA — our emotionally intelligent AI — LoveGPT helps people discover who they are, what they value, and who truly aligns with them. This is a platform where your emotional growth is rewarded. Where mentorship matters. Where compatibility goes beyond the surface.
-        </p>
+            <Text>
+              With ARIA — our emotionally intelligent AI — LoveGPT helps people discover who they are, what they value, and who truly aligns with them. This is a platform where your emotional growth is rewarded.
+            </Text>
 
-        <p className="max-w-2xl text-gray-700 text-lg leading-relaxed mb-12">
-          By joining LoveGPT, you’re not just signing up to date. You’re joining a mission: to raise the collective consciousness of relationships and create a world where people don’t just fall in love — they rise in love.
-        </p>
+            <Text>
+              By joining LoveGPT, you’re not just signing up to date. You’re joining a mission: to raise the collective consciousness of relationships and create a world where people don’t just fall in love — they rise in love.
+            </Text>
+          </VStack>
 
-        <div className="bg-white shadow-md rounded-xl p-6 max-w-xl text-left border-l-4 border-pink-500 mb-8">
-          <p className="text-gray-700 italic text-lg mb-4">
-            “If we want to change the world, we must first learn how to love — and that begins with the self.”
-          </p>
-          <p className="text-gray-800 font-semibold text-right">— Shervin Erfani, Founder</p>
-        </div>
+          <Box
+            bg="white"
+            mt={16}
+            shadow="md"
+            borderLeft="4px solid"
+            borderColor="pink.500"
+            p={6}
+            rounded="xl"
+            maxW="2xl"
+            mx="auto"
+            textAlign="left"
+          >
+            <Text fontStyle="italic" fontSize="lg" mb={4} color="gray.700">
+              “If we want to change the world, we must first learn how to love — and that begins with the self.”
+            </Text>
+            <Text textAlign="right" fontWeight="semibold" color="gray.800">
+              — Shervin Erfani, Founder
+            </Text>
+          </Box>
 
-        <Link
-          href="/signup"
-          className="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition"
-        >
-          Join the Movement
-        </Link>
-      </div>
+          <Center mt={12}>
+            <Link href="/signup" passHref>
+              <Button
+                bgGradient="linear(to-r, pink.500, purple.500)"
+                color="white"
+                px={8}
+                py={4}
+                fontWeight="bold"
+                fontSize="lg"
+                rounded="lg"
+                shadow="lg"
+                _hover={{ bg: 'pink.600' }}
+              >
+                Join the Movement
+              </Button>
+            </Link>
+          </Center>
 
-      <ARIAChat />
+          <Box mt={20}>
+            <ARIAChat />
+          </Box>
+        </Container>
+      </Box>
     </MainLayout>
   );
 }

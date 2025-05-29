@@ -8,7 +8,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { generateCode } from '@/utils/invite/generateInviteCode';
+import { generateCode } from '@/utils/invite/generateCode';
 import { sendInviteEmail } from '@/lib/mailgun/sendInviteEmail';
 
 interface Application {

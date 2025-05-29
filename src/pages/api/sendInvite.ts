@@ -3,7 +3,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { sendInviteEmail } from '@/lib/mailgun/sendInviteEmail';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { generateCode } from '@/utils/invite/generateInviteCode';
+import { generateCode } from '@/utils/invite/generateCode';
 import { createInviteCode } from '@/lib/invites';
 import { getReferralLineage } from '@/lib/referrals';
 

@@ -7,7 +7,11 @@ import { SUPER_ADMINS } from '@/config/admins';
 
 export default function AdminNavBar() {
   const router = useRouter();
-  const [user, loading] = useAuthState(auth);
+
+  const [user, loading] = typeof window !== 'undefined'
+    ? useAuthState(auth)
+    : [null, true];
+
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
