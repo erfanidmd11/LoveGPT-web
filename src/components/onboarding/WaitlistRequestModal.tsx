@@ -20,20 +20,9 @@ import {
 import { motion } from 'framer-motion';
 import { submitWaitlistRequest } from '@/firebase/waitlist';
 import { useRouter } from 'next/router';
+import { WaitlistForm } from '@/types/waitlist';
 
 const MotionModalContent = motion(ModalContent);
-
-interface WaitlistForm {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  instagram: string;
-  location: string;
-  reason: string;
-  heardFrom: string;
-  referredBy: string;
-}
 
 interface Props {
   isOpen: boolean;
