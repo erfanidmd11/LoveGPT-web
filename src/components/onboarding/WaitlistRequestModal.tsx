@@ -1,3 +1,4 @@
+// components/onboarding/WaitlistRequestModal.tsx
 import React, { useEffect, useState } from 'react';
 import {
   Modal,
@@ -14,11 +15,13 @@ import {
   VStack,
   Text,
   useToast,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { submitWaitlistRequest } from '@/firebase/waitlist';
-import { db } from '@/firebase/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/router';
+
+const MotionModalContent = motion(ModalContent);
 
 interface WaitlistForm {
   firstName: string;
@@ -53,6 +56,7 @@ export default function WaitlistRequestModal({ isOpen, onClose }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
   const router = useRouter();
+  const bg = useColorModeValue('white', 'gray.900');
 
   const handleChange = (field: keyof WaitlistForm, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -65,7 +69,7 @@ export default function WaitlistRequestModal({ isOpen, onClose }: Props) {
     if (!form.lastName) newErrors.lastName = 'Last name is required';
     if (!form.phone) newErrors.phone = 'Phone number is required';
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Valid email required';
-    if (!form.reason) newErrors.reason = 'Please explain why you want to join';
+    if (!form.reason) newErrors.reason = 'Please share your why 💜';
     return newErrors;
   };
 
@@ -78,17 +82,13 @@ export default function WaitlistRequestModal({ isOpen, onClose }: Props) {
 
     try {
       setIsSubmitting(true);
-      const requestId = await submitWaitlistRequest();
-      await setDoc(doc(db, 'waitlistRequests', requestId), {
-        ...form,
-        createdAt: new Date(),
-      });
+      await submitWaitlistRequest(form);
       router.push('/thank-you');
     } catch (err) {
       console.error(err);
       toast({
-        title: 'Error',
-        description: 'Could not submit your request. Please try again later.',
+        title: 'Submission Error',
+        description: 'Something went wrong. Please try again in a moment.',
         status: 'error',
         duration: 6000,
         isClosable: true,
@@ -115,40 +115,50 @@ export default function WaitlistRequestModal({ isOpen, onClose }: Props) {
   }, [isOpen]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered motionPreset="none">
       <ModalOverlay />
-      <ModalContent>
+      <MotionModalContent
+        bg={bg}
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        borderRadius="xl"
+        boxShadow="2xl"
+      >
         <ModalHeader>
-          <Text fontSize="xl" fontWeight="bold">Join the Waitlist</Text>
+          <Text fontSize="2xl" fontWeight="bold" color="purple.600">Join the Waitlist</Text>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <VStack spacing={4} align="stretch">
-            <Text fontStyle="italic" color="gray.600">
-              You're in the right place ✨ Just because you weren’t invited (yet) doesn’t mean you're not important...
+            <Text fontStyle="italic" fontSize="md" color="gray.600">
+              You’re in the right place ✨ Even if the world hasn’t seen your full light yet… you belong here.
             </Text>
+
             {([
               ['firstName', 'First Name'],
               ['lastName', 'Last Name'],
               ['phone', 'Phone Number'],
               ['email', 'Email'],
-              ['instagram', 'Instagram, Facebook or X handle(s)'],
+              ['instagram', 'Instagram, Facebook, or X handle(s)'],
               ['location', 'Location (auto-filled)'],
               ['reason', 'Why do you want to join LoveGPT?'],
               ['heardFrom', 'How did you hear about us?'],
               ['referredBy', 'Who referred you? (optional)'],
             ] as [keyof WaitlistForm, string][]).map(([field, label]) => (
               <FormControl key={field} isInvalid={!!errors[field]}>
-                <FormLabel>{label}</FormLabel>
+                <FormLabel fontWeight="semibold" color="gray.700">{label}</FormLabel>
                 {field === 'reason' ? (
                   <Textarea
                     value={form[field]}
                     onChange={(e) => handleChange(field, e.target.value)}
+                    placeholder="Your heart’s reason 💜"
                   />
                 ) : (
                   <Input
                     value={form[field]}
                     onChange={(e) => handleChange(field, e.target.value)}
+                    placeholder={label}
                   />
                 )}
                 {errors[field] && (
@@ -159,15 +169,17 @@ export default function WaitlistRequestModal({ isOpen, onClose }: Props) {
 
             <Button
               mt={4}
-              colorScheme="blue"
+              colorScheme="purple"
               onClick={handleSubmit}
               isLoading={isSubmitting}
+              size="lg"
+              borderRadius="full"
             >
-              Next
+              Request Invite
             </Button>
           </VStack>
         </ModalBody>
-      </ModalContent>
+      </MotionModalContent>
     </Modal>
   );
 }
